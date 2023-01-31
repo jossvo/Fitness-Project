@@ -1,26 +1,53 @@
 import React, { useContext } from "react";
 import { Context } from "../store/appContext";
 import rigoImageUrl from "../../img/rigo-baby.jpg";
-import "../../styles/home.css";
+import "../../styles/userStyle.css";
+import { ProfileInfo } from "../userComponents/profileinfo.jsx";
 
-export const Home = () => {
-	const { store, actions } = useContext(Context);
+import {
+  CDBSidebar,
+  CDBSidebarContent,
+  CDBSidebarFooter,
+  CDBSidebarHeader,
+  CDBSidebarMenu,
+  CDBSidebarMenuItem,
+} from 'cdbreact';
+import { NavLink } from 'react-router-dom';
+//Source: https://www.devwares.com/blog/create-responsive-sidebar-in-react/
 
-	return (
-		<div className="text-center mt-5">
-			<h1>Hello Rigo!!</h1>
-			<p>
-				<img src={rigoImageUrl} />
-			</p>
-			<div className="alert alert-info">
-				{store.message || "Loading message from the backend (make sure your python backend is running)..."}
-			</div>
-			<p>
-				This boilerplate comes with lots of documentation:{" "}
-				<a href="https://start.4geeksacademy.com/starters/react-flask">
-					Read documentation
-				</a>
-			</p>
+export const Home = ({navTitle="User"}) => {
+  const { store, actions } = useContext(Context);
+
+  return (
+	<div style={{backgroundColor:"#e3e6e6", display:"flex"}}>
+		<div style={{ display: 'flex', height: '100vh', overflow: 'scroll initial' }}>
+			<CDBSidebar textColor="rgba(254,202,0,1)" backgroundColor="rgba(27,28,26,1)">
+				<CDBSidebarHeader prefix={<i className="fa fa-bars fa-large"></i>}>
+					<a href="/user123" className="text-decoration-none" style={{ color: 'inherit' }}>
+						{navTitle}
+					</a>
+				</CDBSidebarHeader>
+
+				<CDBSidebarContent className="sidebar-content">
+					<CDBSidebarMenu>
+						<NavLink exact to="/user123/profile" activeClassName="activeClicked">
+						<CDBSidebarMenuItem icon="user">Profile Information</CDBSidebarMenuItem>
+						</NavLink>
+						<NavLink exact to="/user123/billing" activeClassName="activeClicked">
+						<CDBSidebarMenuItem icon="wallet">Billing</CDBSidebarMenuItem>
+						</NavLink>
+						<NavLink exact to="/user123/security" activeClassName="activeClicked">
+						<CDBSidebarMenuItem icon="lock">Security</CDBSidebarMenuItem>
+						</NavLink>
+						<NavLink exact to="/user123/notifications" activeClassName="activeClicked">
+						<CDBSidebarMenuItem icon="bell">Notifications</CDBSidebarMenuItem>
+						</NavLink>
+					</CDBSidebarMenu>
+				</CDBSidebarContent>
+
+			</CDBSidebar>
 		</div>
-	);
+		<ProfileInfo/>
+	</div>
+  );
 };
