@@ -2,18 +2,148 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 export const Navbar = () => {
-	return (
-		<nav className="navbar navbar-light bg-light">
-			<div className="container">
-				<Link to="/">
-					<span className="navbar-brand mb-0 h1">React Boilerplate</span>
-				</Link>
-				<div className="ml-auto">
-					<Link to="/demo">
-						<button className="btn btn-primary">Check the Context in action</button>
-					</Link>
-				</div>
-			</div>
-		</nav>
-	);
+  return (
+    <div>
+      <nav class="navbar navbar-expand-lg bg-dark ms-auto">
+        <div class="container-fluid mx-5">
+          <a class="navbar-brand" href="#">
+            Fit Central
+          </a>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto mx-5">
+              <Link to="#">
+                <span className="navbar-items">
+                  <i className=""></i>Programs
+                </span>
+              </Link>
+              <Link to="#">
+                <span className="navbar-items">
+                  <i className=""></i>Coaches
+                </span>
+              </Link>
+              <Link to="#">
+                <span className="navbar-items">
+                  <i className=""></i>FAQS
+                </span>
+              </Link>
+              <Link to="#">
+                <span className="navbar-items">
+                  <i className=""></i>Account
+                </span>
+              </Link>
+              <Link to="#">
+                <span className="navbar-items">
+                  <i className=""></i>My Plans
+                </span>
+              </Link>
+              <Link to="#">
+                <button
+                  type="button"
+                  className="btn btn-primary btn-lg btn-block"
+                  data-bs-toggle="modal"
+                  data-bs-target="#exampleModal"
+                >
+                  Join Now
+                </button>
+
+                <div
+                  className="modal fade"
+                  id="exampleModal"
+                  tabindex="-1"
+                  aria-labelledby="exampleModalLabel"
+                  aria-hidden="true"
+                >
+                  <div className="modal-dialog modal-dialog-centered modal-sm">
+                    <div className="modal-content bg-dark">
+                      <div className="modal-header">
+                        <h1
+                          className="modal-title text-center"
+                          id="exampleModalLabel"
+                        >
+                          Welcome to Fit Central
+                        </h1>
+                        {/* <button
+                          type="button"
+                          className="btn-close"
+                          data-bs-dismiss="modal"
+                          aria-label="Close"
+                        ></button> */}
+                      </div>
+                      <div className="modal-body">
+                        <form>
+                          <div className="mb-3">
+                            <label
+                              for="exampleInputEmail1"
+                              className="form-label modal-label label-text"
+                            >
+                              Email address
+                            </label>
+                            <input
+                              type="email"
+                              className="form-control text-form"
+                              id="exampleInputEmail1"
+                              aria-describedby="emailHelp"
+                            />
+                            <div id="emailHelp" className="form-text">
+                              We'll never share your email with anyone else.
+                            </div>
+                          </div>
+                          <div className="mb-3">
+                            <label
+                              for="exampleInputPassword1"
+                              className="form-label modal-label label-text"
+                            >
+                              Password
+                            </label>
+                            <input
+                              type="password"
+                              className="form-control"
+                              id="exampleInputPassword1"
+                            />
+                          </div>
+                          <button
+                            type="submit"
+                            className="btn btn-warning btn-lg btn-signin"
+                          >
+                            Sign In
+                          </button>
+                          <a className="modal-a">Forgot your password?</a>
+                        </form>
+                      </div>
+                      <div className="modal-footer">
+                        <button
+                          type="button"
+                          className="btn btn-danger btn-modal"
+                          data-bs-dismiss="modal"
+                        >
+                          Close
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-warning btn-modal"
+                        >
+                          Create Account
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </div>
+  );
 };
