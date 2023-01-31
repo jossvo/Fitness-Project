@@ -4,13 +4,14 @@ import { Link } from "react-router-dom";
 export const Navbar = () => {
   return (
     <div>
-      <nav class="navbar navbar-expand-lg bg-dark ms-auto">
-        <div class="container-fluid mx-5">
-          <a class="navbar-brand" href="#">
+      <nav className="navbar navbar-expand-lg bg-dark ms-auto">
+        <div className="container-fluid mx-5 ">
+          <a className="navbar-brand" href="#">
+            <i class="fa-solid fa-dumbbell"></i>
             Fit Central
           </a>
           <button
-            class="navbar-toggler"
+            className="navbar-toggler"
             type="button"
             data-bs-toggle="collapse"
             data-bs-target="#navbarNav"
@@ -18,10 +19,10 @@ export const Navbar = () => {
             aria-expanded="false"
             aria-label="Toggle navigation"
           >
-            <span class="navbar-toggler-icon"></span>
+            <span className="navbar-toggler-icon"></span>
           </button>
-          <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto mx-5">
+          <div className="collapse navbar-collapse" id="navbarNav">
+            <ul className="navbar-nav ms-auto mx-5 d-flex align-items-center">
               <Link to="#">
                 <span className="navbar-items">
                   <i className=""></i>Programs
@@ -50,7 +51,7 @@ export const Navbar = () => {
               <Link to="#">
                 <button
                   type="button"
-                  className="btn btn-primary btn-lg btn-block"
+                  className="btn btn-warning btn-lg btn-block mx-5"
                   data-bs-toggle="modal"
                   data-bs-target="#exampleModal"
                 >

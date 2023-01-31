@@ -16,7 +16,11 @@ nav a:hover {
 }
 
 nav i {
-  padding-right: 0.6rem;
+  padding: 0 0.6rem;
+}
+nav .btn {
+  font-size: 1.8rem;
+  font-family: "Bebas Neue", sans-serif;  
 }
 
 .navbar-brand {
