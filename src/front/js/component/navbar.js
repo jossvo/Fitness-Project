@@ -7,7 +7,7 @@ export const Navbar = () => {
       <nav className="navbar navbar-expand-lg bg-dark ms-auto">
         <div className="container-fluid mx-5 ">
           <a className="navbar-brand" href="#">
-            <i class="fa-solid fa-dumbbell"></i>
+            <i className="fa-solid fa-dumbbell"></i>
             Fit Central
           </a>
           <button
@@ -74,12 +74,6 @@ export const Navbar = () => {
                         >
                           Welcome to Fit Central
                         </h1>
-                        {/* <button
-                          type="button"
-                          className="btn-close"
-                          data-bs-dismiss="modal"
-                          aria-label="Close"
-                        ></button> */}
                       </div>
                       <div className="modal-body">
                         <form>
@@ -113,13 +107,16 @@ export const Navbar = () => {
                               id="exampleInputPassword1"
                             />
                           </div>
-                          <button
-                            type="submit"
-                            className="btn btn-warning btn-lg btn-signin"
-                          >
-                            Sign In
-                          </button>
-                          <a className="modal-a">Forgot your password?</a>
+                          
+                            <button
+                              type="submit"
+                              className="btn btn-warning btn-lg btn-signin"
+                            >
+                              Sign In
+                            </button>
+                      
+                            <a className="modal-a">Forgot your password?</a>
+                          
                         </form>
                       </div>
                       <div className="modal-footer">
@@ -130,12 +127,14 @@ export const Navbar = () => {
                         >
                           Close
                         </button>
-                        <button
-                          type="button"
-                          className="btn btn-warning btn-modal"
-                        >
-                          Create Account
-                        </button>
+                        
+                          <button
+                            type="button"
+                            className="btn btn-warning btn-modal"
+                          >
+                            Create Account
+                          </button>
+                        
                       </div>
                     </div>
                   </div>
