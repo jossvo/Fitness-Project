@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: afc90afc49e1
+Revision ID: 86cfd302d4f6
 Revises: 
-Create Date: 2023-02-02 02:47:54.968856
+Create Date: 2023-02-02 17:47:27.577347
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'afc90afc49e1'
+revision = '86cfd302d4f6'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -30,7 +30,7 @@ def upgrade():
     sa.Column('email', sa.String(length=250), nullable=False),
     sa.Column('password', sa.String(length=250), nullable=False),
     sa.Column('bio', sa.String(length=250), nullable=True),
-    sa.Column('socials', sa.String(length=250), nullable=False),
+    sa.Column('socials', sa.String(length=250), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email')
     )
@@ -79,7 +79,6 @@ def upgrade():
     sa.Column('week', sa.Integer(), nullable=True),
     sa.Column('day', sa.Integer(), nullable=True),
     sa.Column('order', sa.Integer(), nullable=True),
-    sa.Column('exercise', sa.String(length=250), nullable=False),
     sa.Column('sets', sa.Integer(), nullable=True),
     sa.Column('reps', sa.Integer(), nullable=True),
     sa.Column('rest_between_sets', sa.Float(), nullable=True),
