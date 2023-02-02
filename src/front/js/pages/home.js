@@ -100,13 +100,13 @@ export const Home = () => {
         </div>
       </div>
       {/* End Features Section*/}
-        <div class="container px-4 py-5" id="custom-cards">
-    <h2 class="pb-2 border-bottom">Choose your favorite routine</h2>
+        <div className="container px-4 py-5" id="custom-cards">
+    <h2 className="pb-2 border-bottom">Choose your favorite routine</h2>
       
 
-    <div class="row row-cols-1 h-100 row-cols-lg-3 align-items-stretch g-4 py-5">
-      <div class="col">
-        <div class="card card-cover overflow-hidden text-bg-dark shadow-lg" style={{ 
+    <div className="row row-cols-1 h-100 row-cols-lg-3 align-items-stretch g-4 py-5">
+      <div className="col">
+        <div className="card card-cover overflow-hidden text-bg-dark shadow-lg" style={{ 
       backgroundImage: `url("https://images.pexels.com/photos/35987/pexels-photo.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1")`,
       backgroundRepeat:"no-repeat", 
       backgroundSize:"cover",
@@ -114,14 +114,14 @@ export const Home = () => {
       height: '40vh',
       borderRadius: 8,  
     }} >
-          <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-            <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Yoga and AcroYoga</h3>
+          <div className="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
+            <h3 className="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Yoga and AcroYoga</h3>
           </div>
         </div>
       </div>
 
-      <div class="col">
-        <div class="card card-cover overflow-hidden text-bg-dark shadow-lg" style={{ 
+      <div className="col">
+        <div className="card card-cover overflow-hidden text-bg-dark shadow-lg" style={{ 
       backgroundImage: `url("https://images.pexels.com/photos/416778/pexels-photo-416778.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1")` , 
       backgroundRepeat:"no-repeat", 
       backgroundSize:"cover", 
@@ -129,14 +129,14 @@ export const Home = () => {
       height: '40vh',
       borderRadius: 8,
     }} >
-          <div class="d-flex flex-column h-100  p-5 pb-3 text-white text-shadow-1">
-            <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">The best routines for ABS</h3>
+          <div className="d-flex flex-column h-100  p-5 pb-3 text-white text-shadow-1">
+            <h3 className="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">The best routines for ABS</h3>
           </div>
         </div>
       </div>
 
-      <div class="col">
-        <div class="card card-cover overflow-hidden text-white shadow-lg" style={{ 
+      <div className="col">
+        <div className="card card-cover overflow-hidden text-white shadow-lg" style={{ 
       backgroundImage: `url("https://images.pexels.com/photos/1032117/pexels-photo-1032117.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1")`,
       backgroundRepeat:"no-repeat", 
       backgroundSize:"cover", 
@@ -148,8 +148,8 @@ export const Home = () => {
 
 
 }}>
-          <div class="d-flex flex-column  p-5 pb-3 text-shadow-1">
-            <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Routines to gain muscles </h3>
+          <div className="d-flex flex-column  p-5 pb-3 text-shadow-1">
+            <h3 className="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Routines to gain muscles </h3>
           </div>
         </div>
       </div>
