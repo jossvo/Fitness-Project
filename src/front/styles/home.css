@@ -14,12 +14,12 @@
   --darkGray: RGB(72, 81, 77);
   --blackColor: RGB(28, 28, 26);
 }
-nav i,
-nav a {
+.navbar i,
+.navbar a {
   color: whitesmoke;
   text-decoration: none;
 }
-nav a:hover {
+.navbar a:hover {
   color: var(--mainColor);
 }
 
@@ -29,6 +29,9 @@ nav i {
 nav .btn {
   font-size: 1.8rem;
   font-family: "Bebas Neue", sans-serif;
+}
+.navbar {
+  background-color: var(--blackColor);
 }
 
 .navbar-brand {
@@ -75,14 +78,11 @@ nav .btn {
 }
 /*Hero Section*/
 .hero-text {
-  width: 40%;
   font-size: 12rem;
   text-align: start;
   text-shadow: 2px 2px 4px #000000;
 }
-.text-container {
-  margin: 6rem 0 0 8rem;
-}
+
 .text-container h3 {
   text-align: start;
   color: var(--grayColor);
@@ -109,18 +109,12 @@ nav .btn {
   color: white;
   background-color: var(--darkGray);
 }
-.features-container {
-  background-color: var(--lightGray);
-}
-.features-container-section {
-  padding: 2.4rem 10rem;
-}
+
 .features-container-items {
   margin-top: 4rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.2rem;
 }
 .features-text {
   width: 60%;
@@ -135,4 +129,33 @@ nav .btn {
 .features-heading-text {
   font-size: 2.4rem;
   font-weight: bold;
+}
+
+/* Footer Styles */
+.footer {
+  background-color: var(--blackColor);
+}
+.footer-container {
+  border-top: 1px solid var(--mainColor);
+}
+.footer-icons {
+  color: var(--mainColor);
+  font-size: 2.2rem;
+}
+.footer-icons li {
+  padding: 6px;
+}
+.footer-icons li:hover {
+  color: var(--lightGray);
+  cursor: pointer;
+}
+.footer-items {
+  font-size: 2rem;
+  color: var(--lightGray);
+}
+.footer-items:hover {
+  color: var(--mainColor);
+}
+.text-footer {
+  color: var(--lightGray);
 }

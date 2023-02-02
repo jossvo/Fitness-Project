@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 export const Navbar = () => {
   return (
     <div>
-      <nav className="navbar navbar-expand-lg bg-dark ms-auto">
+      <nav className="navbar navbar-expand-lg ms-auto">
         <div className="container-fluid mx-5 ">
           <a className="navbar-brand" href="#">
             <i className="fa-solid fa-dumbbell"></i>
@@ -61,7 +61,7 @@ export const Navbar = () => {
                 <div
                   className="modal fade"
                   id="exampleModal"
-                  tabindex="-1"
+                  tabIndex="-1"
                   aria-labelledby="exampleModalLabel"
                   aria-hidden="true"
                 >
@@ -79,7 +79,7 @@ export const Navbar = () => {
                         <form>
                           <div className="mb-3">
                             <label
-                              for="exampleInputEmail1"
+                              htmlFor="exampleInputEmail1"
                               className="form-label modal-label label-text"
                             >
                               Email address
@@ -96,7 +96,7 @@ export const Navbar = () => {
                           </div>
                           <div className="mb-3">
                             <label
-                              for="exampleInputPassword1"
+                              htmlFor="exampleInputPassword1"
                               className="form-label modal-label label-text"
                             >
                               Password
