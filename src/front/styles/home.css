@@ -22,7 +22,9 @@
 .navbar a:hover {
   color: var(--mainColor);
 }
-
+.navbar-logo{
+  font-size: 1rem;
+}
 nav i {
   padding: 0 0.6rem;
 }
@@ -36,7 +38,7 @@ nav .btn {
 
 .navbar-brand {
   font-size: 3.6rem;
-  font-family: "Karantina", sans-serif;
+  font-family: "Bebas Neue", sans-serif;
   text-transform: uppercase;
 }
 .navbar-items {
@@ -129,6 +131,18 @@ nav .btn {
 .features-heading-text {
   font-size: 2.4rem;
   font-weight: bold;
+}
+.btn-container {
+  display: flex;
+  flex-direction: column;
+}
+.btn-container button {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.8rem;
+  color: whitesmoke;
+}
+.btn-container button:first-child {
+  color: var(--blackColor)
 }
 
 /* Footer Styles */

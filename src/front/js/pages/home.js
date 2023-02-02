@@ -33,9 +33,9 @@ export const Home = () => {
       </div>
       {/* End Hero Section*/}
       {/* Start Features Section*/}
-      <div className="container-fluid ">
-        <div className="features-container-section">
-          <h2 className="text-center features-h1">
+      <div className="container-fluid mt-5 mb-5">
+        <div className="features-container-section mx-5 ">
+          <h2 className="text-center features-h1 ">
             All features are included with your plan
           </h2>
           <h3 className="text-center features-h2">
@@ -79,17 +79,17 @@ export const Home = () => {
       </div>
       {/* End Features Section*/}
       <div className="join-container bg-dark row">
-        <div className="col-12 col-lg-6">
-          <h4 className="text-white">Traning Journey's</h4>
-          <h2 className="text-white">A training Journey for every goal</h2>
-          <p className="text-white">
+        <div className="col-12 col-lg-6 d-flex align-items-center justify-content-center flex-column mt-5 mb-5">
+            <h4 className="text-white w-50 ">Traning Journey's</h4>
+            <h2 className="text-white w-50">A training Journey for every goal</h2>
+            <p className="text-white w-50">
             Your Coach analyzes your fitness an goals, paving your individual
             path to success
-          </p>
-          <div>
-            <button className="btn btn-light">Learn about traning</button>
-            <button className="btn btn-warning">Join Now</button>
-          </div>
+          </p>1
+            <div className="btn-container w-50">
+              <button className="btn btn-light inline-block mt-3">Learn about traning</button>
+              <button className="btn btn-warning inline-block mt-3 ">Join Now</button>
+            </div>
         </div>
         <div className="col-12 col-lg-6">
           <img
@@ -100,7 +100,61 @@ export const Home = () => {
         </div>
       </div>
       {/* End Features Section*/}
-    
+        <div class="container px-4 py-5" id="custom-cards">
+    <h2 class="pb-2 border-bottom">Choose your favorite routine</h2>
+      
+
+    <div class="row row-cols-1 h-100 row-cols-lg-3 align-items-stretch g-4 py-5">
+      <div class="col">
+        <div class="card card-cover overflow-hidden text-bg-dark shadow-lg" style={{ 
+      backgroundImage: `url("https://images.pexels.com/photos/35987/pexels-photo.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1")`,
+      backgroundRepeat:"no-repeat", 
+      backgroundSize:"cover",
+      backgroundPosition: "center",
+      height: '40vh',
+      borderRadius: 8,  
+    }} >
+          <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
+            <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Yoga and AcroYoga</h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card card-cover overflow-hidden text-bg-dark shadow-lg" style={{ 
+      backgroundImage: `url("https://images.pexels.com/photos/416778/pexels-photo-416778.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1")` , 
+      backgroundRepeat:"no-repeat", 
+      backgroundSize:"cover", 
+      backgroundPosition: "center",
+      height: '40vh',
+      borderRadius: 8,
+    }} >
+          <div class="d-flex flex-column h-100  p-5 pb-3 text-white text-shadow-1">
+            <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">The best routines for ABS</h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card card-cover overflow-hidden text-white shadow-lg" style={{ 
+      backgroundImage: `url("https://images.pexels.com/photos/1032117/pexels-photo-1032117.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1")`,
+      backgroundRepeat:"no-repeat", 
+      backgroundSize:"cover", 
+      backgroundPosition: "center",
+      height: '40vh',
+      borderRadius: 8,    
+
+
+
+
+}}>
+          <div class="d-flex flex-column  p-5 pb-3 text-shadow-1">
+            <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Routines to gain muscles </h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
       {/* End Cards Plans Section*/}
     </React.Fragment>
   );
