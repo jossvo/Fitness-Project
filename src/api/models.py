@@ -5,7 +5,8 @@ db = SQLAlchemy()
 class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer(), primary_key=True)
-    name = db.Column(db.String(250), nullable=False)
+    first_name = db.Column(db.String(250), nullable=False)
+    last_ame = db.Column(db.String(250), nullable=False)
     alias = db.Column(db.String(250))
     email = db.Column(db.String(250), nullable=False)
     gender = db.Column(db.String(250), nullable=False)
@@ -36,7 +37,7 @@ class User(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "name": self.name,
+            "name": self.FirstName + " "+ LastName,
             "alias": self.alias,
             "email": self.email,
             # do not serialize the password, its a security breach
@@ -45,7 +46,8 @@ class User(db.Model):
 class Coach(db.Model):
     __tablename__ = 'coach'
     id = db.Column(db.Integer(), primary_key=True)
-    name = db.Column(db.String(250), nullable=False)
+    FirstName = db.Column(db.String(250), nullable=False)
+    LastName = db.Column(db.String(250), nullable=False)
     email = db.Column(db.String(250), unique=True, nullable=False)
     password = db.Column(db.String(250), nullable=False)
     bio = db.Column(db.String(250))

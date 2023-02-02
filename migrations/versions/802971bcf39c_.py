@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 86cfd302d4f6
+Revision ID: 802971bcf39c
 Revises: 
-Create Date: 2023-02-02 17:47:27.577347
+Create Date: 2023-02-02 18:57:50.840921
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '86cfd302d4f6'
+revision = '802971bcf39c'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -26,29 +26,40 @@ def upgrade():
     )
     op.create_table('coach',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.String(length=250), nullable=False),
+    sa.Column('FirstName', sa.String(length=250), nullable=False),
+    sa.Column('LastName', sa.String(length=250), nullable=False),
     sa.Column('email', sa.String(length=250), nullable=False),
     sa.Column('password', sa.String(length=250), nullable=False),
     sa.Column('bio', sa.String(length=250), nullable=True),
-    sa.Column('socials', sa.String(length=250), nullable=True),
+    sa.Column('facebook', sa.String(length=250), nullable=True),
+    sa.Column('twitter', sa.String(length=250), nullable=True),
+    sa.Column('instagram', sa.String(length=250), nullable=True),
+    sa.Column('tiktok', sa.String(length=250), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email')
     )
     op.create_table('user',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.String(length=250), nullable=False),
-    sa.Column('alias', sa.String(length=250), nullable=False),
+    sa.Column('FirstName', sa.String(length=250), nullable=False),
+    sa.Column('LastName', sa.String(length=250), nullable=False),
+    sa.Column('alias', sa.String(length=250), nullable=True),
     sa.Column('email', sa.String(length=250), nullable=False),
     sa.Column('gender', sa.String(length=250), nullable=False),
     sa.Column('share_gender', sa.Boolean(), nullable=False),
     sa.Column('password', sa.String(length=250), nullable=False),
-    sa.Column('location', sa.String(length=250), nullable=False),
+    sa.Column('location', sa.String(length=250), nullable=True),
     sa.Column('share_location', sa.Boolean(), nullable=False),
-    sa.Column('weight', sa.String(length=250), nullable=False),
+    sa.Column('date_of_birth', sa.Date(), nullable=False),
+    sa.Column('share_age', sa.Boolean(), nullable=False),
+    sa.Column('weight', sa.String(length=250), nullable=True),
     sa.Column('share_weight', sa.Boolean(), nullable=False),
-    sa.Column('height', sa.String(length=250), nullable=False),
+    sa.Column('height', sa.String(length=250), nullable=True),
     sa.Column('share_height', sa.Boolean(), nullable=False),
     sa.Column('bio', sa.String(length=250), nullable=True),
+    sa.Column('facebook', sa.String(length=250), nullable=True),
+    sa.Column('twitter', sa.String(length=250), nullable=True),
+    sa.Column('instagram', sa.String(length=250), nullable=True),
+    sa.Column('tiktok', sa.String(length=250), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('coach_review',
@@ -56,8 +67,18 @@ def upgrade():
     sa.Column('coach_id', sa.Integer(), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('rating', sa.Integer(), nullable=True),
+    sa.Column('review', sa.String(length=250), nullable=True),
     sa.ForeignKeyConstraint(['coach_id'], ['coach.id'], ondelete='cascade'),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ondelete='cascade'),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('exercise_library',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('name', sa.String(length=250), nullable=False),
+    sa.Column('description', sa.String(length=250), nullable=False),
+    sa.Column('coach_id', sa.Integer(), nullable=True),
+    sa.Column('video', sa.String(length=250), nullable=False),
+    sa.ForeignKeyConstraint(['coach_id'], ['coach.id'], ondelete='cascade'),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('workout',
@@ -69,6 +90,7 @@ def upgrade():
     sa.Column('difficulty', sa.String(length=30), nullable=False),
     sa.Column('description', sa.String(length=250), nullable=False),
     sa.Column('isfree', sa.Boolean(), nullable=False),
+    sa.Column('exercise_count', sa.Integer(), nullable=True),
     sa.Column('wk_image', sa.String(length=250), nullable=True),
     sa.ForeignKeyConstraint(['coach_id'], ['coach.id'], ),
     sa.PrimaryKeyConstraint('id')
@@ -79,10 +101,20 @@ def upgrade():
     sa.Column('week', sa.Integer(), nullable=True),
     sa.Column('day', sa.Integer(), nullable=True),
     sa.Column('order', sa.Integer(), nullable=True),
+    sa.Column('exercise_id', sa.Integer(), nullable=True),
     sa.Column('sets', sa.Integer(), nullable=True),
     sa.Column('reps', sa.Integer(), nullable=True),
     sa.Column('rest_between_sets', sa.Float(), nullable=True),
     sa.Column('description', sa.String(length=250), nullable=True),
+    sa.ForeignKeyConstraint(['exercise_id'], ['exercise_library.id'], ondelete='cascade'),
+    sa.ForeignKeyConstraint(['workout_id'], ['workout.id'], ondelete='cascade'),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('workout_categories',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('workout_id', sa.Integer(), nullable=True),
+    sa.Column('category_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['category_id'], ['category.id'], ondelete='cascade'),
     sa.ForeignKeyConstraint(['workout_id'], ['workout.id'], ondelete='cascade'),
     sa.PrimaryKeyConstraint('id')
     )
@@ -91,6 +123,7 @@ def upgrade():
     sa.Column('workout_id', sa.Integer(), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('rating', sa.Integer(), nullable=True),
+    sa.Column('review', sa.String(length=250), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ondelete='cascade'),
     sa.ForeignKeyConstraint(['workout_id'], ['workout.id'], ondelete='cascade'),
     sa.PrimaryKeyConstraint('id')
@@ -103,15 +136,27 @@ def upgrade():
     sa.ForeignKeyConstraint(['workout_id'], ['workout.id'], ondelete='cascade'),
     sa.PrimaryKeyConstraint('id')
     )
+    op.create_table('exercise__status',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('exercise_id', sa.Integer(), nullable=True),
+    sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.Column('completed', sa.Boolean(), nullable=False),
+    sa.ForeignKeyConstraint(['exercise_id'], ['exercise_assign.id'], ondelete='cascade'),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ondelete='cascade'),
+    sa.PrimaryKeyConstraint('id')
+    )
     # ### end Alembic commands ###
 
 
 def downgrade():
     # ### commands auto generated by Alembic - please adjust! ###
+    op.drop_table('exercise__status')
     op.drop_table('workout_user')
     op.drop_table('workout_review')
+    op.drop_table('workout_categories')
     op.drop_table('exercise_assign')
     op.drop_table('workout')
+    op.drop_table('exercise_library')
     op.drop_table('coach_review')
     op.drop_table('user')
     op.drop_table('coach')
