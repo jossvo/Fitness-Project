@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 802971bcf39c
+Revision ID: 780bc02a2956
 Revises: 
-Create Date: 2023-02-02 18:57:50.840921
+Create Date: 2023-02-02 19:46:55.447200
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '802971bcf39c'
+revision = '780bc02a2956'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -26,8 +26,8 @@ def upgrade():
     )
     op.create_table('coach',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('FirstName', sa.String(length=250), nullable=False),
-    sa.Column('LastName', sa.String(length=250), nullable=False),
+    sa.Column('first_name', sa.String(length=250), nullable=False),
+    sa.Column('last_name', sa.String(length=250), nullable=False),
     sa.Column('email', sa.String(length=250), nullable=False),
     sa.Column('password', sa.String(length=250), nullable=False),
     sa.Column('bio', sa.String(length=250), nullable=True),
@@ -40,27 +40,28 @@ def upgrade():
     )
     op.create_table('user',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('FirstName', sa.String(length=250), nullable=False),
-    sa.Column('LastName', sa.String(length=250), nullable=False),
+    sa.Column('first_name', sa.String(length=250), nullable=False),
+    sa.Column('last_name', sa.String(length=250), nullable=False),
     sa.Column('alias', sa.String(length=250), nullable=True),
     sa.Column('email', sa.String(length=250), nullable=False),
     sa.Column('gender', sa.String(length=250), nullable=False),
-    sa.Column('share_gender', sa.Boolean(), nullable=False),
+    sa.Column('share_gender', sa.Boolean(), nullable=True),
     sa.Column('password', sa.String(length=250), nullable=False),
     sa.Column('location', sa.String(length=250), nullable=True),
-    sa.Column('share_location', sa.Boolean(), nullable=False),
+    sa.Column('share_location', sa.Boolean(), nullable=True),
     sa.Column('date_of_birth', sa.Date(), nullable=False),
-    sa.Column('share_age', sa.Boolean(), nullable=False),
+    sa.Column('share_age', sa.Boolean(), nullable=True),
     sa.Column('weight', sa.String(length=250), nullable=True),
-    sa.Column('share_weight', sa.Boolean(), nullable=False),
+    sa.Column('share_weight', sa.Boolean(), nullable=True),
     sa.Column('height', sa.String(length=250), nullable=True),
-    sa.Column('share_height', sa.Boolean(), nullable=False),
+    sa.Column('share_height', sa.Boolean(), nullable=True),
     sa.Column('bio', sa.String(length=250), nullable=True),
     sa.Column('facebook', sa.String(length=250), nullable=True),
     sa.Column('twitter', sa.String(length=250), nullable=True),
     sa.Column('instagram', sa.String(length=250), nullable=True),
     sa.Column('tiktok', sa.String(length=250), nullable=True),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('email')
     )
     op.create_table('coach_review',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -89,7 +90,7 @@ def upgrade():
     sa.Column('days_per_week', sa.Integer(), nullable=True),
     sa.Column('difficulty', sa.String(length=30), nullable=False),
     sa.Column('description', sa.String(length=250), nullable=False),
-    sa.Column('isfree', sa.Boolean(), nullable=False),
+    sa.Column('isfree', sa.Boolean(), nullable=True),
     sa.Column('exercise_count', sa.Integer(), nullable=True),
     sa.Column('wk_image', sa.String(length=250), nullable=True),
     sa.ForeignKeyConstraint(['coach_id'], ['coach.id'], ),
@@ -140,7 +141,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('exercise_id', sa.Integer(), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=True),
-    sa.Column('completed', sa.Boolean(), nullable=False),
+    sa.Column('completed', sa.Boolean(), nullable=True),
     sa.ForeignKeyConstraint(['exercise_id'], ['exercise_assign.id'], ondelete='cascade'),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ondelete='cascade'),
     sa.PrimaryKeyConstraint('id')

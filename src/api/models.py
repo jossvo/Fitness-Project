@@ -6,20 +6,20 @@ class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer(), primary_key=True)
     first_name = db.Column(db.String(250), nullable=False)
-    last_ame = db.Column(db.String(250), nullable=False)
+    last_name = db.Column(db.String(250), nullable=False)
     alias = db.Column(db.String(250))
-    email = db.Column(db.String(250), nullable=False)
+    email = db.Column(db.String(250), unique=True,nullable=False)
     gender = db.Column(db.String(250), nullable=False)
-    share_gender = db.Column(db.Boolean(), nullable=False)
+    share_gender = db.Column(db.Boolean())
     password = db.Column(db.String(250), nullable=False)
     location = db.Column(db.String(250))
-    share_location = db.Column(db.Boolean(), nullable=False)
+    share_location = db.Column(db.Boolean())
     date_of_birth = db.Column(db.Date(), nullable=False)
-    share_age = db.Column(db.Boolean(), nullable=False)
+    share_age = db.Column(db.Boolean())
     weight = db.Column(db.String(250))
-    share_weight = db.Column(db.Boolean(), nullable=False)
+    share_weight = db.Column(db.Boolean())
     height = db.Column(db.String(250))
-    share_height = db.Column(db.Boolean(), nullable=False)
+    share_height = db.Column(db.Boolean())
     bio = db.Column(db.String(250))
     facebook = db.Column(db.String(250))
     twitter = db.Column(db.String(250))
@@ -37,8 +37,7 @@ class User(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "name": self.FirstName + " "+ LastName,
-            "alias": self.alias,
+            "name": self.first_name.capitalize() + " "+ self.last_name.capitalize(),
             "email": self.email,
             # do not serialize the password, its a security breach
         }
@@ -46,8 +45,8 @@ class User(db.Model):
 class Coach(db.Model):
     __tablename__ = 'coach'
     id = db.Column(db.Integer(), primary_key=True)
-    FirstName = db.Column(db.String(250), nullable=False)
-    LastName = db.Column(db.String(250), nullable=False)
+    first_name = db.Column(db.String(250), nullable=False)
+    last_name = db.Column(db.String(250), nullable=False)
     email = db.Column(db.String(250), unique=True, nullable=False)
     password = db.Column(db.String(250), nullable=False)
     bio = db.Column(db.String(250))
@@ -74,7 +73,7 @@ class Workout(db.Model):
     days_per_week = db.Column(db.Integer())
     difficulty = db.Column(db.String(30), nullable=False)
     description = db.Column(db.String(250), nullable=False) #summary
-    isfree = db.Column(db.Boolean(), nullable=False)
+    isfree = db.Column(db.Boolean())
     exercise_count = db.Column(db.Integer())
     wk_image = db.Column(db.String(250))
     # classifications - done by table Workout_Categories
@@ -121,7 +120,7 @@ class Exercise_Status(db.Model):
     id = db.Column(db.Integer(),primary_key=True)
     exercise_id = db.Column(db.Integer(),db.ForeignKey("exercise_assign.id",ondelete="cascade"))
     user_id = db.Column(db.Integer(),db.ForeignKey("user.id",ondelete="cascade"))
-    completed = db.Column(db.Boolean(), nullable=False)
+    completed = db.Column(db.Boolean())
 
 class Workout_User(db.Model): #User_Purchased_Workouts
     __tablename__ = "workout_user"
