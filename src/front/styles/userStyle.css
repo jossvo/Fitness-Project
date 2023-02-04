@@ -83,6 +83,9 @@
     margin-top:5%;
     width: 50%;
 }
+.radioLabel{
+    margin-left: 5%;
+}
 
 /*ProfileSecurity*/
 .img-account-profile {
