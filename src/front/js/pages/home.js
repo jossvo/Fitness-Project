@@ -104,18 +104,18 @@ export const Home = () => {
     <h2 className="pb-2 border-bottom">Choose your favorite routine</h2>
       
 
-    <div className="row row-cols-1 h-100 row-cols-lg-3 align-items-stretch g-4 py-5">
+    <div className="row row-cols-1 h-100 row-cols-lg-3 align-items-stretch g-4 py-5 ">
       <div className="col">
         <div className="card card-cover overflow-hidden text-bg-dark shadow-lg" style={{ 
-      backgroundImage: `url("https://images.pexels.com/photos/35987/pexels-photo.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1")`,
+      backgroundImage: `url("https://images.pexels.com/photos/3823039/pexels-photo-3823039.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1")`,
       backgroundRepeat:"no-repeat", 
       backgroundSize:"cover",
       backgroundPosition: "center",
-      height: '40vh',
+      height: '35vh',
       borderRadius: 8,  
     }} >
-          <div className="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-            <h3 className="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Yoga and AcroYoga</h3>
+          <div className="d-flex flex-column p-5 pb-3 text-white">
+            <h3 className="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold routines-titles ">Yoga and AcroYoga</h3>
           </div>
         </div>
       </div>
@@ -126,22 +126,22 @@ export const Home = () => {
       backgroundRepeat:"no-repeat", 
       backgroundSize:"cover", 
       backgroundPosition: "center",
-      height: '40vh',
+      height: '35vh',
       borderRadius: 8,
     }} >
           <div className="d-flex flex-column h-100  p-5 pb-3 text-white text-shadow-1">
-            <h3 className="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">The best routines for ABS</h3>
+            <h3 className="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold routines-titles">The best routines for ABS</h3>
           </div>
         </div>
       </div>
 
       <div className="col">
-        <div className="card card-cover overflow-hidden text-white shadow-lg" style={{ 
+        <div className="card card-cover  overflow-hidden text-white shadow-lg" style={{ 
       backgroundImage: `url("https://images.pexels.com/photos/1032117/pexels-photo-1032117.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1")`,
       backgroundRepeat:"no-repeat", 
       backgroundSize:"cover", 
       backgroundPosition: "center",
-      height: '40vh',
+      height: '35vh',
       borderRadius: 8,    
 
 
@@ -149,7 +149,7 @@ export const Home = () => {
 
 }}>
           <div className="d-flex flex-column  p-5 pb-3 text-shadow-1">
-            <h3 className="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Routines to gain muscles </h3>
+            <h3 className="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold routines-titles">Routines to gain muscles </h3>
           </div>
         </div>
       </div>
