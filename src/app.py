@@ -12,6 +12,7 @@ from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
 from api.user_routes import api_user
+from api.workout_routes import api_workout
 
 #from models import Person
 
@@ -20,6 +21,7 @@ static_file_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../
 app = Flask(__name__)
 app.url_map.strict_slashes = False
 app.register_blueprint(api_user,url_prefix="/")
+app.register_blueprint(api_workout,url_prefix="/")
 
 
 # database condiguration

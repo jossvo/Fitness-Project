@@ -78,6 +78,18 @@ class Workout(db.Model):
     wk_image = db.Column(db.String(250))
     # classifications - done by table Workout_Categories
     # reviews - done by table Workout_Review
+
+    def serialize_library(self):
+        return {
+            "coach_name": self.coach.first_name.capitalize() + " "+ self.coach.last_name.capitalize(),
+            "name": self.name,
+            "weeks" : self.weeks , 
+            "days_per_week" : self.days_per_week , 
+            "difficulty" : self.difficulty , 
+            "description" : self.description , 
+            "isfree" : self.isfree ,  
+            "wk_image" : self.wk_image , 
+        }
     
 class Category(db.Model):
     __tablename__ = "category"
