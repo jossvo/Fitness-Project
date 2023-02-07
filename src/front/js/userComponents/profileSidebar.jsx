@@ -37,9 +37,6 @@ export const ProfileSidebar = ({navTitle="User"}) => {
                     <NavLink exact="true" to="/user123/security" activeclassname="activeClicked">
                         <CDBSidebarMenuItem icon="lock">Security</CDBSidebarMenuItem>
                     </NavLink>
-                    <NavLink exact="true" to="/user123/notifications" activeclassname="activeClicked">
-                        <CDBSidebarMenuItem icon="bell">Notifications</CDBSidebarMenuItem>
-                    </NavLink>
                 </CDBSidebarMenu>
             </CDBSidebarContent>
 
@@ -47,3 +44,7 @@ export const ProfileSidebar = ({navTitle="User"}) => {
     </div>
   );
 };
+
+{/* <NavLink exact="true" to="/user123/notifications" activeclassname="activeClicked">
+<CDBSidebarMenuItem icon="bell">Notifications</CDBSidebarMenuItem>
+</NavLink> */}

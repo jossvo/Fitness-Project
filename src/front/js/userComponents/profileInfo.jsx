@@ -17,6 +17,7 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
     document.getElementById("inputGender").value = "Male"
     // if ( sharegender = "yes"): get ID of Radio = True else the other
     document.getElementById("radioGenderFalse").checked = true
+    document.getElementById("inputBirthday").value = "1997-06-17"
     document.getElementById("radioAgeFalse").checked = true
     document.getElementById("inputHeight").value = "170"
     document.getElementById("radioHeightFalse").checked = true
@@ -49,7 +50,7 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
                 </div>
 
                 <button className="btn btn-primary" type="button">
-                  Upload new image
+                  Upload profile picture
                 </button>
               </div>
             </div>
