@@ -6,7 +6,7 @@ export const Navbar = () => {
   return (
     <div>
       <nav className="navbar navbar-expand-lg ms-auto ">
-        <div className="container-fluid mx-5 ">
+        <div className="container-fluid mx-5  ">
           <a className="navbar-brand navbar-logo" href="#">
             <i className="fa-solid fa-dumbbell "></i>
             Fit Central
@@ -22,8 +22,8 @@ export const Navbar = () => {
           >
             <span className="navbar-toggler-icon "></span>
           </button>
-          <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav ms-auto mx-5 d-flex align-items-right">
+          <div className="collapse navbar-collapse " id="navbarNav">
+            <ul className="navbar-nav ms-auto mx-5 d-flex align-items-right ">
               <Link to="#">
                 <span className="navbar-items">
                   <i className=""></i>Programs
