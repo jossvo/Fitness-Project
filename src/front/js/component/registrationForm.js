@@ -4,7 +4,7 @@ export const RegistrationForm = () => {
     <React.Fragment>
       <button
         type="button"
-        class="btn btn-primary"
+        className="btn btn-warning"
         data-bs-toggle="modal"
         data-bs-target="#exampleModal"
       >
@@ -12,116 +12,128 @@ export const RegistrationForm = () => {
       </button>
 
       <div
-        class="modal fade"
+        className="modal fade "
         id="exampleModal"
         tabindex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
       >
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">
+        <div className="modal-dialog ">
+          <div className="modal-content bg-dark">
+            <div className="modal-header">
+              <h5
+                className="modal-title text-light text-center"
+                id="exampleModalLabel"
+              >
                 Join Now to Fit Central
               </h5>
               <button
                 type="button"
-                class="btn-close"
+                className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
               ></button>
             </div>
-            <div class="modal-body">
+            <div className="modal-body">
               {/* Form de Registro */}
-              <form class="row g-3">
-                <div class="col-md-6">
-                  <label for="inputEmail4" class="form-label">
+              <form className="row g-3">
+                <div className="col-md-6">
+                  <label for="inputName" className="form-label text-light">
+                    Name
+                  </label>
+                  <input type="email" className="form-control" id="inputName" />
+                </div>
+                <div className="col-md-6">
+                  <label for="inputLastName" className="form-label text-light">
+                    LastName
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="inputLastName"
+                  />
+                </div>
+                <div className="col-md-6">
+                  <label for="inputEmail4" className="form-label text-light">
                     Email
                   </label>
-                  <input type="email" class="form-control" id="inputEmail4" />
+                  <input
+                    type="email"
+                    className="form-control"
+                    id="inputEmail4"
+                  />
                 </div>
-                <div class="col-md-6">
-                  <label for="inputPassword4" class="form-label">
+                <div className="col-md-6">
+                  <label for="inputPassword4" className="form-label text-light">
                     Password
                   </label>
                   <input
                     type="password"
-                    class="form-control"
+                    className="form-control"
                     id="inputPassword4"
                   />
                 </div>
-                <div class="col-12">
-                  <label for="inputAddress" class="form-label">
-                    Address
+                <div className="col-md-12">
+                  <label for="registerAs" className="form-label text-light">
+                    Register As
                   </label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="inputAddress"
-                    placeholder="1234 Main St"
-                  />
-                </div>
-                <div class="col-12">
-                  <label for="inputAddress2" class="form-label">
-                    Address 2
-                  </label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="inputAddress2"
-                    placeholder="Apartment, studio, or floor"
-                  />
-                </div>
-                <div class="col-md-6">
-                  <label for="inputCity" class="form-label">
-                    City
-                  </label>
-                  <input type="text" class="form-control" id="inputCity" />
-                </div>
-                <div class="col-md-4">
-                  <label for="inputState" class="form-label">
-                    State
-                  </label>
-                  <select id="inputState" class="form-select">
-                    <option selected>Choose...</option>
-                    <option>...</option>
-                  </select>
-                </div>
-                <div class="col-md-2">
-                  <label for="inputZip" class="form-label">
-                    Zip
-                  </label>
-                  <input type="text" class="form-control" id="inputZip" />
-                </div>
-                <div class="col-12">
-                  <div class="form-check">
+                  <div className="form-check">
                     <input
-                      class="form-check-input"
-                      type="checkbox"
-                      id="gridCheck"
+                      className="form-check-input"
+                      type="radio"
+                      name="flexRadioDefault"
+                      id="flexRadioDefault1"
                     />
-                    <label class="form-check-label" for="gridCheck">
-                      Check me out
+                    <label
+                      className="form-check-label text-light"
+                      for="flexRadioDefault1"
+                    >
+                      User
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name="flexRadioDefault"
+                      id="flexRadioDefault2"
+                      checked
+                    />
+                    <label
+                      className="form-check-label text-light"
+                      for="flexRadioDefault2"
+                    >
+                      Coach
                     </label>
                   </div>
                 </div>
-                <div class="col-12">
-                  <button type="submit" class="btn btn-primary">
-                    Sign in
-                  </button>
+
+                <div className="col-md-4">
+                  <label className="text-light">Gender</label>
+                  <select
+                    className="form-select"
+                    aria-label="Default select example"
+                  >
+                    <option selected disabled>
+                      Choose One
+                    </option>
+                    <option value="1">Male</option>
+                    <option value="2">Female</option>
+                    <option value="3">Other</option>
+                  </select>
                 </div>
               </form>
               {/* Fin de Form de Registro */}
             </div>
-            <div class="modal-footer">
+            <div className="modal-footer">
               <button
                 type="button"
-                class="btn btn-secondary"
+                className="btn btn-secondary"
                 data-bs-dismiss="modal"
               >
                 Close
               </button>
-              <button type="button" class="btn btn-primary">
+              <button type="button" className="btn btn-warning">
                 Create Account
               </button>
             </div>

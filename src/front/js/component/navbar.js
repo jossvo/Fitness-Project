@@ -49,8 +49,8 @@ export const Navbar = () => {
                   <i className=""></i>My Plans
                 </span>
               </Link>
-              <SignInComponent/>
-              <RegistrationForm/>
+              <SignInComponent />
+              <RegistrationForm />
 
             </ul>
           </div>
