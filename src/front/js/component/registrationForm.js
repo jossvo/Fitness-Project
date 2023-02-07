@@ -38,13 +38,19 @@ export const RegistrationForm = () => {
               {/* Form de Registro */}
               <form className="row g-3">
                 <div className="col-md-6">
-                  <label for="inputName" className="form-label text-light">
+                  <label
+                    for="inputName"
+                    className="form-label text-light label-text"
+                  >
                     Name
                   </label>
                   <input type="email" className="form-control" id="inputName" />
                 </div>
                 <div className="col-md-6">
-                  <label for="inputLastName" className="form-label text-light">
+                  <label
+                    for="inputLastName"
+                    className="form-label text-light label-text"
+                  >
                     LastName
                   </label>
                   <input
@@ -54,7 +60,10 @@ export const RegistrationForm = () => {
                   />
                 </div>
                 <div className="col-md-6">
-                  <label for="inputEmail4" className="form-label text-light">
+                  <label
+                    for="inputEmail4"
+                    className="form-label text-light label-text"
+                  >
                     Email
                   </label>
                   <input
@@ -64,7 +73,24 @@ export const RegistrationForm = () => {
                   />
                 </div>
                 <div className="col-md-6">
-                  <label for="inputPassword4" className="form-label text-light">
+                  <label
+                    htmlFor="exampleInputUser1"
+                    className="form-label modal-label label-text"
+                  >
+                    Username
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control text-form"
+                    id="exampleInputUser1"
+                    aria-describedby="emailHelp"
+                  />
+                </div>
+                <div className="col-md-6">
+                  <label
+                    for="inputPassword4"
+                    className="form-label text-light label-text"
+                  >
                     Password
                   </label>
                   <input
