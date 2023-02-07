@@ -52,3 +52,11 @@ def new_user():
     # print(class_keys)
 
     return "ok", 200
+
+@api_user.route('/userinfo')
+@jwt_required()
+def get_user_info():
+    user_id=get_jwt_identity()
+    user=User.query.get(user_id)
+
+    return jsonify(user.serialize())
