@@ -7,8 +7,9 @@ from api.utils import generate_sitemap, APIException
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, create_refresh_token, get_jwt
 from flask_bcrypt import Bcrypt
 import re
-app = Flask(__name__)
+
 api_user = Blueprint('apiUser', __name__)
+app = Flask(__name__)
 crypto = Bcrypt(app)
 
 #Function to validate valid email
@@ -19,13 +20,24 @@ def check_email(email):
     if(re.fullmatch(regex, email)): return True
     else: return False
 
-
-@api_user.route('/users')
+@api_user.route('/users', methods=['GET'])
 def users():
     users = User.query.all()
 
     response_body = list(map(lambda p: p.serialize() ,users))
     return jsonify(response_body), 200
+
+# Get single user, simple without jwt, then with jwt
+@api_user.route('/users/<user_id>')
+# @jwt_required()
+def get_user_info(user_id):
+    # user_id=get_jwt_identity()
+    # user=User.query.get(user_id)
+    user=User.query.get(user_id)
+    if user is None:
+        return jsonify({"msg":"Usuario no encontrado"}), 404
+
+    return jsonify(user.serialize_account_details())
 
 @api_user.route('/users/signup', methods=['POST'])
 def new_user():
@@ -33,11 +45,11 @@ def new_user():
     
     new_user=User()
     for key in class_keys:
-        if key is 'email':
+        if key == 'email':
             email = request.json.get(key).lower().strip()
             if check_email(email):setattr(new_user,key,email.lower())
             else: return({"msg":"Invalid email, please verify!"})
-        if key is 'password':
+        if key == 'password':
             password = request.json.get('password')
             password = crypto.generate_password_hash(password).decode("utf-8")
             setattr(new_user,key,password)
@@ -53,11 +65,3 @@ def new_user():
     # print(class_keys)
 
     return "ok", 200
-
-@api_user.route('/userinfo')
-@jwt_required()
-def get_user_info():
-    user_id=get_jwt_identity()
-    user=User.query.get(user_id)
-
-    return jsonify(user.serialize())

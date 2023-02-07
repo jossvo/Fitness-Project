@@ -41,6 +41,22 @@ class User(db.Model):
             "email": self.email,
             # do not serialize the password, its a security breach
         }
+    def serialize_account_details(self):
+        return {
+            "first_name" : self.first_name, 
+            "last_name" : self.last_name, 
+            "username" : self.alias, 
+            "email": self.email,
+            "gender" : self.gender,
+            "share_gender" : self.share_gender,
+            "date_of_birth" : self.date_of_birth,
+            "share_age" : self.share_age,
+            "weight" : self.weight,
+            "share_weight" : self.share_weight,
+            "height" : self.height,
+            "share_height" : self.share_height,
+            "bio": self.bio
+        }
 
 class Coach(db.Model):
     __tablename__ = 'coach'

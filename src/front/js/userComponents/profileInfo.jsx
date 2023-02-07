@@ -1,7 +1,9 @@
-import React, { useContext, useEffect} from "react";
+import React,{ useContext, useEffect, useState } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/userStyle.css";
 import { ProfileSidebar } from "./profileSidebar.jsx";
+
+import moment from 'moment'
 
 export const ProfileInfo = ({ navTitle = "User" }) => {
   const { store, actions } = useContext(Context);
@@ -10,20 +12,43 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
   }
   //Function to populate form with data
   useEffect(() => {
-    document.getElementById("inputUsername").value="jossvo"
-    document.getElementById("inputFirstName").value="Josue"
-    document.getElementById("inputLastName").value="Vilchis"
-    document.getElementById("inputEmailAddress").value="jossvo26@outlook.com"
-    document.getElementById("inputGender").value = "Male"
-    // if ( sharegender = "yes"): get ID of Radio = True else the other
-    document.getElementById("radioGenderFalse").checked = true
-    document.getElementById("inputBirthday").value = "1997-06-17"
-    document.getElementById("radioAgeFalse").checked = true
-    document.getElementById("inputHeight").value = "170"
-    document.getElementById("radioHeightFalse").checked = true
-    document.getElementById("inputWeight").value = "80"
-    document.getElementById("radioWeightFalse").checked = true
+    async function fetchData(){
+		  actions.getDetails("users",1);
+		}
+		fetchData()
   },[]);
+
+  function capitalize(str){
+    if (str == null) return null
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  if (store["usersDetail"]){
+    let user = store["usersDetail"]
+    document.getElementById("inputUsername").value=capitalize(user.username)
+    document.getElementById("inputFirstName").value=capitalize(user.first_name)
+    document.getElementById("inputLastName").value=capitalize(user.last_name)
+    document.getElementById("inputEmailAddress").value=user.email
+    document.getElementById("inputGender").value = capitalize(user.gender)
+    if ( user.share_gender === null || user.share_gender === "false") document.getElementById("radioGenderFalse").checked = true
+    else document.getElementById("radioGenderTrue").checked = true
+
+    let birthday = Date.parse(user.date_of_birth)
+    document.getElementById("inputBirthday").value = moment(birthday).format('YYYY-MM-DD');
+    if ( user.share_age === null || user.share_age === "false") document.getElementById("radioAgeFalse").checked = true
+    else document.getElementById("radioAgeTrue").checked = true
+
+    document.getElementById("inputHeight").value = user.height
+    if ( user.share_height === null || user.share_height === "false") document.getElementById("radioHeightFalse").checked = true
+    else document.getElementById("radioHeightTrue").checked = true
+
+    document.getElementById("inputWeight").value = user.weight
+    if ( user.share_weight === null || user.share_weight === "false") document.getElementById("radioWeightFalse").checked = true
+    else document.getElementById("radioWeightTrue").checked = true
+
+    
+    document.getElementById("textAreaBio").value = user.bio
+  }
 
   return (
     <div
@@ -219,6 +244,12 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
                             </div>
                         )})
                     }  
+                  </div>
+                  <div className="row gx-3 mb-3 d-flex">
+                    <label htmlFor="inputBio">Profile Bio</label>
+                    <div className="col-md-12 form-floating" id="inputBio" style={{height:"20vh"}}>
+                      <textarea className="form-control h-100" placeholder="Leave a comment here" id="textAreaBio" ></textarea>
+                    </div>
                   </div>
 
                   <button className="btn btn-primary" type="button">

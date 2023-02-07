@@ -33,6 +33,19 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log("Error loading message from backend", error)
 				}
 			},
+			getDetails: async(element,id)=>{
+				let response = await fetch(process.env.BACKEND_URL +`/${element}/${id}`);
+				if (!response.ok)
+				  console.error(`Error en la petición ${response.statusText}`);
+				else {
+				  let data = await response.json();
+				  let newStore = {};
+				  newStore[element+"Detail"] = data;
+				  setStore(newStore);
+				  const store = getStore();
+				  console.log(store)
+				}
+			},
 			getList: async (elements) => {
 				let response = await fetch(process.env.BACKEND_URL +`/${elements}`);
 				if (!response.ok)
@@ -42,8 +55,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				  let newStore = {};
 				  newStore[elements] = data;
 				  setStore(newStore);
-				//   const store = getStore();
-				//   console.log(store)
 				}
 			},
 			changeColor: (index, color) => {
