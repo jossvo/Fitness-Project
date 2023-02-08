@@ -35,7 +35,7 @@ export const Home = () => {
       {/* Start Features Section*/}
       <div className="container-fluid mt-5 mb-5">
         <div className="features-container-section mx-5 ">
-          <h2 className="text-center features-h1 ">
+          <h2 className="text-center features-h1 titles ">
             All features are included with your plan
           </h2>
           <h3 className="text-center features-h2">

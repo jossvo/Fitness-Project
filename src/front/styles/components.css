@@ -14,14 +14,14 @@
 .navbar a:hover {
   color: var(--mainColor);
 }
-.navbar-logo{
+.navbar-logo {
   font-size: 1rem;
 }
 nav i {
   padding: 0 0.6rem;
 }
 nav .btn {
-  font-size: 1.8rem;
+  font-size: 20px;
   font-family: "Bebas Neue", sans-serif;
 }
 .navbar {
@@ -29,33 +29,33 @@ nav .btn {
 }
 
 .navbar-brand {
-  font-size: 3.6rem;
+  font-size: 30px;
   font-family: "Bebas Neue", sans-serif;
   text-transform: uppercase;
 }
 .navbar-items {
   padding-left: 2rem;
-  font-size: 1.8rem;
+  font-size: 20px;
   font-family: "Bebas Neue", sans-serif;
 }
 
 /* Modal Sign-in Styles */
 .modal-content {
-  padding: 2.8rem;
+  padding: 20px;
   border-radius: 3rem;
 }
 .modal-title {
-  font-size: 2.8rem;
+  font-size: 28px;
   font-family: "Bebas Neue", sans-serif;
 }
 .btn-signin {
   width: 100%;
-  font-size: 1.8rem;
+ 
   margin: 0.8rem 0;
   font-family: "Oswald", sans-serif;
 }
 .label-text {
-  font-size: 2rem;
+  font-size: 18px;
   color: white;
   font-family: "Bebas Neue", sans-serif;
 }
@@ -68,16 +68,18 @@ nav .btn {
 }
 .btn-modal {
   font-family: "Oswald", sans-serif;
-  font-size: 1.4rem;
+  font-size: 14px;
 }
 /*Hero Section*/
 .hero-text {
-  font-size: 12rem;
+  font-size: 120px;
+  font-family: "Bebas Neue", sans-serif;
   text-align: start;
   text-shadow: 2px 2px 4px #000000;
 }
 
 .text-container h3 {
+  font-family: "Bebas Neue", sans-serif;
   text-align: start;
   color: var(--grayColor);
   text-shadow: 2px 2px 4px #000000;
@@ -86,11 +88,12 @@ nav .btn {
   font-size: 2.4rem;
 }
 /*Features Section*/
+
 .main-icon-1,
 .main-icon-2 {
-  font-size: 3.2rem;
-  width: 10rem;
-  height: 10rem;
+  font-size: 32px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   text-align: center;
   vertical-align: center;
@@ -105,39 +108,43 @@ nav .btn {
 }
 
 .features-container-items {
-  margin-top: 4rem;
+font-family: "Bebas Neue", sans-serif;
+  margin-top: 30px;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 .features-text {
+  
   width: 60%;
   text-align: center;
 }
 .features-h1 {
-  font-size: 4rem;
+  font-size: 40px;
+font-family: "Bebas Neue", sans-serif;
 }
 .features-h2 {
-  font-size: 2rem;
+  font-size: 30px;
+font-family: "Bebas Neue", sans-serif;
 }
 .features-heading-text {
-  font-size: 2.4rem;
+  font-size: 20px;
   font-weight: bold;
+
 }
 .btn-container {
   display: flex;
   flex-direction: column;
 }
 .btn-container button {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.8rem;
+  font-family: "Bebas Neue", sans-serif;
   color: whitesmoke;
 }
 .btn-container button:first-child {
-  color: var(--blackColor)
+  color: var(--blackColor);
 }
 .routines-titles {
-  text-shadow: 2px 2px 8px rgba(0,0,0,0.6);
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
 }
 
 /* Footer Styles */
@@ -167,4 +174,11 @@ nav .btn {
 }
 .text-footer {
   color: var(--lightGray);
+}
+.nav-item a {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 20px;
+}
+li {
+  list-style: none;
 }

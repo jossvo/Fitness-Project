@@ -4,7 +4,7 @@ export const SignInComponent = () => {
     <React.Fragment>
       <button
         type="button"
-        className="btn btn-warning btn-lg btn-block mx-5"
+        className="btn btn-warning mx-5"
         data-bs-toggle="modal"
         data-bs-target="#signInModal"
       >
