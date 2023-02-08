@@ -8,6 +8,7 @@ import { func } from "prop-types";
 
 export const ProfileInfo = ({ navTitle = "User" }) => {
   const { store, actions } = useContext(Context);
+  const { updateAccountDetails } = actions
   const changeInputValue =event=>{
     event.target.value
   }
@@ -38,8 +39,11 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
       document.getElementById("inputGender").value = capitalize(user.gender)
       if ( user.share_gender === null || user.share_gender === "false") document.getElementById("radioGenderFalse").checked = true
       else document.getElementById("radioGenderTrue").checked = true
-  
-      let birthday = Date.parse(user.date_of_birth)
+      
+      let birth = Date.parse(user.date_of_birth)
+      let birthday = new Date(birth)
+      birthday.setDate(birthday.getDate() + 1); //to fix birthday that show 1 day earlier
+
       document.getElementById("inputBirthday").value = moment(birthday).format('YYYY-MM-DD');
       if ( user.share_age === null || user.share_age === "false") document.getElementById("radioAgeFalse").checked = true
       else document.getElementById("radioAgeTrue").checked = true
@@ -54,6 +58,25 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
       
       document.getElementById("textAreaBio").value = user.bio
     }
+  }
+  // Update profile data from Account Details form
+  async function updateData(e){
+    e.preventDefault()
+    const data = new FormData(e.target);
+    data.set('share_gender',data.get("inputRadioGender"))
+    data.delete("inputRadioGender")
+    data.set('share_age',data.get("inputRadioAge"))
+    data.delete("inputRadioAge")
+    data.set('share_height',data.get("inputRadioHeight"))
+    data.delete("inputRadioHeight")
+    data.set('share_weight',data.get("inputRadioWeight"))
+    data.delete("inputRadioWeight")
+
+    for (var pair of data.entries()) {
+      console.log(pair[0]+ ' - ' + pair[1]+ ' - ' + typeof pair[1]); 
+    }
+    let ok = await updateAccountDetails(data,1)
+    if (ok)console.info("Información actualizada")
   }
 
   return (
@@ -80,6 +103,13 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
                   JPG or PNG no larger than 5 MB
                 </div>
 
+                <div className="mb-3" >
+                  <label hmtlfor="formFileSm" className="form-label">
+                    Select new profile picture:
+                  </label>
+                  <input className="form-control form-control-sm" id="formFileSm" type="file"/>
+                </div>
+
                 <button className="btn btn-primary" type="button">
                   Upload profile picture
                 </button>
@@ -90,7 +120,7 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
             <div className="card mb-4">
               <div className="card-header">Account Details</div>
               <div className="card-body">
-                <form>
+                <form onSubmit={updateData}>
 
                   <div className="mb-3">
                     <label className="small mb-1" htmlFor="inputUsername">
@@ -102,6 +132,7 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
                       id="inputUsername"
                       type="text"
                       placeholder="Enter your username"
+                      name="username"
                     />
                   </div>
 
@@ -115,6 +146,7 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
                         id="inputFirstName"
                         type="text"
                         placeholder="Enter your first name"
+                        name="first_name"
                       />
                     </div>
 
@@ -127,6 +159,7 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
                         id="inputLastName"
                         type="text"
                         placeholder="Enter your last name"
+                        name="last_name"
                       />
                     </div>
                   </div>
@@ -140,6 +173,7 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
                       id="inputEmailAddress"
                       type="email"
                       placeholder="Enter your email address"
+                      name="email"
                     />
                   </div>
                   {[
@@ -165,6 +199,7 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
                             placeholder={
                               "Enter your " + elem.share.toLowerCase()
                             }
+                            name={elem.title.toLocaleLowerCase()}
                           />
                         </div>
 
@@ -182,6 +217,7 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
                                 name={radioName}
                                 id={radioID1}
                                 type="radio"
+                                value={true}
                               />
                               <label className="small mb-1 radioLabel" htmlFor={radioName}>
                                 Yes
@@ -193,6 +229,7 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
                                 name={radioName}
                                 id={radioID2}
                                 type="radio"
+                                value={false}
                               />
                               <label className="small mb-1 radioLabel" htmlFor={radioName}>
                                 No
@@ -218,6 +255,7 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
                                         id={"input"+elem}
                                         type="text"
                                         placeholder={"Enter "+elem.toLocaleLowerCase()}
+                                        name={elem.toLocaleLowerCase()}
                                     />
                                 </div>
                                 <div className="col-md-6">
@@ -227,21 +265,23 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
                                     <div className="d-flex align-items-center h-50" name={"radio"+elem+"container"}>
                                         <div className="w-50">
                                             <input
-                                                name={"radio"+elem}
+                                                name={"inputRadio"+elem}
                                                 id={"radio"+elem+"True"}
                                                 type="radio"
+                                                value={true}
                                             />
-                                            <label className="small mb-1 radioLabel" htmlFor={"radio"+elem}>
+                                            <label className="small mb-1 radioLabel" htmlFor={"inputRadio"+elem}>
                                                 Yes
                                             </label>
                                         </div>
                                         <div className="w-50">
                                             <input
-                                                name={"radio"+elem}
+                                                name={"inputRadio"+elem}
                                                 id={"radio"+elem+"False"}
                                                 type="radio"
+                                                value={false}
                                             />
-                                            <label className="small mb-1 radioLabel" htmlFor={"radio"+elem}>
+                                            <label className="small mb-1 radioLabel" htmlFor={"inputRadio"+elem}>
                                                 No
                                             </label>
                                         </div>
@@ -258,7 +298,7 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
                     </div>
                   </div>
 
-                  <button className="btn btn-primary" type="button">
+                  <button className="btn btn-primary" type="submit" >
                     Save changes
                   </button>
                 </form>

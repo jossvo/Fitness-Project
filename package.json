@@ -74,6 +74,7 @@
 	},
 	"dependencies": {
 		"cdbreact": "^1.5.6",
+		"cors": "^2.8.5",
 		"moment": "^2.29.4",
 		"prop-types": "^15.6.1",
 		"react": "^16.8.4",

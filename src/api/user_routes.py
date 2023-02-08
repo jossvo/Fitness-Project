@@ -41,7 +41,7 @@ def get_user_info(user_id):
 
 @api_user.route('/users/signup', methods=['POST'])
 def new_user():
-    class_keys = ['first_name','last_name','email', 'password','date_of_birth','gender']
+    class_keys = ['first_name','last_name','email', 'password','birthday','gender']
     
     new_user=User()
     for key in class_keys:
@@ -60,8 +60,28 @@ def new_user():
 
     return({"msg":"User created"})
 
+
+@api_user.route('/users/<user_id>', methods=['PATCH'])
+def update_person(user_id):
+    user=User.query.get(user_id)
+    if user is None:
+        return jsonify({"msg":"Usuario no encontrado"}), 404
+    class_keys=['last_name', 'birthday', 'facebook', 'username', 'share_age', 'twitter', 'email', 'weight', 'instagram', 'gender', 'share_weight', 'tiktok', 'share_gender', 'height', 'share_height', 'first_name', 'location', 'profile_picture', 'share_location', 'bio']
+    
+    print("si pasa")
+
+    for key in class_keys:
+        if request.form.get(key) is not None :
+            if 'share' not in key:
+                if key is 'bio':setattr(user,key,request.form.get(key))
+                else: setattr(user,key,request.form.get(key).lower())
+            # else: print("request.form.get(key)")
+    
+    db.session.add(user)
+    db.session.commit()
+    return jsonify(user.serialize_account_details()),200
+
     # user = User.query.get(1)
     # class_keys = list(vars(user).keys())
     # print(class_keys)
-
-    return "ok", 200
+    # return "ok", 200

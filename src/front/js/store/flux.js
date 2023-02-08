@@ -55,6 +55,17 @@ const getState = ({ getStore, getActions, setStore }) => {
 				  setStore(newStore);
 				}
 			},
+			updateAccountDetails: async (postData,user_id)=>{
+				let response = await fetch(process.env.BACKEND_URL +`/users/${user_id}`,{
+					method: 'PATCH',
+					body: postData,
+				});
+				if (!response.ok){
+					console.error(response.statusText)
+					return false
+				}
+				return true
+			},
 			changeColor: (index, color) => {
 				//get the store
 				const store = getStore();

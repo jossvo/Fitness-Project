@@ -7,14 +7,14 @@ class User(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     first_name = db.Column(db.String(250), nullable=False)
     last_name = db.Column(db.String(250), nullable=False)
-    alias = db.Column(db.String(250))
+    username = db.Column(db.String(250))
     email = db.Column(db.String(250), unique=True,nullable=False)
     gender = db.Column(db.String(250), nullable=False)
     share_gender = db.Column(db.Boolean())
     password = db.Column(db.String(250), nullable=False)
     location = db.Column(db.String(250))
     share_location = db.Column(db.Boolean())
-    date_of_birth = db.Column(db.Date(), nullable=False)
+    birthday = db.Column(db.Date(), nullable=False)
     share_age = db.Column(db.Boolean())
     weight = db.Column(db.String(250))
     share_weight = db.Column(db.Boolean())
@@ -46,11 +46,11 @@ class User(db.Model):
         return {
             "first_name" : self.first_name, 
             "last_name" : self.last_name, 
-            "username" : self.alias, 
+            "username" : self.username, 
             "email": self.email,
             "gender" : self.gender,
             "share_gender" : self.share_gender,
-            "date_of_birth" : self.date_of_birth,
+            "date_of_birth" : self.birthday,
             "share_age" : self.share_age,
             "weight" : self.weight,
             "share_weight" : self.share_weight,
