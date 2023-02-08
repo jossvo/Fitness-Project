@@ -42,8 +42,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				  let newStore = {};
 				  newStore[element+"Detail"] = data;
 				  setStore(newStore);
-				  const store = getStore();
-				  console.log(store)
 				}
 			},
 			getList: async (elements) => {

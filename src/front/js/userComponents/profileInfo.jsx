@@ -4,6 +4,7 @@ import "../../styles/userStyle.css";
 import { ProfileSidebar } from "./profileSidebar.jsx";
 
 import moment from 'moment'
+import { func } from "prop-types";
 
 export const ProfileInfo = ({ navTitle = "User" }) => {
   const { store, actions } = useContext(Context);
@@ -13,41 +14,46 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
   //Function to populate form with data
   useEffect(() => {
     async function fetchData(){
-		  actions.getDetails("users",1);
+      if (!store["usersDetail"]) actions.getDetails("users",1);
 		}
 		fetchData()
   },[]);
 
+  useEffect(() => {
+    setDataForm()
+  },[store["usersDetail"]]);
+
   function capitalize(str){
-    if (str == null) return null
+    if (str === null) return ""
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
-  if (store["usersDetail"]){
-    let user = store["usersDetail"]
-    document.getElementById("inputUsername").value=capitalize(user.username)
-    document.getElementById("inputFirstName").value=capitalize(user.first_name)
-    document.getElementById("inputLastName").value=capitalize(user.last_name)
-    document.getElementById("inputEmailAddress").value=user.email
-    document.getElementById("inputGender").value = capitalize(user.gender)
-    if ( user.share_gender === null || user.share_gender === "false") document.getElementById("radioGenderFalse").checked = true
-    else document.getElementById("radioGenderTrue").checked = true
-
-    let birthday = Date.parse(user.date_of_birth)
-    document.getElementById("inputBirthday").value = moment(birthday).format('YYYY-MM-DD');
-    if ( user.share_age === null || user.share_age === "false") document.getElementById("radioAgeFalse").checked = true
-    else document.getElementById("radioAgeTrue").checked = true
-
-    document.getElementById("inputHeight").value = user.height
-    if ( user.share_height === null || user.share_height === "false") document.getElementById("radioHeightFalse").checked = true
-    else document.getElementById("radioHeightTrue").checked = true
-
-    document.getElementById("inputWeight").value = user.weight
-    if ( user.share_weight === null || user.share_weight === "false") document.getElementById("radioWeightFalse").checked = true
-    else document.getElementById("radioWeightTrue").checked = true
-
-    
-    document.getElementById("textAreaBio").value = user.bio
+  async function setDataForm(){
+    if (store["usersDetail"]){
+      let user = store["usersDetail"]
+      document.getElementById("inputUsername").value=capitalize(user.username)
+      document.getElementById("inputFirstName").value=capitalize(user.first_name)
+      document.getElementById("inputLastName").value=capitalize(user.last_name)
+      document.getElementById("inputEmailAddress").value=user.email
+      document.getElementById("inputGender").value = capitalize(user.gender)
+      if ( user.share_gender === null || user.share_gender === "false") document.getElementById("radioGenderFalse").checked = true
+      else document.getElementById("radioGenderTrue").checked = true
+  
+      let birthday = Date.parse(user.date_of_birth)
+      document.getElementById("inputBirthday").value = moment(birthday).format('YYYY-MM-DD');
+      if ( user.share_age === null || user.share_age === "false") document.getElementById("radioAgeFalse").checked = true
+      else document.getElementById("radioAgeTrue").checked = true
+  
+      document.getElementById("inputHeight").value = user.height
+      if ( user.share_height === null || user.share_height === "false") document.getElementById("radioHeightFalse").checked = true
+      else document.getElementById("radioHeightTrue").checked = true
+  
+      document.getElementById("inputWeight").value = user.weight
+      if ( user.share_weight === null || user.share_weight === "false") document.getElementById("radioWeightFalse").checked = true
+      else document.getElementById("radioWeightTrue").checked = true
+      
+      document.getElementById("textAreaBio").value = user.bio
+    }
   }
 
   return (
