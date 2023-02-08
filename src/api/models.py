@@ -20,6 +20,7 @@ class User(db.Model):
     share_weight = db.Column(db.Boolean())
     height = db.Column(db.String(250))
     share_height = db.Column(db.Boolean())
+    profile_picture = db.Column(db.String(250))
     bio = db.Column(db.String(250))
     facebook = db.Column(db.String(250))
     twitter = db.Column(db.String(250))
@@ -92,6 +93,7 @@ class Workout(db.Model):
     isfree = db.Column(db.Boolean())
     exercise_count = db.Column(db.Integer())
     wk_image = db.Column(db.String(250))
+    is_public = db.Column(db.Boolean())
     # classifications - done by table Workout_Categories
     # reviews - done by table Workout_Review
 

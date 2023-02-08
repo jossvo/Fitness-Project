@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 21ed0a93d8f9
+Revision ID: fe202c8b06e5
 Revises: 
-Create Date: 2023-02-07 04:47:50.555178
+Create Date: 2023-02-08 15:25:30.595934
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '21ed0a93d8f9'
+revision = 'fe202c8b06e5'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -55,6 +55,7 @@ def upgrade():
     sa.Column('share_weight', sa.Boolean(), nullable=True),
     sa.Column('height', sa.String(length=250), nullable=True),
     sa.Column('share_height', sa.Boolean(), nullable=True),
+    sa.Column('profile_picture', sa.String(length=250), nullable=True),
     sa.Column('bio', sa.String(length=250), nullable=True),
     sa.Column('facebook', sa.String(length=250), nullable=True),
     sa.Column('twitter', sa.String(length=250), nullable=True),
@@ -93,6 +94,7 @@ def upgrade():
     sa.Column('isfree', sa.Boolean(), nullable=True),
     sa.Column('exercise_count', sa.Integer(), nullable=True),
     sa.Column('wk_image', sa.String(length=250), nullable=True),
+    sa.Column('is_public', sa.Boolean(), nullable=True),
     sa.ForeignKeyConstraint(['coach_id'], ['coach.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
