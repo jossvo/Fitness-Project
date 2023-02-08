@@ -6,16 +6,19 @@ import { ProfileSidebar } from "./profileSidebar.jsx";
 import moment from 'moment'
 import { func } from "prop-types";
 
+export function capitalize(str){
+  if (str === null) return ""
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
 export const ProfileInfo = ({ navTitle = "User" }) => {
   const { store, actions } = useContext(Context);
   const { updateAccountDetails } = actions
-  const changeInputValue =event=>{
-    event.target.value
-  }
+
   //Function to populate form with data
   useEffect(() => {
     async function fetchData(){
-      if (!store["usersDetail"]) actions.getDetails("users",1);
+      actions.getDetails("users",1);
 		}
 		fetchData()
   },[]);
@@ -23,11 +26,6 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
   useEffect(() => {
     setDataForm()
   },[store["usersDetail"]]);
-
-  function capitalize(str){
-    if (str === null) return ""
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  }
 
   async function setDataForm(){
     if (store["usersDetail"]){
@@ -72,9 +70,9 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
     data.set('share_weight',data.get("inputRadioWeight"))
     data.delete("inputRadioWeight")
 
-    for (var pair of data.entries()) {
-      console.log(pair[0]+ ' - ' + pair[1]+ ' - ' + typeof pair[1]); 
-    }
+    // for (var pair of data.entries()) {
+    //   console.log(pair[0]+ ' - ' + pair[1]+ ' - ' + typeof pair[1]); 
+    // }
     let ok = await updateAccountDetails(data,1)
     if (ok)console.info("Información actualizada")
   }
@@ -294,7 +292,7 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
                   <div className="row gx-3 mb-3 d-flex">
                     <label htmlFor="inputBio">Profile Bio</label>
                     <div className="col-md-12 form-floating" id="inputBio" style={{height:"20vh"}}>
-                      <textarea className="form-control h-100" placeholder="Leave a comment here" id="textAreaBio" ></textarea>
+                      <textarea className="form-control h-100" placeholder="Leave a comment here" id="textAreaBio" name="bio" ></textarea>
                     </div>
                   </div>
 

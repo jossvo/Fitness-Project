@@ -67,14 +67,11 @@ def update_person(user_id):
     if user is None:
         return jsonify({"msg":"Usuario no encontrado"}), 404
     class_keys=['last_name', 'birthday', 'facebook', 'username', 'share_age', 'twitter', 'email', 'weight', 'instagram', 'gender', 'share_weight', 'tiktok', 'share_gender', 'height', 'share_height', 'first_name', 'location', 'profile_picture', 'share_location', 'bio']
-    
-    print("si pasa")
 
     for key in class_keys:
         if request.form.get(key) is not None :
             if 'share' not in key:
-                if key is 'bio':setattr(user,key,request.form.get(key))
-                else: setattr(user,key,request.form.get(key).lower())
+                setattr(user,key,request.form.get(key).lower())
             # else: print("request.form.get(key)")
     
     db.session.add(user)

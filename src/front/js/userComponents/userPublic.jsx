@@ -1,10 +1,32 @@
-import React, { useContext } from "react";
+import React,{ useContext, useEffect, useState } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/userStyle.css";
 import { ProfileSidebar } from "./profileSidebar.jsx";
+import {capitalize} from "./profileInfo.jsx";
+import { func } from "prop-types";
 
 export const UserPublic = ({ navTitle = "User" }) => {
   const { store, actions } = useContext(Context);
+
+    //Function to populate form with data
+    useEffect(() => {
+      async function fetchData(){
+        actions.getDetails("users",1);
+      }
+      fetchData()
+    },[]);
+  
+    useEffect(() => {
+      setData()
+    },[store["usersDetail"]]);
+
+    let user = store["usersDetail"]
+    async function setData(){
+      if(store["usersDetail"]){
+        document.getElementById("publicViewUserFullName").innerText=capitalize(user.first_name)+" "+capitalize(user.last_name)
+        document.getElementById("publicViewUserBio").innerText=capitalize(user.bio)
+      }
+    }
 
   return (
     <div style={{ backgroundColor: "#e3e6e6", display: "flex", height: "100vh" }}
@@ -26,15 +48,16 @@ export const UserPublic = ({ navTitle = "User" }) => {
             style={{ height: "100%", width: "15vw%", position: "relative", top: "1.5vh", marginLeft:"0px"}}
           />
           <div style={{width:"100%"}}>
-            <h1 style={{fontSize:"280%"}}>Josue Vilchis</h1>
+            <h1 id="publicViewUserFullName" style={{fontSize:"240%"}}></h1>
           </div>
         </div>
         <div
           className="profileContent"
           style={{postion:"relative",top:"10vh", backgroundColor:"white", paddingLeft: "5%", paddingRight: "5%",paddingTop:"2.5%" , height: "100%", width: "100%" }}
         >
-          <h1> About me </h1>
-          <p className="overflow-auto" style={{textAlign: "justify", textJustify: "inter-word"}}> Lorem ipsum odor amet, consectetuer adipiscing elit. Vestibulum ipsum cubilia ullamcorper amet himenaeos id sollicitudin. Eleifend tortor massa primis phasellus vestibulum euismod ad proin. Facilisis nisi praesent integer venenatis dolor sollicitudin sociosqu posuere. Himenaeos laoreet feugiat luctus fringilla commodo tincidunt cursus proin? Non bibendum lacus augue nunc tincidunt rhoncus curabitur nec. Himenaeos duis senectus facilisis ligula vitae nisl tellus. Maecenas fames sociosqu sociosqu lobortis dapibus mi consequat donec et. Eu primis lacus tellus; imperdiet habitant natoque eleifend. </p>
+          
+          {user?.bio===""?"":<h1 > About </h1>}
+          <p id="publicViewUserBio" className="overflow-auto" style={{textAlign: "justify", textJustify: "inter-word"}}></p>
         </div>
       </div>
     </div>

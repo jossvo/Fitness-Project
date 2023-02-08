@@ -21,7 +21,7 @@ class User(db.Model):
     height = db.Column(db.String(250))
     share_height = db.Column(db.Boolean())
     profile_picture = db.Column(db.String(250))
-    bio = db.Column(db.String(250))
+    bio = db.Column(db.String(600))
     facebook = db.Column(db.String(250))
     twitter = db.Column(db.String(250))
     instagram = db.Column(db.String(250))
