@@ -12,6 +12,7 @@ import { ProfileSecurity } from "./userComponents/profileSecurity.jsx";
 import {userLayout} from "./userLayout";
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
+import { UserLibrary } from "./pages/userLib.jsx";
 
 //create your first component
 const Layout = () => {
@@ -25,7 +26,8 @@ const Layout = () => {
         <ScrollToTop>
           <Navbar />
           <Routes>
-            <Route element={<Home />} path="/" />
+            {/* {<Route element={<Home />} path="/" />} */}
+            <Route element={<UserLibrary />} path="/" />
             <Route element={<UserPublic />} path="/user/:userid" />
             <Route element={<ProfileInfo />} path="/settings/profile" />
             <Route element={<UserPublic />} path="/settings/billing" />
