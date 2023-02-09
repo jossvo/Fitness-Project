@@ -1,0 +1,184 @@
+:root {
+  --mainColor: RGB(253, 202, 0);
+  --goldColor: RGB(215, 172, 2);
+  --lightGray: #ecf0f1;
+  --grayColor: RGB(175, 175, 174);
+  --darkGray: RGB(72, 81, 77);
+  --blackColor: RGB(28, 28, 26);
+}
+.navbar i,
+.navbar a {
+  color: whitesmoke;
+  text-decoration: none;
+}
+.navbar a:hover {
+  color: var(--mainColor);
+}
+.navbar-logo {
+  font-size: 1rem;
+}
+nav i {
+  padding: 0 0.6rem;
+}
+nav .btn {
+  font-size: 20px;
+  font-family: "Bebas Neue", sans-serif;
+}
+.navbar {
+  background-color: var(--blackColor);
+}
+
+.navbar-brand {
+  font-size: 30px;
+  font-family: "Bebas Neue", sans-serif;
+  text-transform: uppercase;
+}
+.navbar-items {
+  padding-left: 2rem;
+  font-size: 20px;
+  font-family: "Bebas Neue", sans-serif;
+}
+
+/* Modal Sign-in Styles */
+.modal-content {
+  padding: 20px;
+  border-radius: 3rem;
+}
+.modal-title {
+  font-size: 28px;
+  font-family: "Bebas Neue", sans-serif;
+}
+.btn-signin {
+  width: 100%;
+ 
+  margin: 0.8rem 0;
+  font-family: "Oswald", sans-serif;
+}
+.label-text {
+  font-size: 18px;
+  color: white;
+  font-family: "Bebas Neue", sans-serif;
+}
+.form-control {
+  padding: 0.8rem 0;
+}
+.modal-a {
+  font-family: "Oswald", sans-serif;
+  font-size: 1.6rem;
+}
+.btn-modal {
+  font-family: "Oswald", sans-serif;
+  font-size: 14px;
+}
+/*Hero Section*/
+.hero-text {
+  font-size: 120px;
+  font-family: "Bebas Neue", sans-serif;
+  text-align: start;
+  text-shadow: 2px 2px 4px #000000;
+}
+
+.text-container h3 {
+  font-family: "Bebas Neue", sans-serif;
+  text-align: start;
+  color: var(--grayColor);
+  text-shadow: 2px 2px 4px #000000;
+}
+.text-container h3 {
+  font-size: 2.4rem;
+}
+/*Features Section*/
+
+.main-icon-1,
+.main-icon-2 {
+  font-size: 32px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  text-align: center;
+  vertical-align: center;
+  padding: 30px;
+}
+.main-icon-1 {
+  background-color: var(--mainColor);
+}
+.main-icon-2 {
+  color: white;
+  background-color: var(--darkGray);
+}
+
+.features-container-items {
+font-family: "Bebas Neue", sans-serif;
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.features-text {
+  
+  width: 60%;
+  text-align: center;
+}
+.features-h1 {
+  font-size: 40px;
+font-family: "Bebas Neue", sans-serif;
+}
+.features-h2 {
+  font-size: 30px;
+font-family: "Bebas Neue", sans-serif;
+}
+.features-heading-text {
+  font-size: 20px;
+  font-weight: bold;
+
+}
+.btn-container {
+  display: flex;
+  flex-direction: column;
+}
+.btn-container button {
+  font-family: "Bebas Neue", sans-serif;
+  color: whitesmoke;
+}
+.btn-container button:first-child {
+  color: var(--blackColor);
+}
+.routines-titles {
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+/* Footer Styles */
+.footer {
+  background-color: var(--blackColor);
+}
+.footer-container {
+  border-top: 1px solid var(--mainColor);
+}
+.footer-icons {
+  color: var(--mainColor);
+  font-size: 2.2rem;
+}
+.footer-icons li {
+  padding: 6px;
+}
+.footer-icons li:hover {
+  color: var(--lightGray);
+  cursor: pointer;
+}
+.footer-items {
+  font-size: 2rem;
+  color: var(--lightGray)!important;
+}
+.footer-items:hover {
+  color: var(--mainColor) !important;
+}
+.text-footer {
+  color: var(--lightGray);
+}
+.nav-item a {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 20px;
+}
+li {
+  list-style: none;
+}

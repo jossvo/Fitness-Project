@@ -1,9 +1,9 @@
-.wrapper {
+.profileDiv .wrapper {
     display: flex;
     width: 100%;
 }
 
-#sidebar {
+.profileDiv #sidebar {
     width: 250px;
     position: fixed;
     top: 0;
@@ -15,34 +15,34 @@
     transition: all 0.3s;
 }
 
-#profilePic{
+.profileDiv #profilePic{
     margin-left: 0px !important;
     margin-bottom: 2.5%;
 }
 
 /*ProfileInfo*/
-.img-account-profile {
+.profileDiv .img-account-profile {
     height: 10rem;
 }
-.rounded-circle {
+.profileDiv .rounded-circle {
     border-radius: 50% !important;
 }
-.card {
+.profileDiv .card {
     box-shadow: 0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%);
 }
-.card .card-header {
+.profileDiv .card .card-header {
     font-weight: 500;
 }
-.card-header:first-child {
+.profileDiv .card-header:first-child {
     border-radius: 0.35rem 0.35rem 0 0;
 }
-.card-header {
+.profileDiv .card-header {
     padding: 1rem 1.35rem;
     margin-bottom: 0;
     background-color: rgba(33, 40, 50, 0.03);
     border-bottom: 1px solid rgba(33, 40, 50, 0.125);
 }
-.form-control, .dataTable-input {
+.profileDiv .form-control, .dataTable-input {
     display: block;
     width: 100%;
     padding: 0.875rem 1.125rem;
@@ -60,11 +60,11 @@
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
-.nav-borders .nav-link.active {
+.profileDiv .nav-borders .nav-link.active {
     color: #0061f2;
     border-bottom-color: #0061f2;
 }
-.nav-borders .nav-link {
+.profileDiv .nav-borders .nav-link {
     color: #69707a;
     border-bottom-width: 0.125rem;
     border-bottom-style: solid;
@@ -78,38 +78,38 @@
 }
 
 
-.form-check{
+.profileDiv .form-check{
     margin-right: 5%;
     margin-top:5%;
     width: 50%;
 }
-.radioLabel{
+.profileDiv .radioLabel{
     margin-left: 5%;
 }
 
 /*ProfileSecurity*/
-.img-account-profile {
+.profileDiv .img-account-profile {
     height: 10rem;
 }
-.rounded-circle {
+.profileDiv .rounded-circle {
     border-radius: 50% !important;
 }
-.card {
+.profileDiv .card {
     box-shadow: 0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%);
 }
-.card .card-header {
+.profileDiv .card .card-header {
     font-weight: 500;
 }
-.card-header:first-child {
+.profileDiv .card-header:first-child {
     border-radius: 0.35rem 0.35rem 0 0;
 }
-.card-header {
+.profileDiv .card-header {
     padding: 1rem 1.35rem;
     margin-bottom: 0;
     background-color: rgba(33, 40, 50, 0.03);
     border-bottom: 1px solid rgba(33, 40, 50, 0.125);
 }
-.form-control, .dataTable-input {
+.profileDiv .form-control, .dataTable-input {
     display: block;
     width: 100%;
     padding: 0.875rem 1.125rem;
@@ -127,11 +127,11 @@
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
-.nav-borders .nav-link.active {
+.profileDiv .nav-borders .nav-link.active {
     color: #0061f2;
     border-bottom-color: #0061f2;
 }
-.nav-borders .nav-link {
+.profileDiv .nav-borders .nav-link {
     color: #69707a;
     border-bottom-width: 0.125rem;
     border-bottom-style: solid;
@@ -144,7 +144,7 @@
     margin-right: 1rem;
 }
 
-.btn-danger-soft {
+.profileDiv .btn-danger-soft {
     color: #000;
     background-color: #f1e0e3;
     border-color: #f1e0e3;

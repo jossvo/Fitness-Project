@@ -29,7 +29,7 @@ export const UserPublic = ({ navTitle = "User" }) => {
     }
 
   return (
-    <div style={{ backgroundColor: "#e3e6e6", display: "flex", height: "100vh" }}
+    <div className="profileDiv" style={{ backgroundColor: "#e3e6e6", display: "flex", height: "100vh" }}
     >
       <ProfileSidebar />
       <div className="overflow-hidden" style={{ width: "100%", display: "flex", flexDirection: "column" }}>

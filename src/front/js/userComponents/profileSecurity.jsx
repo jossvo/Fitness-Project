@@ -10,7 +10,7 @@ export const ProfileSecurity = ({ navTitle = "User" }) => {
     <div style={{ backgroundColor: "#e3e6e6", display: "flex", height: "100vh" }}
     >
       <ProfileSidebar />
-      <div className="container overflow-auto" style={{height:"95vh", width:"90%",marginTop:"5vh"}}>
+      <div className="profileDiv container overflow-auto" style={{height:"95vh", width:"90%",marginTop:"5vh"}}>
         <div className="row">
             <div className="col-lg-8">
                 
