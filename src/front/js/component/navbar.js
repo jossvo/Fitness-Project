@@ -12,7 +12,7 @@ export const Navbar = () => {
     ["Programs","#"],
     ["Coaches","#"],
     ["FAQS","#"],
-    ["Account",`/user/${store.id}`],
+    ["Account",`/${store.type==="u"?"user":"coach"}/${store.id}`],
     ["My Plans","#"]]
   : arrNav=[["Programs","#"],["Coaches","#"],["FAQS","#"]]
 

@@ -46,7 +46,8 @@ export const SignInComponent = () => {
 		let data = new FormData(e.target)
 		let email = data.get("email")
 		let password = data.get("password")
-		let resp = await actions.login(email,password)
+    let type = document.querySelector('input[name="flexRadioLoginAs"]:checked').value
+		let resp = await actions.login(email,password,type)
 		if(resp !="ok"){
 			console.error(resp)
 			return;
@@ -96,6 +97,7 @@ export const SignInComponent = () => {
                       type="radio"
                       name="flexRadioLoginAs"
                       id="flexRadioLoginAs1"
+                      value="user"
                       defaultChecked
                     />
                     <label
@@ -110,7 +112,8 @@ export const SignInComponent = () => {
                       className="form-check-input"
                       type="radio"
                       name="flexRadioLoginAs"
-                      id="flexRadioLoginAs2"                      
+                      id="flexRadioLoginAs2"
+                      value="coach"                      
                     />
                     <label
                       className="form-check-label text-light"

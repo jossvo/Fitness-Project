@@ -20,11 +20,11 @@ def check_email(email):
     if(re.fullmatch(regex, email)): return True
     else: return False
 
-@api_user.route('/login', methods=['POST'])
+@api_user.route('/user/login', methods=['POST'])
 def user_login():
     email = request.json.get('email')
     password = request.json.get('password')
-    print(email,password)
+
     user=User.query.filter(User.email==email).first()
     if user is None:
         return jsonify({"msg": "Login failed: Wrong email"}), 401
@@ -36,6 +36,7 @@ def user_login():
     token = create_access_token(identity=user.id)
     refresh_token=create_refresh_token(identity=user.id)
     return jsonify({"access_token":token,"refresh_token":refresh_token,"id":user.id,"type":"u"})
+
 
 @api_user.route('/users', methods=['GET'])
 def users():

@@ -1,5 +1,6 @@
 import React,{ useContext, useEffect, useState } from "react";
 import { Context } from "../store/appContext";
+import {useNavigate} from "react-router-dom"
 import "../../styles/userStyle.css";
 import { ProfileSidebar } from "./profileSidebar.jsx";
 
@@ -18,16 +19,16 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
   //Function to populate form with data
   useEffect(() => {
     async function fetchData(){
-      actions.getDetails("users",store.id);
-		}
-		fetchData()
+      actions.getDetails("users",localStorage.getItem("id"));
+    }
+    fetchData()
   },[]);
 
   useEffect(() => {
     setDataForm()
   },[store["usersDetail"]]);
 
-  async function setDataForm(){
+  function setDataForm(){
     if (store["usersDetail"]){
       let user = store["usersDetail"]
       document.getElementById("inputUsername").value=capitalize(user.username)

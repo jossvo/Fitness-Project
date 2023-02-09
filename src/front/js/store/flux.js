@@ -18,6 +18,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 			]
 		},
 		actions: {
+			setIdentity: ()=>{
+				let accessToken = localStorage.getItem("accessToken")
+				let refreshToken = localStorage.getItem("refreshToken")
+				let id = localStorage.getItem("id")
+				let type = localStorage.getItem("type")
+				setStore({accessToken,refreshToken,id,type})
+			},
 			getMessage: async () => {
 				try{
 					// fetching data from the backend
@@ -31,8 +38,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			// login functions
-			login: async (email,password)=>{
-				const resp = await fetch(apiUrl+"/login", {
+			login: async (email,password,type)=>{
+				let urlRoute = ""
+				type==="user"? urlRoute="/user/login"
+				:urlRoute="/coach/login"
+
+				const resp = await fetch(apiUrl+urlRoute, {
 					method:'POST',
 					headers:{
 						"Content-Type":"application/json"
