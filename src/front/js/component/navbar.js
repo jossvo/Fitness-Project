@@ -6,11 +6,21 @@ import { Link } from "react-router-dom";
 import { SignInComponent } from "./signInComponent";
 import { RegistrationForm } from "./registrationForm";
 export const Navbar = () => {
+  const { store, actions } = useContext(Context);
+  let arrNav = []
+  store.id? arrNav=[
+    ["Programs","#"],
+    ["Coaches","#"],
+    ["FAQS","#"],
+    ["Account",`/user/${store.id}`],
+    ["My Plans","#"]]
+  : arrNav=[["Programs","#"],["Coaches","#"],["FAQS","#"]]
+
   return (
     <div>
       <nav className="navbar navbar-expand-lg ms-auto ">
         <div className="container-fluid mx-5  ">
-          <a className="navbar-brand navbar-logo" href="#">
+          <a className="navbar-brand navbar-logo" href="/">
             <i className="fa-solid fa-dumbbell "></i>
             Fit Central
           </a>
@@ -27,34 +37,20 @@ export const Navbar = () => {
           </button>
           <div className="collapse navbar-collapse " id="navbarNav">
             <ul className="navbar-nav ms-auto mx-5 d-flex align-items-right ">
-              <Link to="#">
-                <span className="navbar-items">
-                  <i className=""></i>Programs
-                </span>
-              </Link>
-              <Link to="#">
-                <span className="navbar-items">
-                  <i className=""></i>Coaches
-                </span>
-              </Link>
-              <Link to="#">
-                <span className="navbar-items">
-                  <i className=""></i>FAQS
-                </span>
-              </Link>
-              <Link to="#">
-                <span className="navbar-items">
-                  <i className=""></i>Account
-                </span>
-              </Link>
-              <Link to="#">
-                <span className="navbar-items">
-                  <i className=""></i>My Plans
-                </span>
-              </Link>
-              <SignInComponent />
-              <RegistrationForm />
+              {
+              arrNav.map((elem,index)=>{
+                return(
+                  <Link to={elem[1]} key={index}>
+                    <span className="navbar-items">
+                      <i className=""></i>{elem[0]}
+                    </span>
+                  </Link>
+                )
+              })
+              }
 
+              {!store.id?<SignInComponent />:""}
+              {!store.id?<RegistrationForm />:""}
             </ul>
           </div>
         </div>

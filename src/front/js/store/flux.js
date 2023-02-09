@@ -1,3 +1,5 @@
+const apiUrl = process.env.BACKEND_URL
+
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
@@ -16,11 +18,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 			]
 		},
 		actions: {
-			// Use getActions to call a function within a fuction
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
-			},
-
 			getMessage: async () => {
 				try{
 					// fetching data from the backend
@@ -33,8 +30,61 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log("Error loading message from backend", error)
 				}
 			},
+			// login functions
+			login: async (email,password)=>{
+				const resp = await fetch(apiUrl+"/login", {
+					method:'POST',
+					headers:{
+						"Content-Type":"application/json"
+					},
+					body:JSON.stringify({email,password})
+				})
+				if(!resp.ok){
+					return resp.statusText
+				}
+				const data = await resp.json()
+				setStore({
+					accessToken:data.access_token,
+					refreshToken: data.refresh_token,
+					id:data.id,
+					type:data.type
+				})
+				localStorage.setItem("accessToken",data.access_token)
+				localStorage.setItem("refreshToken",data.refresh_token)
+				localStorage.setItem("id",data.id)
+				localStorage.setItem("type",data.type)
+				return "ok"
+			},
+			getAutorizationHeader:()=>{
+				let temp = getStore()
+				return {"Authorization":"Bearer " + temp.accessToken}
+			},
+			loadTokens:()=>{
+				let accessToken = localStorage.getItem("accessToken")
+				let refreshToken = localStorage.getItem("refreshToken")
+				setStore({accessToken,refreshToken})
+
+			},
+			logout:async ()=>{
+				if(!getStore().accessToken)return;
+				const resp = await fetch(apiUrl+"/api/logout",{
+					method: 'POST',
+					headers: {
+						...getActions().getAutorizationHeader()
+					}
+				})
+				if(!resp.ok){
+					console.error(resp.statusText)
+					return false
+				}
+				localStorage.removeItem("accessToken")
+				localStorage.removeItem("refreshToken")
+				setStore({accessToken:null,refreshToken:null})
+				return "ok"
+			},
+			// functions to get information
 			getDetails: async(element,id)=>{
-				let response = await fetch(process.env.BACKEND_URL +`/${element}/${id}`);
+				let response = await fetch(apiUrl +`/${element}/${id}`);
 				if (!response.ok)
 				  console.error(`Error en la petición ${response.statusText}`);
 				else {
@@ -45,7 +95,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			getList: async (elements) => {
-				let response = await fetch(process.env.BACKEND_URL +`/${elements}`);
+				let response = await fetch(apiUrl +`/${elements}`);
 				if (!response.ok)
 				  console.error(`Error en la petición ${response.statusText}`);
 				else {
@@ -55,8 +105,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 				  setStore(newStore);
 				}
 			},
+			// functions to update information
 			updateAccountDetails: async (postData,user_id)=>{
-				let response = await fetch(process.env.BACKEND_URL +`/users/${user_id}`,{
+				let response = await fetch(apiUrl +`/users/${user_id}`,{
 					method: 'PATCH',
 					body: postData,
 				});
@@ -66,20 +117,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 				return true
 			},
-			changeColor: (index, color) => {
-				//get the store
-				const store = getStore();
-
-				//we have to loop the entire demo array to look for the respective index
-				//and change its color
-				const demo = store.demo.map((elm, i) => {
-					if (i === index) elm.background = color;
-					return elm;
-				});
-
-				//reset the global store
-				setStore({ demo: demo });
-			}
 		}
 	};
 };

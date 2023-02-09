@@ -5,7 +5,6 @@ import "../../styles/home.css";
 
 export const Home = () => {
   const { store, actions } = useContext(Context);
-
   return (
     <React.Fragment>
       <div

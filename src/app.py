@@ -13,6 +13,7 @@ from api.admin import setup_admin
 from api.commands import setup_commands
 from api.user_routes import api_user
 from api.workout_routes import api_workout
+from flask_jwt_extended import JWTManager 
 
 #from models import Person
 
@@ -22,7 +23,7 @@ app = Flask(__name__)
 app.url_map.strict_slashes = False
 app.register_blueprint(api_user,url_prefix="/")
 app.register_blueprint(api_workout,url_prefix="/")
-
+jwt = JWTManager(app)
 
 # database condiguration
 db_url = os.getenv("DATABASE_URL")

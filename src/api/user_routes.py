@@ -4,7 +4,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, User, Coach, Workout, Exercise_Assign, Workout_User,Workout_Review,Coach_Review, Category, Workout_Categories, Exercise_Library, Exercise_Status
 from api.utils import generate_sitemap, APIException
-from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, create_refresh_token, get_jwt
+from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, create_refresh_token, get_jwt, JWTManager 
 from flask_bcrypt import Bcrypt
 import re
 
@@ -19,6 +19,23 @@ def check_email(email):
     # and the string into the fullmatch() method
     if(re.fullmatch(regex, email)): return True
     else: return False
+
+@api_user.route('/login', methods=['POST'])
+def user_login():
+    email = request.json.get('email')
+    password = request.json.get('password')
+    print(email,password)
+    user=User.query.filter(User.email==email).first()
+    if user is None:
+        return jsonify({"msg": "Login failed: Wrong email"}), 401
+        
+    #Validar la clave
+    if not crypto.check_password_hash(user.password,password):
+        return jsonify({"msg": "Login failed: Wrong password"}), 401
+
+    token = create_access_token(identity=user.id)
+    refresh_token=create_refresh_token(identity=user.id)
+    return jsonify({"access_token":token,"refresh_token":refresh_token,"id":user.id,"type":"u"})
 
 @api_user.route('/users', methods=['GET'])
 def users():

@@ -18,7 +18,7 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
   //Function to populate form with data
   useEffect(() => {
     async function fetchData(){
-      actions.getDetails("users",1);
+      actions.getDetails("users",store.id);
 		}
 		fetchData()
   },[]);

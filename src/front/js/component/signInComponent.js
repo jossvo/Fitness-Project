@@ -1,8 +1,30 @@
-import React from "react";
+import React, { useContext, useEffect,useRef} from "react";
+import {useNavigate} from "react-router-dom"
+import { Context } from "../store/appContext";
+
 export const SignInComponent = () => {
+  const { store, actions } = useContext(Context);
+	const navigate = useNavigate()
+  const buttonNameRef = useRef()
+  
+  async function submitlogin(e){
+		e.preventDefault()
+
+		let data = new FormData(e.target)
+		let email = data.get("email")
+		let password = data.get("password")
+		let resp = await actions.login(email,password)
+		if(resp !="ok"){
+			console.error(resp)
+			return;
+		}
+		console.log("Login exitoso")
+	}
+
   return (
     <React.Fragment>
       <button
+        ref={buttonNameRef}
         type="button"
         className="btn btn-warning mx-5"
         data-bs-toggle="modal"
@@ -29,10 +51,10 @@ export const SignInComponent = () => {
               </h1>
             </div>
             <div className="modal-body">
-              <form>
+              <form onSubmit={submitlogin}>
                 <div className="mb-3">
                   <label
-                    htmlFor="exampleInputEmail1"
+                    htmlFor="inputLoginEmail"
                     className="form-label modal-label label-text"
                   >
                     Email address
@@ -40,7 +62,8 @@ export const SignInComponent = () => {
                   <input
                     type="email"
                     className="form-control text-form"
-                    id="exampleInputEmail1"
+                    id="inputLoginEmail"
+                    name="email"
                     aria-describedby="emailHelp"
                   />
                   <div id="emailHelp" className="form-text">
@@ -49,7 +72,7 @@ export const SignInComponent = () => {
                 </div>
                 <div className="mb-3">
                   <label
-                    htmlFor="exampleInputPassword1"
+                    htmlFor="inputLoginPassword"
                     className="form-label modal-label label-text"
                   >
                     Password
@@ -57,13 +80,15 @@ export const SignInComponent = () => {
                   <input
                     type="password"
                     className="form-control"
-                    id="exampleInputPassword1"
+                    id="inputLoginPassword"
+                    name="password"
                   />
                 </div>
 
                 <button
                   type="submit"
                   className="btn btn-warning btn-lg btn-signin"
+                  data-bs-dismiss="modal"
                 >
                   Sign In
                 </button>
