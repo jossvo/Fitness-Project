@@ -1,12 +1,45 @@
-import React, { useContext, useEffect,useRef} from "react";
+import React, { useContext, useEffect,useRef, useState} from "react";
 import {useNavigate} from "react-router-dom"
 import { Context } from "../store/appContext";
 
 export const SignInComponent = () => {
   const { store, actions } = useContext(Context);
+  const [allowLogin,setAllowLogin]=useState(false)
 	const navigate = useNavigate()
   const buttonNameRef = useRef()
   
+  function verifyData(e){
+    if(e.target.id==="inputLoginEmail")verifyEmail(e.target.id,"change")
+    if(document.getElementById("inputLoginEmail").classList.contains("validEmail")
+    && document.getElementById("inputLoginPassword").value != ""
+    )setAllowLogin(true)
+    else(setAllowLogin(false))
+  }
+
+  function verifyEmail(id, type){
+    var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    var inputMail = document.getElementById(id).value
+    var elem = document.getElementById(id)
+    if(inputMail.match(mailformat)){
+      document.getElementById("emailHelp").innerText = ""
+      elem.classList.remove("invalidEmail");
+      elem.classList.remove("questionableEmail");
+      elem.classList.add("validEmail");
+      return true;
+    }
+    else{
+      if(type==="change"){
+        elem.classList.remove("invalidEmail")
+        elem.classList.add("questionableEmail")
+      }else{
+        elem.classList.remove("questionableEmail")
+        elem.classList.add("invalidEmail")
+      }
+      document.getElementById("emailHelp").innerText = "Invalid email format"
+      return false;
+    }
+  }
+
   async function submitlogin(e){
 		e.preventDefault()
 
@@ -53,6 +86,42 @@ export const SignInComponent = () => {
             <div className="modal-body">
               <form onSubmit={submitlogin}>
                 <div className="mb-3">
+                <div className="col-md-12">
+                  <label hmtlfor="registerAs" className="form-label text-light">
+                    Login As
+                  </label>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name="flexRadioLoginAs"
+                      id="flexRadioLoginAs1"
+                      defaultChecked
+                    />
+                    <label
+                      className="form-check-label text-light"
+                      hmtlfor="flexRadioLoginAs1"
+                    >
+                      User
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name="flexRadioLoginAs"
+                      id="flexRadioLoginAs2"                      
+                    />
+                    <label
+                      className="form-check-label text-light"
+                      hmtlfor="flexRadioLoginAs2"
+                    >
+                      Coach
+                    </label>
+                  </div>
+                </div>
+                </div>
+                <div className="mb-3">
                   <label
                     htmlFor="inputLoginEmail"
                     className="form-label modal-label label-text"
@@ -65,9 +134,10 @@ export const SignInComponent = () => {
                     id="inputLoginEmail"
                     name="email"
                     aria-describedby="emailHelp"
+                    onChange={verifyData}
+                    onBlur={()=>verifyEmail("inputLoginEmail","focusOut")}
                   />
-                  <div id="emailHelp" className="form-text">
-                    We'll never share your email with anyone else.
+                  <div id="emailHelp" className="form-text">                    
                   </div>
                 </div>
                 <div className="mb-3">
@@ -82,13 +152,16 @@ export const SignInComponent = () => {
                     className="form-control"
                     id="inputLoginPassword"
                     name="password"
+                    onChange={verifyData}
                   />
                 </div>
 
                 <button
                   type="submit"
                   className="btn btn-warning btn-lg btn-signin"
+                  id = "buttonSignIn"
                   data-bs-dismiss="modal"
+                  disabled={!allowLogin}
                 >
                   Sign In
                 </button>

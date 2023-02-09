@@ -70,6 +70,25 @@ nav .btn {
   font-family: "Oswald", sans-serif;
   font-size: 14px;
 }
+.validEmail{
+  border-color: rgb(0, 189, 0) !important;
+  border-width: 3px !important;
+  background-color: rgb(226, 255, 226) !important;
+}
+.questionableEmail{
+  border-color: var(--mainColor) !important;
+  border-width: 2px !important;
+  background-color: rgb(255, 236, 162) !important;
+}
+.invalidEmail{
+  border-color: red !important;
+  border-width: 2px !important;
+  background-color: rgb(255, 206, 206) !important;
+}
+#emailHelp{
+  color: var(--mainColor);
+}
+
 /*Hero Section*/
 .hero-text {
   font-size: 120px;
