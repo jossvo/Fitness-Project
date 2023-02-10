@@ -176,6 +176,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					accessToken:data.access_token
 				})
 				localStorage.setItem("accessToken",data.access_token)
+				window.location.reload();
 				return "ok"
 			},
 			updateAccountDetails: async (postData)=>{
