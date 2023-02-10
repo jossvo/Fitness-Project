@@ -46,16 +46,23 @@ def users():
     return jsonify(response_body), 200
 
 # Get single user, simple without jwt, then with jwt
-@api_user.route('/users/<user_id>')
-# @jwt_required()
-def get_user_info(user_id):
-    # user_id=get_jwt_identity()
-    # user=User.query.get(user_id)
+@api_user.route('/userinfo')
+@jwt_required()
+def get_user_info():
+    user_id=get_jwt_identity()
+    print(user_id)
     user=User.query.get(user_id)
     if user is None:
         return jsonify({"msg":"Usuario no encontrado"}), 404
 
     return jsonify(user.serialize_account_details())
+
+@api_user.route('/refresh',methods=['POST'])
+@jwt_required(refresh=True)
+def refresh_token():
+    user_id=get_jwt_identity()
+    access_token=create_access_token(identity=user_id)
+    return jsonify({"access_token":access_token})
 
 @api_user.route('/users/signup', methods=['POST'])
 def new_user():
@@ -79,8 +86,10 @@ def new_user():
     return({"msg":"User created"})
 
 
-@api_user.route('/users/<user_id>', methods=['PATCH'])
-def update_person(user_id):
+@api_user.route('/updateprofile', methods=['PATCH'])
+@jwt_required()
+def update_person():
+    user_id=get_jwt_identity()
     user=User.query.get(user_id)
     if user is None:
         return jsonify({"msg":"Usuario no encontrado"}), 404

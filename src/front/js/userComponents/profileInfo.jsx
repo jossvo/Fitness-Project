@@ -15,22 +15,26 @@ export function capitalize(str){
 export const ProfileInfo = ({ navTitle = "User" }) => {
   const { store, actions } = useContext(Context);
   const { updateAccountDetails } = actions
+  const [preventProfileUpdate,setPreventProfileUpdate]= useState(true)
+  const [preventImageUpdate,setPreventImageUpdate]= useState(true)
 
   //Function to populate form with data
   useEffect(() => {
     async function fetchData(){
-      actions.getDetails("users",localStorage.getItem("id"));
+      actions.getProfile();
+      actions.getDefaultPicture();
     }
     fetchData()
   },[]);
 
   useEffect(() => {
     setDataForm()
-  },[store["usersDetail"]]);
+    console.log(store["profileImage"])
+  },[store["userinfo"]]);
 
   function setDataForm(){
-    if (store["usersDetail"]){
-      let user = store["usersDetail"]
+    if (store["userinfo"]){
+      let user = store["userinfo"]
       document.getElementById("inputUsername").value=capitalize(user.username)
       document.getElementById("inputFirstName").value=capitalize(user.first_name)
       document.getElementById("inputLastName").value=capitalize(user.last_name)
@@ -71,10 +75,7 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
     data.set('share_weight',data.get("inputRadioWeight"))
     data.delete("inputRadioWeight")
 
-    // for (var pair of data.entries()) {
-    //   console.log(pair[0]+ ' - ' + pair[1]+ ' - ' + typeof pair[1]); 
-    // }
-    let ok = await updateAccountDetails(data,1)
+    let ok = await updateAccountDetails(data)
     if (ok)console.info("Información actualizada")
   }
 
@@ -91,28 +92,30 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
           <div className="col-xl-4">
             <div className="card mb-4 mb-xl-0">
               <div className="card-header">Profile Picture</div>
-              <div className="card-body text-center">
-                <img
-                  className="img-account-profile rounded-circle mb-2"
-                  src="http://bootdey.com/img/Content/avatar/avatar1.png"
-                  alt=""
-                />
+              <form >
+                <div className="card-body text-center">
+                  <img
+                    className="img-account-profile rounded-circle mb-2"
+                    src="http://bootdey.com/img/Content/avatar/avatar1.png"
+                    alt=""
+                  />
 
-                <div className="small font-italic text-muted mb-4">
-                  JPG or PNG no larger than 5 MB
+                  <div className="small font-italic text-muted mb-4">
+                    JPG or PNG no larger than 5 MB
+                  </div>
+
+                  <div className="mb-3" >
+                    <label hmtlfor="formFileSm" className="form-label">
+                      Select new profile picture:
+                    </label>
+                    <input className="form-control form-control-sm" id="formFileSm" type="file"/>
+                  </div>
+
+                  <button className="btn btn-primary" type="button" disabled={preventImageUpdate}>
+                    Upload profile picture
+                  </button>
                 </div>
-
-                <div className="mb-3" >
-                  <label hmtlfor="formFileSm" className="form-label">
-                    Select new profile picture:
-                  </label>
-                  <input className="form-control form-control-sm" id="formFileSm" type="file"/>
-                </div>
-
-                <button className="btn btn-primary" type="button">
-                  Upload profile picture
-                </button>
-              </div>
+              </form>
             </div>
           </div>
           <div className="col-xl-8">
@@ -297,7 +300,7 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
                     </div>
                   </div>
 
-                  <button className="btn btn-primary" type="submit" >
+                  <button className="btn btn-primary" type="submit" disabled={preventProfileUpdate} >
                     Save changes
                   </button>
                 </form>

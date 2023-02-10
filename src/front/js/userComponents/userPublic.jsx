@@ -11,18 +11,18 @@ export const UserPublic = ({ navTitle = "User" }) => {
     //Function to populate form with data
     useEffect(() => {
       async function fetchData(){
-        actions.getDetails("users",1);
+        actions.getProfile();
       }
       fetchData()
     },[]);
   
     useEffect(() => {
       setData()
-    },[store["usersDetail"]]);
+    },[store["userinfo"]]);
 
-    let user = store["usersDetail"]
+    let user = store["userinfo"]
     async function setData(){
-      if(store["usersDetail"]){
+      if(store["userinfo"]){
         document.getElementById("publicViewUserFullName").innerText=capitalize(user.first_name)+" "+capitalize(user.last_name)
         document.getElementById("publicViewUserBio").innerText=capitalize(user.bio)
       }

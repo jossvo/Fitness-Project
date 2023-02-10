@@ -23,7 +23,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 				let refreshToken = localStorage.getItem("refreshToken")
 				let id = localStorage.getItem("id")
 				let type = localStorage.getItem("type")
-				setStore({accessToken,refreshToken,id,type})
+				setStore({
+					accessToken:accessToken,
+					refreshToken:refreshToken,
+					id:id,
+					type:type
+				})
 			},
 			getMessage: async () => {
 				try{
@@ -67,14 +72,40 @@ const getState = ({ getStore, getActions, setStore }) => {
 				return "ok"
 			},
 			getAutorizationHeader:()=>{
-				let temp = getStore()
-				return {"Authorization":"Bearer " + temp.accessToken}
+				let store = getStore()
+				let authorizationHeader=localStorage.getItem("accessToken")
+				return {"Authorization":"Bearer " + authorizationHeader}
 			},
 			loadTokens:()=>{
 				let accessToken = localStorage.getItem("accessToken")
 				let refreshToken = localStorage.getItem("refreshToken")
 				setStore({accessToken,refreshToken})
 
+			},
+			getProfile: async()=>{
+				const resp = await fetch(apiUrl+"/userinfo",{
+					headers:{
+						...getActions().getAutorizationHeader()
+					}
+				})
+				if (!resp.ok){
+					resp.text().then(text => {
+						let errorObj = JSON.parse(text)
+						switch(errorObj.msg){
+							case "Token has expired":
+								getActions().updateTokens()
+								break;
+							default:
+								throw new Error(errorObj.msg)
+						}
+					})
+				}else{
+					let data = await resp.json();
+					let newStore = {};
+					newStore["userinfo"] = data;
+					setStore(newStore);
+				}
+				
 			},
 			logout:async ()=>{
 				if(!getStore().accessToken)return;
@@ -94,6 +125,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 				return "ok"
 			},
 			// functions to get information
+			getDefaultPicture:async()=>{
+				let response = await fetch("https://api.dicebear.com/5.x/shapes/svg?seed=Felix")
+				//https://www.youtube.com/watch?v=cP5E0b21f_Y
+			},
 			getDetails: async(element,id)=>{
 				let response = await fetch(apiUrl +`/${element}/${id}`);
 				if (!response.ok)
@@ -117,9 +152,38 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			// functions to update information
-			updateAccountDetails: async (postData,user_id)=>{
-				let response = await fetch(apiUrl +`/users/${user_id}`,{
+			updateTokens:async ()=>{
+				const resp = await fetch(apiUrl+"/refresh", {
+					method:'POST',
+					headers: {
+						"Authorization":"Bearer " + localStorage.refreshToken
+					}
+				})
+				if(!resp.ok){
+					resp.text().then(text => {
+						let errorObj = JSON.parse(text)
+						switch(errorObj.msg){
+							case "Token has expired":
+								console.log("Token has expired")
+								break;
+							default:
+								throw new Error(errorObj.msg)
+						}
+					})
+				}
+				const data = await resp.json()
+				setStore({
+					accessToken:data.access_token
+				})
+				localStorage.setItem("accessToken",data.access_token)
+				return "ok"
+			},
+			updateAccountDetails: async (postData)=>{
+				let response = await fetch(apiUrl +`/updateprofile`,{
 					method: 'PATCH',
+					headers: {
+						...getActions().getAutorizationHeader()
+					},
 					body: postData,
 				});
 				if (!response.ok){
