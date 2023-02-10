@@ -37,44 +37,9 @@ export const RegistrationForm = () => {
             <div className="modal-body">
               {/* Form de Registro */}
               <form className="row g-3">
-                <div className="col-md-6">
+                <div className="col-md-12">
                   <label
-                    hmtlfor="inputName"
-                    className="form-label text-light label-text"
-                  >
-                    Name
-                  </label>
-                  <input type="email" className="form-control" id="inputName" />
-                </div>
-                <div className="col-md-6">
-                  <label
-                    hmtlfor="inputLastName"
-                    className="form-label text-light label-text"
-                  >
-                    LastName
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="inputLastName"
-                  />
-                </div>
-                <div className="col-md-6">
-                  <label
-                    hmtlfor="inputEmail4"
-                    className="form-label text-light label-text"
-                  >
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    className="form-control"
-                    id="inputEmail4"
-                  />
-                </div>
-                <div className="col-md-6">
-                  <label
-                    htmlFor="exampleInputUser1"
+                    htmlFor="inputSignupUsername"
                     className="form-label modal-label label-text"
                   >
                     Username
@@ -82,13 +47,49 @@ export const RegistrationForm = () => {
                   <input
                     type="text"
                     className="form-control text-form"
-                    id="exampleInputUser1"
+                    id="inputSignupUsername"
                     aria-describedby="emailHelp"
                   />
                 </div>
                 <div className="col-md-6">
                   <label
-                    hmtlfor="inputPassword4"
+                    hmtlfor="inputSignupFirstName"
+                    className="form-label text-light label-text"
+                  >
+                    First Name
+                  </label>
+                  <input type="email" className="form-control" id="inputSignupFirstName" />
+                </div>
+                <div className="col-md-6">
+                  <label
+                    hmtlfor="inputSignupLastName"
+                    className="form-label text-light label-text"
+                  >
+                    LastName
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="inputSignupLastName"
+                  />
+                </div>
+                <div className="col-md-12">
+                  <label
+                    hmtlfor="inputSignupEmail"
+                    className="form-label text-light label-text"
+                  >
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    className="form-control"
+                    id="inputSignupEmail"
+                  />
+                </div>
+                
+                <div className="col-md-12">
+                  <label
+                    hmtlfor="inputSignupPassword"
                     className="form-label text-light label-text"
                   >
                     Password
@@ -96,10 +97,38 @@ export const RegistrationForm = () => {
                   <input
                     type="password"
                     className="form-control"
-                    id="inputPassword4"
+                    id="inputSignupPassword"
                   />
                 </div>
                 <div className="col-md-12">
+                  <label
+                    hmtlfor="inputConfirmPassword"
+                    className="form-label text-light label-text"
+                  >
+                    Confirm Password
+                  </label>
+                  <input
+                    type="password"
+                    className="form-control"
+                    id="inputConfirmPassword"
+                  />
+                </div>
+
+                <div className="col-md-6">
+                  <label className="text-light">Gender</label>
+                  <select
+                    className="form-select"
+                    aria-label="Default select example"
+                  >
+                    <option defaultValue disabled>
+                      Choose One
+                    </option>
+                    <option value="1">Male</option>
+                    <option value="2">Female</option>
+                    <option value="3">Other</option>
+                  </select>
+                </div>
+                <div className="col-md-6">
                   <label hmtlfor="registerAs" className="form-label text-light">
                     Register As
                   </label>
@@ -134,20 +163,6 @@ export const RegistrationForm = () => {
                   </div>
                 </div>
 
-                <div className="col-md-4">
-                  <label className="text-light">Gender</label>
-                  <select
-                    className="form-select"
-                    aria-label="Default select example"
-                  >
-                    <option defaultValue disabled>
-                      Choose One
-                    </option>
-                    <option value="1">Male</option>
-                    <option value="2">Female</option>
-                    <option value="3">Other</option>
-                  </select>
-                </div>
               </form>
               {/* Fin de Form de Registro */}
             </div>

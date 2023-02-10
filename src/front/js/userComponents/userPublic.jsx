@@ -23,6 +23,7 @@ export const UserPublic = ({ navTitle = "User" }) => {
     let user = store["userinfo"]
     async function setData(){
       if(store["userinfo"]){
+        document.getElementById("profilePic").src=user.profile_picture
         document.getElementById("publicViewUserFullName").innerText=capitalize(user.first_name)+" "+capitalize(user.last_name)
         document.getElementById("publicViewUserBio").innerText=capitalize(user.bio)
       }
@@ -43,7 +44,7 @@ export const UserPublic = ({ navTitle = "User" }) => {
           style={{ width: "100%", height: "15vw",
             marginLeft: "5%", marginBottom:"10%"
           }}>
-          <img id="profilePic" src="https://picsum.photos/seed/picsusm/200/200"
+          <img id="profilePic" src=""
             className="img-thumbnail rounded mx-auto d-block" alt=""
             style={{ height: "100%", width: "15vw%", position: "relative", top: "1.5vh", marginLeft:"0px"}}
           />

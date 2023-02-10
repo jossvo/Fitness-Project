@@ -11,7 +11,7 @@ class User(db.Model):
     email = db.Column(db.String(250), unique=True,nullable=False)
     gender = db.Column(db.String(250), nullable=False)
     share_gender = db.Column(db.Boolean())
-    password = db.Column(db.String(250), nullable=False)
+    password = db.Column(db.String(250), nullable=False) 
     location = db.Column(db.String(250))
     share_location = db.Column(db.Boolean())
     birthday = db.Column(db.Date(), nullable=False)
@@ -21,6 +21,7 @@ class User(db.Model):
     height = db.Column(db.String(250))
     share_height = db.Column(db.Boolean())
     profile_picture = db.Column(db.String(250))
+    profile_banner_picture = db.Column(db.String(250))
     bio = db.Column(db.String(600))
     facebook = db.Column(db.String(250))
     twitter = db.Column(db.String(250))
@@ -56,6 +57,7 @@ class User(db.Model):
             "share_weight" : self.share_weight,
             "height" : self.height,
             "share_height" : self.share_height,
+            "profile_picture": self.profile_picture,
             "bio": self.bio
         }
 

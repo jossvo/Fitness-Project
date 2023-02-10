@@ -15,6 +15,14 @@ from api.user_routes import api_user
 from api.coach_routes import api_coach
 from api.workout_routes import api_workout
 from flask_jwt_extended import JWTManager 
+# Importando firebase
+import firebase_admin
+from firebase_admin import credentials
+
+# Se cargan las credenciales
+cred = credentials.Certificate("/workspace/Fitness-Project/firebase-key.json")
+#Se inicializa la aplicación
+firebase_admin.initialize_app(cred)
 
 #from models import Person
 

@@ -14,7 +14,7 @@ export function capitalize(str){
 
 export const ProfileInfo = ({ navTitle = "User" }) => {
   const { store, actions } = useContext(Context);
-  const { updateAccountDetails } = actions
+  const { updateAccountDetails , updateImage, setProfileImage} = actions
   const [preventProfileUpdate,setPreventProfileUpdate]= useState(true)
   const [preventImageUpdate,setPreventImageUpdate]= useState(true)
   const [allowPopulation, setAllowPopulation] = useState(false)
@@ -29,6 +29,8 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
   let inputBrithday = document.getElementById("inputBirthday")
   let inputHeight = document.getElementById("inputHeight")
   let inputWeight = document.getElementById("inputWeight")
+  let profileImage = document.getElementById("profileImg")
+  let inputProfileImage = document.getElementById("inputProfileImg")
 
   //Function to populate form with data
   useEffect(() => {
@@ -48,6 +50,7 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
   async function setData(){
     if(store["userinfo"] && allowPopulation){
       let user = store["userinfo"]
+      profileImage.src=user.profile_picture
       inputuser.value=capitalize(user.username)
       inputFirstName.value=capitalize(user.first_name)
       inputLastName.value=capitalize(user.last_name)
@@ -76,9 +79,13 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
     }
   }
 
-    
-
   //Onchange to validate if submit is allowed
+  function verifyImage(e){
+    inputProfileImage.files.length == 0?setPreventImageUpdate(true)
+    :setPreventImageUpdate(false)
+  }
+
+
   function verifyData(e){
     let elem = e.target
     if(elem.id==="inputEmailAddress")verifyEmail(elem.id,"change")
@@ -150,6 +157,14 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
 
     let ok = await updateAccountDetails(data)
     if (ok)console.info("Información actualizada")
+    console.log("hi")
+    window.location.reload(true)
+  }
+  async function updateProfilePicture(e){
+    e.preventDefault()
+    const data = new FormData(e.target);
+    let ok = await updateImage(data)
+    if (ok)console.info("Información actualizada")
     window.location.reload(true)
   }
 
@@ -166,12 +181,13 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
           <div className="col-xl-4">
             <div className="card mb-4 mb-xl-0">
               <div className="card-header">Profile Picture</div>
-              <form >
+              <form onSubmit={updateProfilePicture}>
                 <div className="card-body text-center">
                   <img
+                    id="profileImg"
                     className="img-account-profile rounded-circle mb-2"
-                    src="http://bootdey.com/img/Content/avatar/avatar1.png"
-                    alt=""
+                    src=""
+                    alt="profile picture"
                   />
 
                   <div className="small font-italic text-muted mb-4">
@@ -179,13 +195,19 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
                   </div>
 
                   <div className="mb-3" >
-                    <label hmtlfor="formFileSm" className="form-label">
+                    <label hmtlfor="inputProfileImg" className="form-label">
                       Select new profile picture:
                     </label>
-                    <input className="form-control form-control-sm" id="formFileSm" type="file"/>
+                    <input 
+                    name="file"
+                    className="form-control form-control-sm" 
+                    accept="image/png, image/jpeg" 
+                    id="inputProfileImg" 
+                    type="file" 
+                    onChange={verifyImage}/>
                   </div>
 
-                  <button className="btn btn-primary" type="button" disabled={preventImageUpdate}>
+                  <button className="btn btn-primary" type="submit" disabled={preventImageUpdate}>
                     Upload profile picture
                   </button>
                 </div>

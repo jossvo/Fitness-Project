@@ -151,6 +151,23 @@ const getState = ({ getStore, getActions, setStore }) => {
 				  setStore(newStore);
 				}
 			},
+			// Functions to post new information
+			setProfileImage:async ()=>{
+				let token = localStorage.accessToken
+				let first = token.slice(token.length/2);
+				const data = new FormData()
+				let avatarResponse = await fetch(`https://api.dicebear.com/5.x/bottts-neutral/jpg?seed=${first}`)
+					.then(res=>res.blob())
+					.then(blob=>{
+						const file = new File([blob],'image',{type:blob.type})
+						data.set('file',file)
+					})
+					
+					const response = await fetch(apiUrl+"/setprofilepic", {
+						method:'POST',
+						body: data
+					})
+			},
 			// functions to update information
 			updateTokens:async ()=>{
 				const resp = await fetch(apiUrl+"/refresh", {
@@ -188,11 +205,33 @@ const getState = ({ getStore, getActions, setStore }) => {
 					body: postData,
 				});
 				if (!response.ok){
+					resp.text().then(text => {
+						let errorObj = JSON.parse(text)
+						switch(errorObj.msg){
+							case "Token has expired":
+								console.log("Token has expired")
+								break;
+							default:
+								throw new Error(errorObj.msg)
+						}
+					})
+				}
+				return true
+			},
+			updateImage: async (postData)=>{
+				let response = await fetch(apiUrl +`/setprofilepic`,{
+					method: 'PATCH',
+					headers: {
+						...getActions().getAutorizationHeader()
+					},
+					body: postData,
+				});
+				if (!response.ok){
 					console.error(response.statusText)
 					return false
 				}
 				return true
-			},
+			}
 		}
 	};
 };
