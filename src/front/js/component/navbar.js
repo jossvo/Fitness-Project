@@ -1,5 +1,5 @@
 //Imports y UseEffect para hacer el fecth de los datos para la libreria de entrenamientos ("Workouts")
-import React,{ useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../store/appContext";
 
 import { Link } from "react-router-dom";
@@ -27,7 +27,7 @@ export const Navbar = () => {
           </button>
           <div className="collapse navbar-collapse " id="navbarNav">
             <ul className="navbar-nav ms-auto mx-5 d-flex align-items-right ">
-              <Link to="#">
+              <Link to="/workouts">
                 <span className="navbar-items">
                   <i className=""></i>Programs
                 </span>
@@ -54,7 +54,6 @@ export const Navbar = () => {
               </Link>
               <SignInComponent />
               <RegistrationForm />
-
             </ul>
           </div>
         </div>

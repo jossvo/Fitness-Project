@@ -9,6 +9,7 @@ import injectContext from "./store/appContext";
 import { UserPublic } from "./userComponents/userPublic.jsx";
 import { ProfileInfo } from "./userComponents/profileInfo.jsx";
 import { ProfileSecurity } from "./userComponents/profileSecurity.jsx";
+import { Workouts } from "./pages/workouts";
 
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
@@ -33,6 +34,7 @@ const Layout = () => {
             <Route element={<UserPublic />} path="/:userid/notifications" />
             <Route element={<Demo />} path="/demo" />
             <Route element={<Single />} path="/single/:theid" />
+            <Route element={<Workouts />} path="/workouts" />
             <Route element={<h1>Not found!</h1>} />
           </Routes>
           <Footer />

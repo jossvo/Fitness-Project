@@ -14,7 +14,7 @@ export const RegistrationForm = () => {
       <div
         className="modal fade "
         id="exampleModal"
-        tabindex="-1"
+        tabIndex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
       >
@@ -39,7 +39,7 @@ export const RegistrationForm = () => {
               <form className="row g-3">
                 <div className="col-md-6">
                   <label
-                    for="inputName"
+                    htmlFor="inputName"
                     className="form-label text-light label-text"
                   >
                     Name
@@ -48,7 +48,7 @@ export const RegistrationForm = () => {
                 </div>
                 <div className="col-md-6">
                   <label
-                    for="inputLastName"
+                    htmlFor="inputLastName"
                     className="form-label text-light label-text"
                   >
                     LastName
@@ -61,7 +61,7 @@ export const RegistrationForm = () => {
                 </div>
                 <div className="col-md-6">
                   <label
-                    for="inputEmail4"
+                    htmlFor="inputEmail4"
                     className="form-label text-light label-text"
                   >
                     Email
@@ -88,7 +88,7 @@ export const RegistrationForm = () => {
                 </div>
                 <div className="col-md-6">
                   <label
-                    for="inputPassword4"
+                    htmlFor="inputPassword4"
                     className="form-label text-light label-text"
                   >
                     Password
@@ -100,7 +100,7 @@ export const RegistrationForm = () => {
                   />
                 </div>
                 <div className="col-md-12">
-                  <label for="registerAs" className="form-label text-light">
+                  <label htmlFor="registerAs" className="form-label text-light">
                     Register As
                   </label>
                   <div className="form-check">
@@ -112,7 +112,7 @@ export const RegistrationForm = () => {
                     />
                     <label
                       className="form-check-label text-light"
-                      for="flexRadioDefault1"
+                      htmlFor="flexRadioDefault1"
                     >
                       User
                     </label>
@@ -123,11 +123,11 @@ export const RegistrationForm = () => {
                       type="radio"
                       name="flexRadioDefault"
                       id="flexRadioDefault2"
-                      checked
+                      defaultChecked={true}
                     />
                     <label
                       className="form-check-label text-light"
-                      for="flexRadioDefault2"
+                      htmlFor="flexRadioDefault2"
                     >
                       Coach
                     </label>
@@ -140,7 +140,7 @@ export const RegistrationForm = () => {
                     className="form-select"
                     aria-label="Default select example"
                   >
-                    <option selected disabled>
+                    <option  disabled>
                       Choose One
                     </option>
                     <option value="1">Male</option>

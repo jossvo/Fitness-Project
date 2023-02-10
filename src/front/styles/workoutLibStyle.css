@@ -1,0 +1,32 @@
+:root {
+  --mainColor: RGB(253, 202, 0);
+  --goldColor: RGB(215, 172, 2);
+  --lightGray: #ecf0f1;
+  --grayColor: RGB(175, 175, 174);
+  --darkGray: RGB(72, 81, 77);
+  --blackColor: RGB(28, 28, 26);
+}
+.title-container {
+  font-family: "Bebas Neue", sans-serif;
+  background-color: var(--blackColor);
+  color: whitesmoke;
+  font-size: 25px;
+  padding: 6px 0;
+}
+.workout-library-img {
+  width: 100%;
+  height: 200px;
+}
+.workout-description {
+  height: 70px;
+}
+.btn-container-workouts {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btn-workout-library {
+  
+  width: 100%;
+}
