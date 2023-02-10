@@ -17,6 +17,18 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
   const { updateAccountDetails } = actions
   const [preventProfileUpdate,setPreventProfileUpdate]= useState(true)
   const [preventImageUpdate,setPreventImageUpdate]= useState(true)
+  const [allowPopulation, setAllowPopulation] = useState(false)
+
+  //DOM Elements variables
+  let inputuser =document.getElementById("inputUsername")
+  let inputFirstName =document.getElementById("inputFirstName")
+  let inputLastName =document.getElementById("inputLastName")
+  let inputEmail =document.getElementById("inputEmailAddress")
+  let inputGender =document.getElementById("inputGender")
+  let inputBio =document.getElementById("textAreaBio")
+  let inputBrithday = document.getElementById("inputBirthday")
+  let inputHeight = document.getElementById("inputHeight")
+  let inputWeight = document.getElementById("inputWeight")
 
   //Function to populate form with data
   useEffect(() => {
@@ -25,43 +37,104 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
       actions.getDefaultPicture();
     }
     fetchData()
+    setAllowPopulation(true)
   },[]);
 
+  // useEffect and function to populate form with fetch data
   useEffect(() => {
-    setDataForm()
-    console.log(store["profileImage"])
+    setData()
   },[store["userinfo"]]);
 
-  function setDataForm(){
-    if (store["userinfo"]){
+  async function setData(){
+    if(store["userinfo"] && allowPopulation){
       let user = store["userinfo"]
-      document.getElementById("inputUsername").value=capitalize(user.username)
-      document.getElementById("inputFirstName").value=capitalize(user.first_name)
-      document.getElementById("inputLastName").value=capitalize(user.last_name)
-      document.getElementById("inputEmailAddress").value=user.email
-      document.getElementById("inputGender").value = capitalize(user.gender)
+      inputuser.value=capitalize(user.username)
+      inputFirstName.value=capitalize(user.first_name)
+      inputLastName.value=capitalize(user.last_name)
+      inputEmail.value=user.email
+      inputGender.value = capitalize(user.gender)
       if ( user.share_gender === null || user.share_gender === "false") document.getElementById("radioGenderFalse").checked = true
       else document.getElementById("radioGenderTrue").checked = true
       
       let birth = Date.parse(user.date_of_birth)
       let birthday = new Date(birth)
       birthday.setDate(birthday.getDate() + 1); //to fix birthday that show 1 day earlier
-
-      document.getElementById("inputBirthday").value = moment(birthday).format('YYYY-MM-DD');
+  
+      inputBrithday.value = moment(birthday).format('YYYY-MM-DD');
       if ( user.share_age === null || user.share_age === "false") document.getElementById("radioAgeFalse").checked = true
       else document.getElementById("radioAgeTrue").checked = true
   
-      document.getElementById("inputHeight").value = user.height
+      inputHeight.value = user.height
       if ( user.share_height === null || user.share_height === "false") document.getElementById("radioHeightFalse").checked = true
       else document.getElementById("radioHeightTrue").checked = true
   
-      document.getElementById("inputWeight").value = user.weight
+      inputWeight.value = user.weight
       if ( user.share_weight === null || user.share_weight === "false") document.getElementById("radioWeightFalse").checked = true
       else document.getElementById("radioWeightTrue").checked = true
       
-      document.getElementById("textAreaBio").value = user.bio
+      inputBio.value = user.bio
     }
   }
+
+    
+
+  //Onchange to validate if submit is allowed
+  function verifyData(e){
+    let elem = e.target
+    if(elem.id==="inputEmailAddress")verifyEmail(elem.id,"change")
+
+    let mandatoryArr = ["inputUsername","inputFirstName","inputLastName"]
+    let helpId = elem.id.replace("input","")+"Help"
+
+    if(mandatoryArr.includes(elem.id) && !elem.value){
+      //Set inputHelp text
+      document.getElementById(helpId).innerText = elem.id.replace("input","")+" can't be blank"
+      //Set valid/invalid style class
+      elem.classList.remove("invalidInput");
+      elem.classList.add("invalidInput")
+      setPreventProfileUpdate(true)
+    }else if (mandatoryArr.includes(elem.id) && elem.value){
+      document.getElementById(helpId).innerText = ""
+      elem.classList.remove("invalidInput");
+      elem.classList.add("validInput")
+      setPreventProfileUpdate(false)
+    }
+  }
+
+  function verifyEmail(id, type){
+    var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    var inputMail = document.getElementById(id).value
+    var elem = document.getElementById(id)
+    if(inputMail.match(mailformat)){
+      document.getElementById("emailHelp").innerText = ""
+      elem.classList.remove("invalidEmail");
+      elem.classList.remove("questionableEmail");
+      elem.classList.add("validEmail");
+      setPreventProfileUpdate(false)
+      return true;
+    }
+    else{
+      let emailHelp = document.getElementById("emailHelp")
+      let helpText = "Invalid email format"
+      if(type==="change"){
+        if (inputMail){
+          elem.classList.remove("invalidEmail")
+          elem.classList.add("questionableEmail")
+        }else{
+          elem.classList.add("invalidEmail")
+          elem.classList.remove("questionableEmail")
+          helpText="Email can't be blank"
+        }
+      }else{
+        elem.classList.remove("questionableEmail")
+        elem.classList.add("invalidEmail")
+      }
+      emailHelp.innerText=helpText
+      setPreventProfileUpdate(true)
+      return false;
+    }
+  }
+
   // Update profile data from Account Details form
   async function updateData(e){
     e.preventDefault()
@@ -77,6 +150,7 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
 
     let ok = await updateAccountDetails(data)
     if (ok)console.info("Información actualizada")
+    window.location.reload(true)
   }
 
   return (
@@ -135,7 +209,10 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
                       type="text"
                       placeholder="Enter your username"
                       name="username"
+                      onChange={verifyData}
                     />
+                    <div id="UsernameHelp" className="form-text" style={{color:"red"}}>                    
+                    </div>
                   </div>
 
                   <div className="row gx-3 mb-3">
@@ -149,7 +226,10 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
                         type="text"
                         placeholder="Enter your first name"
                         name="first_name"
+                        onChange={verifyData}
                       />
+                      <div id="FirstNameHelp" className="form-text" style={{color:"red"}}>                    
+                      </div>
                     </div>
 
                     <div className="col-md-6">
@@ -162,7 +242,10 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
                         type="text"
                         placeholder="Enter your last name"
                         name="last_name"
+                        onChange={verifyData}
                       />
+                      <div id="LastNameHelp" className="form-text" style={{color:"red"}}>                    
+                      </div>
                     </div>
                   </div>
 
@@ -175,8 +258,12 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
                       id="inputEmailAddress"
                       type="email"
                       placeholder="Enter your email address"
+                      onChange={verifyData}
+                      onBlur={()=>verifyEmail("inputEmailAddress","focusOut")}
                       name="email"
                     />
+                    <div id="emailHelp" className="form-text" style={{color:"red"}}>                    
+                    </div>
                   </div>
                   {[
                     { title: "Gender", share: "Gender", type: "text" },

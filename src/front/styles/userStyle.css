@@ -76,7 +76,21 @@
     margin-left: 1rem;
     margin-right: 1rem;
 }
-
+/* Input validation */
+.validInput{
+    border-color: rgb(0, 189, 0) !important;
+    border-width: 3px !important;
+}
+.invalidInput{
+    border-color: red !important;
+    border-width: 2px !important;
+}
+.validInput:focus{
+    box-shadow: none !important;
+}
+.invalidInput:focus{
+    box-shadow: none !important;
+}
 
 .profileDiv .form-check{
     margin-right: 5%;
