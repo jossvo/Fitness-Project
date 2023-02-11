@@ -30,11 +30,11 @@ def user_login():
 
     user=User.query.filter(User.email==email).first()
     if user is None:
-        return jsonify({"msg": "Login failed: Wrong email"}), 401
+        return jsonify({"status":"Wrong email","msg": "Couldn't find a Fit Central account associated with this email. Please try again"}), 401
         
     #Validar la clave
     if not crypto.check_password_hash(user.password,password):
-        return jsonify({"msg": "Login failed: Wrong password"}), 401
+        return jsonify({"status":"Wrong password","msg": "That's not the right password. Please try again"}), 401
 
     token = create_access_token(identity=user.id)
     refresh_token=create_refresh_token(identity=user.id)

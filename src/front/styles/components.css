@@ -1,6 +1,7 @@
 :root {
   --mainColor: RGB(253, 202, 0);
   --goldColor: RGB(215, 172, 2);
+  --lightInput: RGB(227,230,230);
   --lightGray: #ecf0f1;
   --grayColor: RGB(175, 175, 174);
   --darkGray: RGB(72, 81, 77);
@@ -47,6 +48,7 @@ nav .btn {
 .modal-title {
   font-size: 28px;
   font-family: "Bebas Neue", sans-serif;
+  color: var(--mainColor);
 }
 .btn-signin {
   width: 100%;
@@ -61,7 +63,22 @@ nav .btn {
 }
 .form-control {
   padding: 0.8rem 0;
+  background-color: var(--lightInput) !important;
 }
+.form-select{
+  background-color: var(--lightInput) !important;
+}
+/* .form-check-input:checked, */
+.form-check-input:focus,
+.form-check-input:checked{
+  background-color: var(--mainColor) !important;
+  border-color: var(--mainColor) !important;
+  box-shadow: 0px 0px 4px 3px rgba(253, 202, 0, 0.633) !important;
+  -webkit-box-shadow: 0px 0px 4px 3px rgba(253, 202, 0, 0.633) !important;
+  -moz-box-shadow: 0px 0px 4px 3px rgba(253, 202, 0, 0.633) !important;
+
+}
+
 .modal-a {
   font-family: "Oswald", sans-serif;
   font-size: 1.6rem;
@@ -83,8 +100,7 @@ nav .btn {
 }
 .invalidEmail{
   border-color: red !important;
-  border-width: 2px !important;
-  background-color: rgb(255, 206, 206) !important;
+  border-width: 3px !important;
 }
 .validEmail:focus{
   box-shadow: none !important;
@@ -96,6 +112,7 @@ nav .btn {
   box-shadow: none !important;
 }
 
+#passwordHelp,
 #emailHelp{
   color: var(--mainColor);
 }

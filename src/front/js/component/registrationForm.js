@@ -1,5 +1,7 @@
 import React from "react";
 export const RegistrationForm = () => {
+  
+
   return (
     <React.Fragment>
       <button
@@ -22,7 +24,7 @@ export const RegistrationForm = () => {
           <div className="modal-content bg-dark">
             <div className="modal-header">
               <h5
-                className="modal-title text-light text-center"
+                className="modal-title text-center"
                 id="exampleModalLabel"
               >
                 Join Now to Fit Central
@@ -123,9 +125,9 @@ export const RegistrationForm = () => {
                     <option defaultValue disabled>
                       Choose One
                     </option>
-                    <option value="1">Male</option>
-                    <option value="2">Female</option>
-                    <option value="3">Other</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
                   </select>
                 </div>
                 <div className="col-md-6">
@@ -136,12 +138,13 @@ export const RegistrationForm = () => {
                     <input
                       className="form-check-input"
                       type="radio"
-                      name="flexRadioDefault"
-                      id="flexRadioDefault1"
+                      name="flexRadioUsertype"
+                      id="flexRadioUsertype1"
+                      defaultChecked
                     />
                     <label
                       className="form-check-label text-light"
-                      hmtlfor="flexRadioDefault1"
+                      hmtlfor="flexRadioUsertype1"
                     >
                       User
                     </label>
@@ -150,13 +153,13 @@ export const RegistrationForm = () => {
                     <input
                       className="form-check-input"
                       type="radio"
-                      name="flexRadioDefault"
-                      id="flexRadioDefault2"
-                      defaultChecked
+                      name="flexRadioUsertype"
+                      id="flexRadioUsertype2"
+                      
                     />
                     <label
                       className="form-check-label text-light"
-                      hmtlfor="flexRadioDefault2"
+                      hmtlfor="flexRadioUsertype2"
                     >
                       Coach
                     </label>
@@ -169,7 +172,7 @@ export const RegistrationForm = () => {
             <div className="modal-footer">
               <button
                 type="button"
-                className="btn btn-secondary"
+                className="btn btn-danger btn-modal"
                 data-bs-dismiss="modal"
               >
                 Close

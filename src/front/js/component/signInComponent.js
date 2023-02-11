@@ -7,11 +7,17 @@ export const SignInComponent = () => {
   const [allowLogin,setAllowLogin]=useState(false)
 	const navigate = useNavigate()
   const buttonNameRef = useRef()
+  let inputEmail = document.getElementById("inputLoginEmail")
+  let inputPassword = document.getElementById("inputLoginPassword")
+  let emailHelp = document.getElementById("emailHelp")
+  let passwordHelp = document.getElementById("passwordHelp")
   
   function verifyData(e){
+    emailHelp.innerText =""
+    passwordHelp.innerText =""
+    inputPassword.classList.remove("invalidEmail")
     if(e.target.id==="inputLoginEmail")verifyEmail(e.target.id,"change")
-    if(document.getElementById("inputLoginEmail").classList.contains("validEmail")
-    && document.getElementById("inputLoginPassword").value != ""
+    if(!inputEmail.classList.contains("invalidEmail") && inputEmail.value != ""
     )setAllowLogin(true)
     else(setAllowLogin(false))
   }
@@ -21,22 +27,12 @@ export const SignInComponent = () => {
     var inputMail = document.getElementById(id).value
     var elem = document.getElementById(id)
     if(inputMail.match(mailformat)){
-      document.getElementById("emailHelp").innerText = ""
-      elem.classList.remove("invalidEmail");
-      elem.classList.remove("questionableEmail");
-      elem.classList.add("validEmail");
-      return true;
+      emailHelp.innerText = ""
+      elem.classList.remove("invalidEmail")
     }
     else{
-      if(type==="change"){
-        elem.classList.remove("invalidEmail")
-        elem.classList.add("questionableEmail")
-      }else{
-        elem.classList.remove("questionableEmail")
-        elem.classList.add("invalidEmail")
-      }
-      document.getElementById("emailHelp").innerText = "Invalid email format"
-      return false;
+      elem.classList.add("invalidEmail")
+      emailHelp.innerText = "Invalid email format"
     }
   }
 
@@ -49,10 +45,23 @@ export const SignInComponent = () => {
     let type = document.querySelector('input[name="flexRadioLoginAs"]:checked').value
 		let resp = await actions.login(email,password,type)
 		if(resp !="ok"){
-			console.error(resp)
-			return;
-		}
-		console.log("Login exitoso")
+      console.log(resp.status)
+      switch(resp.status){
+        case "Wrong email":
+          emailHelp.innerText = resp.msg
+          inputEmail.classList.add("invalidEmail")
+          break;
+        case "Wrong password":
+          passwordHelp.innerText = resp.msg
+          inputPassword.classList.add("invalidEmail")
+          break;
+      }
+      
+    }else{ 
+      console.log("Login exitoso")
+      window.location.reload(true)
+    }
+
 	}
 
   return (
@@ -138,7 +147,6 @@ export const SignInComponent = () => {
                     name="email"
                     aria-describedby="emailHelp"
                     onChange={verifyData}
-                    onBlur={()=>verifyEmail("inputLoginEmail","focusOut")}
                   />
                   <div id="emailHelp" className="form-text">                    
                   </div>
@@ -157,13 +165,14 @@ export const SignInComponent = () => {
                     name="password"
                     onChange={verifyData}
                   />
+                  <div id="passwordHelp" className="form-text">                    
+                  </div>
                 </div>
 
                 <button
                   type="submit"
                   className="btn btn-warning btn-lg btn-signin"
                   id = "buttonSignIn"
-                  data-bs-dismiss="modal"
                   disabled={!allowLogin}
                 >
                   Sign In
@@ -177,6 +186,7 @@ export const SignInComponent = () => {
                 type="button"
                 className="btn btn-danger btn-modal"
                 data-bs-dismiss="modal"
+                id = "buttonCloseLoginModal"
               >
                 Close
               </button>

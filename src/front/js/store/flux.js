@@ -56,7 +56,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					body:JSON.stringify({email,password})
 				})
 				if(!resp.ok){
-					return resp.statusText
+					return resp.json()
 				}
 				const data = await resp.json()
 				setStore({
