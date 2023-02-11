@@ -6,6 +6,13 @@
   --darkGray: RGB(72, 81, 77);
   --blackColor: RGB(28, 28, 26);
 }
+.workout-main-container {
+  display: flex;
+}
+.page-title-workoutLib {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 60px;
+}
 .title-container {
   font-family: "Bebas Neue", sans-serif;
   background-color: var(--blackColor);
@@ -20,6 +27,9 @@
 .workout-description {
   height: 70px;
 }
+.list-group-workouts .workout-item {
+  font-family: "Roboto", sans-serif;
+}
 .btn-container-workouts {
   display: flex;
   flex-direction: column;
@@ -27,6 +37,11 @@
 }
 
 .btn-workout-library {
-  
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 18px;
+  font-weight: bold;
   width: 100%;
+}
+.workout-sidebar-title {
+  font-family: "Bebas Neue", sans-serif;
 }
