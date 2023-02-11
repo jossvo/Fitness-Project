@@ -157,24 +157,23 @@ def update_profile_pic():
     user=User.query.get(user_id)
     # Obtenemos el archivo de la petición
     file=request.files['file']
-    print("patch",file)
-    # extension = file.filename.split('.')[1]
-    # # Guardamos el archivo recibido recibido en un archivo temporal
-    # temp = tempfile.NamedTemporaryFile(delete=False)
-    # file.save(temp)
-    # # Subir el archivo a Firebase
-    #     # Se elimina el archivo anterior
-    # bucket = storage.bucket(name='fit-central-7cf8b.appspot.com')
-    # resource = bucket.blob(user.profile_picture)
-    # resource.delete()
+    extension = file.filename.split('.')[1]
+    # Guardamos el archivo recibido recibido en un archivo temporal
+    temp = tempfile.NamedTemporaryFile(delete=False)
+    file.save(temp)
+    # Subir el archivo a Firebase
+        # Se elimina el archivo anterior
+    bucket = storage.bucket(name='fit-central-7cf8b.appspot.com')
+    resource = bucket.blob(user.profile_picture)
+    resource.delete()
 
-    # filename="profile_pics/"+str(user_id)+"."+extension
-    # resource = bucket.blob(filename)
-    #     # Subir el archivo a ese recurso
-    # resource.upload_from_filename(temp.name,content_type="image/"+extension)
+    filename="profile_pics/"+str(user_id)+"."+extension
+    resource = bucket.blob(filename)
+        # Subir el archivo a ese recurso
+    resource.upload_from_filename(temp.name,content_type="image/"+extension)
 
-    # setattr(user,'profile_picture',filename)
-    # db.session.add(user)
-    # db.session.commit()
+    setattr(user,'profile_picture',filename)
+    db.session.add(user)
+    db.session.commit()
 
     return jsonify({"msg":"Porfile picture updated"})

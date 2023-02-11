@@ -91,7 +91,6 @@ nav .btn {
 .validEmail{
   border-color: rgb(0, 189, 0) !important;
   border-width: 3px !important;
-  background-color: rgb(226, 255, 226) !important;
 }
 .questionableEmail{
   border-color: var(--mainColor) !important;

@@ -5,8 +5,7 @@ import { Context } from "../store/appContext";
 export const SignInComponent = () => {
   const { store, actions } = useContext(Context);
   const [allowLogin,setAllowLogin]=useState(false)
-	const navigate = useNavigate()
-  const buttonNameRef = useRef()
+
   let inputEmail = document.getElementById("inputLoginEmail")
   let inputPassword = document.getElementById("inputLoginPassword")
   let emailHelp = document.getElementById("emailHelp")
@@ -16,13 +15,13 @@ export const SignInComponent = () => {
     emailHelp.innerText =""
     passwordHelp.innerText =""
     inputPassword.classList.remove("invalidEmail")
-    if(e.target.id==="inputLoginEmail")verifyEmail(e.target.id,"change")
+    if(e.target.id==="inputLoginEmail")verifyEmail(e.target.id)
     if(!inputEmail.classList.contains("invalidEmail") && inputEmail.value != ""
     )setAllowLogin(true)
     else(setAllowLogin(false))
   }
 
-  function verifyEmail(id, type){
+  function verifyEmail(id){
     var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     var inputMail = document.getElementById(id).value
     var elem = document.getElementById(id)
@@ -67,7 +66,6 @@ export const SignInComponent = () => {
   return (
     <React.Fragment>
       <button
-        ref={buttonNameRef}
         type="button"
         className="btn btn-warning mx-5"
         data-bs-toggle="modal"

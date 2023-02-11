@@ -164,8 +164,10 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
     e.preventDefault()
     const data = new FormData(e.target);
     let ok = await updateImage(data)
-    if (ok)console.info("Información actualizada")
-    window.location.reload(true)
+    if (ok){
+      console.info("Información actualizada")
+      window.location.reload(true)
+    }
   }
 
   return (
