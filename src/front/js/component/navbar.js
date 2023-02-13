@@ -10,10 +10,12 @@ export const Navbar = () => {
     <div>
       <nav className="navbar navbar-expand-lg ms-auto ">
         <div className="container-fluid mx-5  ">
-          <Link to="/"><a className="navbar-brand navbar-logo" href="#">
-            <i className="fa-solid fa-dumbbell "></i>
-            Fit Central
-          </a></Link>
+          <Link to="/">
+            <a className="navbar-brand navbar-logo" href="#">
+              <i className="fa-solid fa-dumbbell "></i>
+              Fit Central
+            </a>
+          </Link>
           <button
             className="navbar-toggler navbar-dark "
             type="button"
@@ -26,7 +28,7 @@ export const Navbar = () => {
             <span className="navbar-toggler-icon "></span>
           </button>
           <div className="collapse navbar-collapse " id="navbarNav">
-            <ul className="navbar-nav ms-auto mx-5 d-flex align-items-right ">
+            <ul className="navbar-nav ms-auto mx-5 d-flex align-items-center ">
               <Link to="/workouts">
                 <span className="navbar-items">
                   <i className=""></i>Programs

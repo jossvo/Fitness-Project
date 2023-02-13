@@ -22,11 +22,11 @@ export const Workouts = () => {
         <div>
           <SideBar />
         </div>
-        <div>
-          <h1 className="page-title text-center my-4 page-title-workoutLib ">
+        <div className="d-flex-column w-100 justify-content-center">
+          <h1 className="page-title text-center my-4 page-title-workoutLib w-100">
             Workout Library
           </h1>
-          <div className="container ">
+          <div className="container  ">
             <div className="row ">
               {store.workouts?.map((element) => (
                 <div
