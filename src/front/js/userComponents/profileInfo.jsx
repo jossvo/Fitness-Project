@@ -56,7 +56,7 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
       inputLastName.value=capitalize(user.last_name)
       inputEmail.value=user.email
       inputGender.value = capitalize(user.gender)
-      if ( user.share_gender === null || user.share_gender === "false") document.getElementById("radioGenderFalse").checked = true
+      if ( user.share_gender === null || user.share_gender === false) document.getElementById("radioGenderFalse").checked = true
       else document.getElementById("radioGenderTrue").checked = true
       
       let birth = Date.parse(user.date_of_birth)
@@ -64,15 +64,15 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
       birthday.setDate(birthday.getDate() + 1); //to fix birthday that show 1 day earlier
   
       inputBrithday.value = moment(birthday).format('YYYY-MM-DD');
-      if ( user.share_age === null || user.share_age === "false") document.getElementById("radioAgeFalse").checked = true
+      if ( user.share_age === null || user.share_age === false) document.getElementById("radioAgeFalse").checked = true
       else document.getElementById("radioAgeTrue").checked = true
   
       inputHeight.value = user.height
-      if ( user.share_height === null || user.share_height === "false") document.getElementById("radioHeightFalse").checked = true
+      if ( user.share_height === null || user.share_height === false) document.getElementById("radioHeightFalse").checked = true
       else document.getElementById("radioHeightTrue").checked = true
   
       inputWeight.value = user.weight
-      if ( user.share_weight === null || user.share_weight === "false") document.getElementById("radioWeightFalse").checked = true
+      if ( user.share_weight === null || user.share_weight === false) document.getElementById("radioWeightFalse").checked = true
       else document.getElementById("radioWeightTrue").checked = true
       
       inputBio.value = user.bio
