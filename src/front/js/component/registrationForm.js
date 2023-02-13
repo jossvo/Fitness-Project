@@ -1,10 +1,14 @@
 import { doc } from "prettier";
 import React, { useContext, useEffect,useRef, useState} from "react";
+import { Context } from "../store/appContext";
 
 export const RegistrationForm = () => {
+  const { store, actions } = useContext(Context);
   const [allowSignUp,setAllowSignUp]=useState(false)
+  const {setNewProfile}= actions
 
   let inputUsername = document.getElementById("inputSignupUsername")
+  let usernameHelp = document.getElementById("signupUsernameHelp")
   let inputFirstName = document.getElementById("inputSignupFirstName")
   let inputLastName = document.getElementById("inputSignupLastName")
   let inputEmail = document.getElementById("inputSignupEmail")
@@ -16,14 +20,65 @@ export const RegistrationForm = () => {
   let inputBirthday = document.getElementById("inputSignupBirthday")
   let inputUserType = document.getElementById("flexRadioUsertype")
 
-  function verifyData(e){
+  async function submitSignup(e){
+		e.preventDefault()
+    const data = new FormData(e.target);
+    data.set('user_type',data.get("flexRadioUsertype"))
+    data.delete("flexRadioUsertype")
 
+    let dataJSON = {}
+    for (var pair of data.entries()) {
+      dataJSON[pair[0]]=pair[1].toLocaleLowerCase()
+    }
+
+    let resp = await setNewProfile(data)
+		if(resp !="ok"){
+      if('email_msg'in resp){
+        emailHelp.innerText = resp.email_msg
+      }
+      if('username_msg'in resp){
+        usernameHelp.innerText = resp.username_msg
+      }
+    }else{ 
+      console.log("Perfil creado")
+      window.location.reload(true)
+    }
+
+	}
+
+  function verifyData(e){
+    let elem = e.target.id
+    if(elem==="inputSignupEmail") verifyEmail()
+    if(elem==="inputConfirmPassword") verifyPassword()
+    usernameHelp.innerHTML=""
+    emailHelp.innerHTML=""
+
+    let bool = Boolean(
+      inputUsername && inputUsername.value&& 
+      inputFirstName && inputFirstName.value &&
+      inputLastName && inputLastName.value &&
+      (
+        inputEmail && 
+        inputEmail.value && 
+        !inputEmail.classList.contains("invalidEmail")
+      ) &&
+      inputPassword && inputPassword.value &&
+      (
+        inputConfirmPassword && 
+        inputConfirmPassword.value && 
+        !inputConfirmPassword.classList.contains("invalidEmail")
+      ) &&
+      inputGender && inputGender.value &&
+      inputBirthday && inputBirthday.value
+      )
+
+    setAllowSignUp(bool)
   }
-  function verifyEmail(e){
+  function verifyEmail(){
     var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    var inputMail = e.target.value
+    var emailValue = inputEmail.value
     
-    if(inputMail.match(mailformat)){
+    if(emailValue.match(mailformat)){
       emailHelp.innerText = ""
       inputEmail.classList.remove("invalidEmail")
     }
@@ -78,7 +133,7 @@ export const RegistrationForm = () => {
             </div>
             <div className="modal-body">
               {/* Form de Registro */}
-              <form className="row g-3">
+              <form onSubmit={submitSignup} className="row g-3">
                 <div className="col-md-12">
                   <label
                     htmlFor="inputSignupUsername"
@@ -87,13 +142,14 @@ export const RegistrationForm = () => {
                     Username
                   </label>
                   <input
+                    name="username"
+                    onChange={verifyData}
                     type="text"
                     className="form-control text-form"
                     id="inputSignupUsername"
                     aria-describedby="signupUsernameHelp"
                   />
-                  <div id="signupUsernameHelp" className="form-text">
-                    Hola soy el username                    
+                  <div id="signupUsernameHelp" className="incorrectFormInput form-text">            
                   </div>
                 </div>
 
@@ -104,7 +160,12 @@ export const RegistrationForm = () => {
                   >
                     First Name
                   </label>
-                  <input type="email" className="form-control" id="inputSignupFirstName" />
+                  <input
+                    name="first_name"
+                    onChange={verifyData} 
+                    type="text" 
+                    className="form-control" 
+                    id="inputSignupFirstName" />
                 </div>
                 <div className="col-md-6">
                   <label
@@ -114,6 +175,8 @@ export const RegistrationForm = () => {
                     LastName
                   </label>
                   <input
+                    name="last_name"
+                    onChange={verifyData}
                     type="text"
                     className="form-control"
                     id="inputSignupLastName"
@@ -128,12 +191,13 @@ export const RegistrationForm = () => {
                     Email
                   </label>
                   <input
+                    name="email"
+                    onChange={verifyData}
                     type="email"
                     className="form-control"
                     id="inputSignupEmail"
-                    onChange={verifyEmail}
                   />
-                  <div id="signupEmailHelp" className="form-text">             
+                  <div id="signupEmailHelp" className="incorrectFormInput form-text">             
                   </div>
                 </div>
                 
@@ -145,6 +209,8 @@ export const RegistrationForm = () => {
                     Password
                   </label>
                   <input
+                    name="password"
+                    onChange={verifyData}
                     type="password"
                     className="form-control"
                     id="inputSignupPassword"
@@ -158,18 +224,19 @@ export const RegistrationForm = () => {
                     Confirm Password
                   </label>
                   <input
+                    onChange={verifyData}
                     type="password"
                     className="form-control"
                     id="inputConfirmPassword"
-                    onChange={verifyPassword}
                   />
-                  <div id="signupConfirmPaswordHelp" className="form-text">                   
+                  <div id="signupConfirmPaswordHelp" className="incorrectFormInput form-text">                   
                   </div>
                 </div>
 
                 <div className="col-md-3">
                   <label className="form-label text-light label-text">Gender</label>
                   <select
+                    name="gender"
                     className="form-select"
                     aria-label="Default select example"
                     id = "inputSignupGender"
@@ -188,12 +255,14 @@ export const RegistrationForm = () => {
                   htmlFor="inputSignupBirthday">
                     Birthday
                   </label>
-                  <input 
-                  className="form-control" 
-                  id="inputSignupBirthday" 
-                  type="date" 
-                  placeholder="Enter your age" 
-                  name="birthday"/>
+                  <input
+                    name="birthday"
+                    onChange={verifyData} 
+                    className="form-control" 
+                    id="inputSignupBirthday" 
+                    type="date" 
+                    placeholder="Enter your age" 
+                  />
                 </div>
                 <div className="col-md-4">
                   <label hmtlfor="registerAs" className="form-label text-light label-text">
@@ -201,10 +270,12 @@ export const RegistrationForm = () => {
                   </label>
                   <div className="form-check">
                     <input
+                      onChange={verifyData}
                       className="form-check-input"
                       type="radio"
                       name="flexRadioUsertype"
                       id="flexRadioUsertype1"
+                      value="user"
                       defaultChecked
                     />
                     <label
@@ -216,9 +287,11 @@ export const RegistrationForm = () => {
                   </div>
                   <div className="form-check">
                     <input
+                      onChange={verifyData}
                       className="form-check-input"
                       type="radio"
                       name="flexRadioUsertype"
+                      value="coach"
                       id="flexRadioUsertype2"
                       
                     />
@@ -230,8 +303,7 @@ export const RegistrationForm = () => {
                     </label>
                   </div>
                 </div>
-                <div id="signupGeneralHelp" className="form-text">
-                      Hola soy el general                    
+                <div id="signupGeneralHelp" className="incorrectFormInput form-text">             
                 </div>
 
                 <div className="modal-footer">

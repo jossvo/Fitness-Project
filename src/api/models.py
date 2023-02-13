@@ -7,7 +7,7 @@ class User(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     first_name = db.Column(db.String(250), nullable=False)
     last_name = db.Column(db.String(250), nullable=False)
-    username = db.Column(db.String(250))
+    username = db.Column(db.String(250), unique=True,nullable=False)
     email = db.Column(db.String(250), unique=True,nullable=False)
     gender = db.Column(db.String(250), nullable=False)
     share_gender = db.Column(db.Boolean())

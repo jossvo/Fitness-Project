@@ -152,21 +152,37 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			// Functions to post new information
-			setProfileImage:async ()=>{
-				let token = localStorage.accessToken
-				let first = token.slice(token.length/2);
+			setNewProfile: async (postData)=>{
+				let response = await fetch(apiUrl +"/users/signup",{
+					method: 'POST',
+					body: postData
+				});
+				if (!response.ok){
+					return response.json()
+				}
+				response.text().then(text => {
+					let data = JSON.parse(text)
+					let id = data.id
+					let seed = data.seed
+					let resp = getActions().setProfileImage(id,seed)
+					return "ok"
+				})
+			},
+			setProfileImage:async (user_id,seed)=>{
 				const data = new FormData()
-				let avatarResponse = await fetch(`https://api.dicebear.com/5.x/bottts-neutral/jpg?seed=${first}`)
+				let avatarResponse = await fetch(`https://api.dicebear.com/5.x/bottts-neutral/jpg?seed=${seed}`)
 					.then(res=>res.blob())
 					.then(blob=>{
 						const file = new File([blob],'image',{type:blob.type})
 						data.set('file',file)
 					})
 					
-					const response = await fetch(apiUrl+"/setprofilepic", {
-						method:'POST',
-						body: data
-					})
+				const response = await fetch(apiUrl+`/setprofilepic/${user_id}`, {
+					method:'POST',
+					body: data
+				})
+				if(!response.ok)return false
+				else return true
 			},
 			// functions to update information
 			updateTokens:async ()=>{

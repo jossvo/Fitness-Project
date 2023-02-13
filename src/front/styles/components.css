@@ -111,9 +111,10 @@ nav .btn {
   box-shadow: none !important;
 }
 
+.incorrectFormInput,
 #passwordHelp,
 #emailHelp{
-  color: var(--mainColor);
+  color: var(--mainColor) !important;
 }
 
 /*Hero Section*/

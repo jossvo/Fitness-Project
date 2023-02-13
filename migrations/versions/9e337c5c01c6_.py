@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: f721c3a6ee56
+Revision ID: 9e337c5c01c6
 Revises: 
-Create Date: 2023-02-09 02:48:54.152363
+Create Date: 2023-02-13 20:50:51.097393
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'f721c3a6ee56'
+revision = '9e337c5c01c6'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -42,7 +42,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('first_name', sa.String(length=250), nullable=False),
     sa.Column('last_name', sa.String(length=250), nullable=False),
-    sa.Column('username', sa.String(length=250), nullable=True),
+    sa.Column('username', sa.String(length=250), nullable=False),
     sa.Column('email', sa.String(length=250), nullable=False),
     sa.Column('gender', sa.String(length=250), nullable=False),
     sa.Column('share_gender', sa.Boolean(), nullable=True),
@@ -56,13 +56,15 @@ def upgrade():
     sa.Column('height', sa.String(length=250), nullable=True),
     sa.Column('share_height', sa.Boolean(), nullable=True),
     sa.Column('profile_picture', sa.String(length=250), nullable=True),
+    sa.Column('profile_banner_picture', sa.String(length=250), nullable=True),
     sa.Column('bio', sa.String(length=600), nullable=True),
     sa.Column('facebook', sa.String(length=250), nullable=True),
     sa.Column('twitter', sa.String(length=250), nullable=True),
     sa.Column('instagram', sa.String(length=250), nullable=True),
     sa.Column('tiktok', sa.String(length=250), nullable=True),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('email')
+    sa.UniqueConstraint('email'),
+    sa.UniqueConstraint('username')
     )
     op.create_table('coach_review',
     sa.Column('id', sa.Integer(), nullable=False),

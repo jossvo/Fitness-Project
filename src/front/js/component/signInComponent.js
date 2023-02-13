@@ -44,7 +44,6 @@ export const SignInComponent = () => {
     let type = document.querySelector('input[name="flexRadioLoginAs"]:checked').value
 		let resp = await actions.login(email,password,type)
 		if(resp !="ok"){
-      console.log(resp.status)
       switch(resp.status){
         case "Wrong email":
           emailHelp.innerText = resp.msg

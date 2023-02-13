@@ -8,6 +8,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_tok
 from flask_bcrypt import Bcrypt
 from firebase_admin import storage
 from datetime import timedelta
+import secrets
 import tempfile
 import re
 
@@ -76,28 +77,38 @@ def refresh_token():
 
 @api_user.route('/users/signup', methods=['POST'])
 def new_user():
-    class_keys = ['first_name','last_name','email', 'password','birthday','gender']
-    
+    msg = {}
+    email = request.form.get('email').lower()
+    username = request.form.get('username').lower()
+    email_exists= User.query.filter(User.email==email).first()
+    if email_exists is not None: 
+        msg["email_msg"]="Email adress is already in use"
+    username_exists= User.query.filter(User.username==username).first()
+    if username_exists is not None: 
+        msg["username_msg"]="Username is already in use"
+    if email_exists is not None or username_exists is not None: 
+        return jsonify(msg) , 409, {'ContentType':'application/json'}
+
+    class_keys = ['first_name','last_name','email', 'password','birthday','gender',"username"]
+
     new_user=User()
     for key in class_keys:
         if key == 'email':
-            email = request.json.get(key).lower().strip()
-            if check_email(email):setattr(new_user,key,email.lower())
+            if check_email(email):setattr(new_user,key,email)
             else: return({"msg":"Invalid email, please verify!"})
         if key == 'password':
-            password = request.json.get('password')
+            password = request.form.get('password')
             password = crypto.generate_password_hash(password).decode("utf-8")
             setattr(new_user,key,password)
-        elif isinstance(request.json.get(key), str): 
-            setattr(new_user,key,request.json.get(key).lower())
-        else:setattr(new_user,key,request.json.get(key))
+        elif isinstance(request.form.get(key), str): 
+            setattr(new_user,key,request.form.get(key).lower())
+        else:setattr(new_user,key,request.form.get(key))
 
 
     db.session.add(new_user)
     db.session.flush()
     user_id = new_user.id
-    seed = new_user.email + new_user.name
-    seed = seed.replace("@","")
+    seed = secrets.token_hex(nbytes=16)
     db.session.commit()
 
     return jsonify({"msg":"User created","id":user_id,"seed":seed})
@@ -127,20 +138,13 @@ def update_person():
     # print(class_keys)
     # return "ok", 200
 
-@api_user.route('/setprofilepic',methods=['POST'])
-def set_profile_pic():
-    user_id=3 #to be modified
 
+@api_user.route('/setprofilepic/<user_id>',methods=['POST'])
+def set_profile_pic(user_id):
     file=request.files['file']
     extension = "jpg"
-    temp = tempfile.NamedTemporaryFile(delete=False)
-    file.save(temp)
-
-    # Subir el archivo a Firebase
-    bucket = storage.bucket(name='fit-central-7cf8b.appspot.com')
     filename="profile_pics/"+str(user_id)+"."+extension
-    resource = bucket.blob(filename)
-    resource.upload_from_filename(temp.name,content_type="image/"+extension)
+    upload_image(filename,file,extension)
 
     user=User.query.get(user_id)
     setattr(user,'profile_picture',filename)
@@ -155,25 +159,40 @@ def set_profile_pic():
 def update_profile_pic():
     user_id=get_jwt_identity()
     user=User.query.get(user_id)
-    # Obtenemos el archivo de la petición
+
     file=request.files['file']
     extension = file.filename.split('.')[1]
-    # Guardamos el archivo recibido recibido en un archivo temporal
-    temp = tempfile.NamedTemporaryFile(delete=False)
-    file.save(temp)
-    # Subir el archivo a Firebase
-        # Se elimina el archivo anterior
-    bucket = storage.bucket(name='fit-central-7cf8b.appspot.com')
-    resource = bucket.blob(user.profile_picture)
-    resource.delete()
-
     filename="profile_pics/"+str(user_id)+"."+extension
-    resource = bucket.blob(filename)
-        # Subir el archivo a ese recurso
-    resource.upload_from_filename(temp.name,content_type="image/"+extension)
+    old_file = user.profile_picture
+
+    if user.profile_picture is None:upload_image(filename,file,extension)
+    else:update_image(old_file,filename,file,extension)
 
     setattr(user,'profile_picture',filename)
     db.session.add(user)
     db.session.commit()
 
     return jsonify({"msg":"Porfile picture updated"})
+
+def update_image(old_file, filename,file , extension):
+    temp = tempfile.NamedTemporaryFile(delete=False)
+    file.save(temp)
+
+    bucket = storage.bucket(name='fit-central-7cf8b.appspot.com')
+    resource = bucket.blob(old_file)
+    resource.delete()
+
+    resource = bucket.blob(filename)
+    resource.upload_from_filename(temp.name,content_type="image/"+extension)
+    return True
+
+def upload_image(filename,file, extension):
+    temp = tempfile.NamedTemporaryFile(delete=False)
+    file.save(temp)
+
+    bucket = storage.bucket(name='fit-central-7cf8b.appspot.com')
+    resource = bucket.blob(filename)
+    resource.upload_from_filename(temp.name,content_type="image/"+extension)
+    # os.remove(file)
+
+    return True
