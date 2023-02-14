@@ -64,10 +64,15 @@ class User(db.Model):
 class Coach(db.Model):
     __tablename__ = 'coach'
     id = db.Column(db.Integer(), primary_key=True)
+    username = db.Column(db.String(250), unique=True,nullable=False)
     first_name = db.Column(db.String(250), nullable=False)
     last_name = db.Column(db.String(250), nullable=False)
     email = db.Column(db.String(250), unique=True, nullable=False)
     password = db.Column(db.String(250), nullable=False)
+    email = db.Column(db.String(250), unique=True,nullable=False)
+    gender = db.Column(db.String(250), nullable=False)
+    profile_picture = db.Column(db.String(250))
+    profile_banner_picture = db.Column(db.String(250))
     bio = db.Column(db.String(250))
     facebook = db.Column(db.String(250))
     twitter = db.Column(db.String(250))

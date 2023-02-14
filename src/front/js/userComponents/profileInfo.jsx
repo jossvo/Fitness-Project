@@ -15,9 +15,9 @@ export function capitalize(str){
 export const ProfileInfo = ({ navTitle = "User" }) => {
   const { store, actions } = useContext(Context);
   const { updateAccountDetails , updateImage, setProfileImage} = actions
-  const [preventProfileUpdate,setPreventProfileUpdate]= useState(true)
-  const [preventImageUpdate,setPreventImageUpdate]= useState(true)
   const [allowPopulation, setAllowPopulation] = useState(false)
+  const [usernameMessage, setUsernameMessage]=useState("")
+  const [emailMessage, setEmailMessage]=useState("")
 
   //DOM Elements variables
   let inputuser =document.getElementById("inputUsername")
@@ -30,13 +30,11 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
   let inputHeight = document.getElementById("inputHeight")
   let inputWeight = document.getElementById("inputWeight")
   let profileImage = document.getElementById("profileImg")
-  let inputProfileImage = document.getElementById("inputProfileImg")
 
   //Function to populate form with data
   useEffect(() => {
     async function fetchData(){
       actions.getProfile();
-      actions.getDefaultPicture();
     }
     fetchData()
     setAllowPopulation(true)
@@ -79,95 +77,30 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
     }
   }
 
-  //Onchange to validate if submit is allowed
-  function verifyImage(e){
-    inputProfileImage.files.length == 0?setPreventImageUpdate(true)
-    :setPreventImageUpdate(false)
-  }
-
-
-  function verifyData(e){
-    let elem = e.target
-    if(elem.id==="inputEmailAddress")verifyEmail(elem.id,"change")
-
-    let mandatoryArr = ["inputUsername","inputFirstName","inputLastName"]
-    let helpId = elem.id.replace("input","")+"Help"
-
-    if(mandatoryArr.includes(elem.id) && !elem.value){
-      //Set inputHelp text
-      document.getElementById(helpId).innerText = elem.id.replace("input","")+" can't be blank"
-      //Set valid/invalid style class
-      elem.classList.remove("invalidInput");
-      elem.classList.add("invalidInput")
-      setPreventProfileUpdate(true)
-    }else if (mandatoryArr.includes(elem.id) && elem.value){
-      document.getElementById(helpId).innerText = ""
-      elem.classList.remove("invalidInput");
-      elem.classList.add("validInput")
-      setPreventProfileUpdate(false)
-    }
-  }
-
-  function verifyEmail(id, type){
-    var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    var inputMail = document.getElementById(id).value
-    var elem = document.getElementById(id)
-    if(inputMail.match(mailformat)){
-      document.getElementById("emailHelp").innerText = ""
-      elem.classList.remove("invalidEmail");
-      elem.classList.remove("questionableEmail");
-      elem.classList.add("validEmail");
-      setPreventProfileUpdate(false)
-      return true;
-    }
-    else{
-      let emailHelp = document.getElementById("emailHelp")
-      let helpText = "Invalid email format"
-      if(type==="change"){
-        if (inputMail){
-          elem.classList.remove("invalidEmail")
-          elem.classList.add("questionableEmail")
-        }else{
-          elem.classList.add("invalidEmail")
-          elem.classList.remove("questionableEmail")
-          helpText="Email can't be blank"
-        }
-      }else{
-        elem.classList.remove("questionableEmail")
-        elem.classList.add("invalidEmail")
-      }
-      emailHelp.innerText=helpText
-      setPreventProfileUpdate(true)
-      return false;
-    }
-  }
-
   // Update profile data from Account Details form
   async function updateData(e){
     e.preventDefault()
     const data = new FormData(e.target);
     data.set('share_gender',data.get("inputRadioGender"))
-    data.delete("inputRadioGender")
     data.set('share_age',data.get("inputRadioAge"))
-    data.delete("inputRadioAge")
     data.set('share_height',data.get("inputRadioHeight"))
-    data.delete("inputRadioHeight")
     data.set('share_weight',data.get("inputRadioWeight"))
-    data.delete("inputRadioWeight")
 
-    let ok = await updateAccountDetails(data)
-    if (ok)console.info("Información actualizada")
-    console.log("hi")
-    window.location.reload(true)
+    let resp = await updateAccountDetails(data)
+    if(resp !="ok"){
+      if('email_msg'in resp) setEmailMessage(resp.email_msg)
+      if('username_msg'in resp)setUsernameMessage(resp.username_msg)
+    }else window.location.reload(true)
   }
   async function updateProfilePicture(e){
     e.preventDefault()
     const data = new FormData(e.target);
-    let ok = await updateImage(data)
-    if (ok){
-      console.info("Información actualizada")
-      window.location.reload(true)
-    }
+    let resp = await updateImage(data)
+    if (resp)window.location.reload(true)
+  }
+  function resetMessage(){
+    setEmailMessage('')
+    setUsernameMessage('')
   }
 
   return (
@@ -200,16 +133,17 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
                     <label hmtlfor="inputProfileImg" className="form-label">
                       Select new profile picture:
                     </label>
-                    <input 
+                    <input
+                    required 
                     name="file"
                     className="form-control form-control-sm" 
                     accept="image/png, image/jpeg" 
                     id="inputProfileImg" 
                     type="file" 
-                    onChange={verifyImage}/>
+                    />
                   </div>
 
-                  <button className="btn btn-primary" type="submit" disabled={preventImageUpdate}>
+                  <button className="btn btn-primary" type="submit">
                     Upload profile picture
                   </button>
                 </div>
@@ -228,14 +162,16 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
                       site)
                     </label>
                     <input
+                      required
                       className="form-control"
                       id="inputUsername"
                       type="text"
                       placeholder="Enter your username"
                       name="username"
-                      onChange={verifyData}
+                      onChange={resetMessage}
                     />
-                    <div id="UsernameHelp" className="form-text" style={{color:"red"}}>                    
+                    <div id="UsernameHelp" className="form-text" style={{color:"red"}}>
+                    {usernameMessage}                    
                     </div>
                   </div>
 
@@ -245,12 +181,12 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
                         First name
                       </label>
                       <input
+                        required
                         className="form-control"
                         id="inputFirstName"
                         type="text"
                         placeholder="Enter your first name"
                         name="first_name"
-                        onChange={verifyData}
                       />
                       <div id="FirstNameHelp" className="form-text" style={{color:"red"}}>                    
                       </div>
@@ -261,32 +197,34 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
                         Last name
                       </label>
                       <input
+                        required
                         className="form-control"
                         id="inputLastName"
                         type="text"
                         placeholder="Enter your last name"
                         name="last_name"
-                        onChange={verifyData}
                       />
                       <div id="LastNameHelp" className="form-text" style={{color:"red"}}>                    
                       </div>
                     </div>
                   </div>
 
-                  <div className="mb-3">
+                  <div className="emailInputDiv mb-3">
                     <label className="small mb-1" htmlFor="inputEmailAddress">
                       Email address
                     </label>
                     <input
+                      required
                       className="form-control"
                       id="inputEmailAddress"
                       type="email"
                       placeholder="Enter your email address"
-                      onChange={verifyData}
-                      onBlur={()=>verifyEmail("inputEmailAddress","focusOut")}
+                      pattern = "^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
                       name="email"
+                      onChange={resetMessage}
                     />
-                    <div id="emailHelp" className="form-text" style={{color:"red"}}>                    
+                    <div id="emailHelp" className="form-text" style={{color:"red"}}> 
+                      {emailMessage}                   
                     </div>
                   </div>
                   {[
@@ -312,7 +250,7 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
                             placeholder={
                               "Enter your " + elem.share.toLowerCase()
                             }
-                            name={elem.title.toLocaleLowerCase()}
+                            name={elem.title.toLocaleLowerCase()} 
                           />
                         </div>
 
@@ -411,7 +349,7 @@ export const ProfileInfo = ({ navTitle = "User" }) => {
                     </div>
                   </div>
 
-                  <button className="btn btn-primary" type="submit" disabled={preventProfileUpdate} >
+                  <button className="btn btn-primary" type="submit">
                     Save changes
                   </button>
                 </form>

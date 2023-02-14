@@ -63,11 +63,8 @@ nav .btn {
 }
 .form-control {
   padding: 0.8rem 0;
-  background-color: var(--lightInput) !important;
 }
-.form-select{
-  background-color: var(--lightInput) !important;
-}
+
 /* .form-check-input:checked, */
 .form-check-input:focus,
 .form-check-input:checked{
@@ -88,11 +85,11 @@ nav .btn {
   font-size: 14px;
 }
 /* Email style validation */
-.mb-3 > input:invalid{
+.emailInputDiv> input:invalid{
   border-color: red !important;
   border-width: 2px !important;
 }
-.mb-3 > input:invalid:focus{
+.emailInputDiv> input:invalid:focus{
   box-shadow: none !important;
 }
 

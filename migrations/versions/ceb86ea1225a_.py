@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 9e337c5c01c6
+Revision ID: ceb86ea1225a
 Revises: 
-Create Date: 2023-02-13 20:50:51.097393
+Create Date: 2023-02-14 02:47:18.440706
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '9e337c5c01c6'
+revision = 'ceb86ea1225a'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -26,17 +26,22 @@ def upgrade():
     )
     op.create_table('coach',
     sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('username', sa.String(length=250), nullable=False),
     sa.Column('first_name', sa.String(length=250), nullable=False),
     sa.Column('last_name', sa.String(length=250), nullable=False),
-    sa.Column('email', sa.String(length=250), nullable=False),
     sa.Column('password', sa.String(length=250), nullable=False),
+    sa.Column('email', sa.String(length=250), nullable=False),
+    sa.Column('gender', sa.String(length=250), nullable=False),
+    sa.Column('profile_picture', sa.String(length=250), nullable=True),
+    sa.Column('profile_banner_picture', sa.String(length=250), nullable=True),
     sa.Column('bio', sa.String(length=250), nullable=True),
     sa.Column('facebook', sa.String(length=250), nullable=True),
     sa.Column('twitter', sa.String(length=250), nullable=True),
     sa.Column('instagram', sa.String(length=250), nullable=True),
     sa.Column('tiktok', sa.String(length=250), nullable=True),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('email')
+    sa.UniqueConstraint('email'),
+    sa.UniqueConstraint('username')
     )
     op.create_table('user',
     sa.Column('id', sa.Integer(), nullable=False),

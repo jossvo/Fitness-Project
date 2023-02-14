@@ -2,21 +2,7 @@ const apiUrl = process.env.BACKEND_URL
 
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
-		store: {
-			message: null,
-			demo: [
-				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
-				}
-			]
-		},
+		store: {},
 		actions: {
 			setIdentity: ()=>{
 				let accessToken = localStorage.getItem("accessToken")
@@ -29,18 +15,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					id:id,
 					type:type
 				})
-			},
-			getMessage: async () => {
-				try{
-					// fetching data from the backend
-					const resp = await fetch(process.env.BACKEND_URL + "/api/hello")
-					const data = await resp.json()
-					setStore({ message: data.message })
-					// don't forget to return something, that is how the async resolves
-					return data;
-				}catch(error){
-					console.log("Error loading message from backend", error)
-				}
 			},
 			// login functions
 			login: async (email,password,type)=>{
@@ -82,6 +56,25 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({accessToken,refreshToken})
 
 			},
+			logout:async ()=>{
+				if(!getStore().accessToken)return;
+				const resp = await fetch(apiUrl+"/api/logout",{
+					method: 'POST',
+					headers: {
+						...getActions().getAutorizationHeader()
+					}
+				})
+				if(!resp.ok){
+					console.error(resp.statusText)
+					return false
+				}
+				localStorage.removeItem("accessToken")
+				localStorage.removeItem("refreshToken")
+				setStore({accessToken:null,refreshToken:null})
+				return "ok"
+			},
+
+			// functions to get information
 			getProfile: async()=>{
 				const resp = await fetch(apiUrl+"/userinfo",{
 					headers:{
@@ -107,28 +100,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 				
 			},
-			logout:async ()=>{
-				if(!getStore().accessToken)return;
-				const resp = await fetch(apiUrl+"/api/logout",{
-					method: 'POST',
-					headers: {
-						...getActions().getAutorizationHeader()
-					}
-				})
-				if(!resp.ok){
-					console.error(resp.statusText)
-					return false
-				}
-				localStorage.removeItem("accessToken")
-				localStorage.removeItem("refreshToken")
-				setStore({accessToken:null,refreshToken:null})
-				return "ok"
-			},
-			// functions to get information
-			getDefaultPicture:async()=>{
-				let response = await fetch("https://api.dicebear.com/5.x/shapes/svg?seed=Felix")
-				//https://www.youtube.com/watch?v=cP5E0b21f_Y
-			},
 			getDetails: async(element,id)=>{
 				let response = await fetch(apiUrl +`/${element}/${id}`);
 				if (!response.ok)
@@ -151,9 +122,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 				  setStore(newStore);
 				}
 			},
+
 			// Functions to post new information
-			setNewProfile: async (postData)=>{
-				let response = await fetch(apiUrl +"/users/signup",{
+			setNewProfile: async (postData,type)=>{
+				let url="/users/signup"
+				if(type==="coach") url="/coach/signup"
+				let response = await fetch(apiUrl +url,{
 					method: 'POST',
 					body: postData
 				});
@@ -161,12 +135,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return response.json()
 				}
 					let data = await response.json()
-					let id = data.id
-					let seed = data.seed
-					let resp = getActions().setProfileImage(id,seed)
-					return "ok"
+					let resp = await getActions().setProfileImage(data.id,data.seed,data.type)
+					if(resp=="ok") return "ok"
 			},
-			setProfileImage:async (user_id,seed)=>{
+			setProfileImage:async (user_id,seed,type)=>{
 				const data = new FormData()
 				let avatarResponse = await fetch(`https://api.dicebear.com/5.x/bottts-neutral/jpg?seed=${seed}`)
 					.then(res=>res.blob())
@@ -174,13 +146,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 						const file = new File([blob],'image',{type:blob.type})
 						data.set('file',file)
 					})
-					
-				const response = await fetch(apiUrl+`/setprofilepic/${user_id}`, {
+				let url = /setprofilepic/
+				if(type==="coach") url = /setcoachprofilepic/
+				const response = await fetch(apiUrl+url+user_id, {
 					method:'POST',
 					body: data
 				})
 				if(!response.ok)return false
-				else return true
+				else return "ok"
 			},
 			// functions to update information
 			updateTokens:async ()=>{
@@ -219,18 +192,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 					body: postData,
 				});
 				if (!response.ok){
-					resp.text().then(text => {
-						let errorObj = JSON.parse(text)
-						switch(errorObj.msg){
-							case "Token has expired":
-								console.log("Token has expired")
-								break;
-							default:
-								throw new Error(errorObj.msg)
-						}
-					})
+					return response.json()
 				}
-				return true
+				return "ok"
 			},
 			updateImage: async (postData)=>{
 				let response = await fetch(apiUrl +`/setprofilepic`,{

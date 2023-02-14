@@ -46,7 +46,7 @@ def user_login():
 def users():
     users = User.query.all()
 
-    response_body = list(map(lambda p: p.serialize() ,users))
+    response_body = list(map(lambda p: p.serialize_account_details() ,users))
     return jsonify(response_body), 200
 
 # Get single user, simple without jwt, then with jwt
@@ -77,25 +77,25 @@ def refresh_token():
 
 @api_user.route('/users/signup', methods=['POST'])
 def new_user():
-    msg = {}
     email = request.form.get('email').lower()
     username = request.form.get('username').lower()
+
     email_exists= User.query.filter(User.email==email).first()
+    username_exists= User.query.filter(User.username==username).first()
+
+    msg = {}
     if email_exists is not None: 
         msg["email_msg"]="Email adress is already in use"
-    username_exists= User.query.filter(User.username==username).first()
     if username_exists is not None: 
         msg["username_msg"]="Username is already in use"
     if email_exists is not None or username_exists is not None: 
+        print("409",msg)
         return jsonify(msg) , 409
 
     class_keys = ['first_name','last_name','email', 'password','birthday','gender',"username"]
 
     new_user=User()
     for key in class_keys:
-        if key == 'email':
-            if check_email(email):setattr(new_user,key,email)
-            else: return({"msg":"Invalid email, please verify!"}), 401
         if key == 'password':
             password = request.form.get('password')
             password = crypto.generate_password_hash(password).decode("utf-8")
@@ -111,7 +111,7 @@ def new_user():
     seed = secrets.token_hex(nbytes=16)
     db.session.commit()
 
-    return jsonify({"msg":"User created","id":user_id,"seed":seed})
+    return jsonify({"msg":"User created","id":user_id,"seed":seed,"type":"user"})
 
 
 @api_user.route('/updateprofile', methods=['PATCH'])
@@ -119,6 +119,20 @@ def new_user():
 def update_person():
     user_id=get_jwt_identity()
     user=User.query.get(user_id)
+
+    email = request.form.get('email').lower()
+    username = request.form.get('username').lower()
+    email_exists= User.query.filter(User.email==email).first()
+    username_exists= User.query.filter(User.username==username).first()
+
+    msg = {}
+    if email_exists is not None and email_exists.email is not user.email: 
+        msg["email_msg"]="Email adress is already in use"
+    if username_exists is not None and username_exists.username is not user.username:  
+        msg["username_msg"]="Username is already in use"
+    if  msg: 
+        return jsonify(msg) , 409
+
     if user is None:
         return jsonify({"msg":"Usuario no encontrado"}), 404
     class_keys=['last_name', 'birthday', 'facebook', 'username', 'share_age', 'twitter', 'email', 'weight', 'instagram', 'gender', 'share_weight', 'tiktok', 'share_gender', 'height', 'share_height', 'first_name', 'location', 'profile_picture', 'share_location', 'bio']
@@ -126,12 +140,19 @@ def update_person():
     for key in class_keys:
         if request.form.get(key) is not None :
             if 'share' not in key:
-                setattr(user,key,request.form.get(key).lower())
-            # else: print("request.form.get(key)")
+                if isinstance(request.form.get(key), str): 
+                    setattr(new_user,key,request.form.get(key).lower())
+                else:setattr(new_user,key,request.form.get(key))
+    
+    boolArr = {"true":True,"false":False}
+    user.share_age = boolArr[request.form.get('share_age')]
+    user.share_gender = boolArr[request.form.get('share_gender')]
+    user.share_weight = boolArr[request.form.get('share_weight')]
+    user.share_height = boolArr[request.form.get('share_height')]
     
     db.session.add(user)
     db.session.commit()
-    return jsonify(user.serialize_account_details()),200
+    return "ok",200
 
     # user = User.query.get(1)
     # class_keys = list(vars(user).keys())

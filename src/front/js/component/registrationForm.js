@@ -27,13 +27,16 @@ export const RegistrationForm = () => {
       return false
     }
 
-    let resp = await setNewProfile(data)
+    let resp = await setNewProfile(data,dataJson.user_type)
 		if(resp !="ok"){
       if('email_msg'in resp) setEmailMessage(resp.email_msg)
       if('username_msg'in resp)setUsernameMessage(resp.username_msg)
     }else window.location.reload(true)
-
 	}
+  function resetMessage(){
+    setEmailMessage('')
+    setPasswordMessage('')
+  }
 
   return (
     <React.Fragment>
@@ -86,6 +89,7 @@ export const RegistrationForm = () => {
                     className="form-control text-form"
                     id="inputSignupUsername"
                     aria-describedby="signupUsernameHelp"
+                    onChange={resetMessage}
                   />
                   <div id="signupUsernameHelp" className="incorrectFormInput form-text">   
                     {usernameMessage}         
@@ -122,7 +126,7 @@ export const RegistrationForm = () => {
                   />
                 </div>
 
-                <div className="col-md-12">
+                <div className="col-md-12 emailInputDiv">
                   <label
                     hmtlfor="inputSignupEmail"
                     className="form-label text-light label-text"
@@ -136,6 +140,7 @@ export const RegistrationForm = () => {
                     className="form-control"
                     pattern = "^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
                     id="inputSignupEmail"
+                    onChange={resetMessage}
                   />
                   <div id="signupEmailHelp" className="incorrectFormInput form-text"> 
                    {emailMessage}            
