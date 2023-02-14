@@ -4,36 +4,8 @@ import { Context } from "../store/appContext";
 
 export const SignInComponent = () => {
   const { store, actions } = useContext(Context);
-  const [allowLogin,setAllowLogin]=useState(false)
-
-  let inputEmail = document.getElementById("inputLoginEmail")
-  let inputPassword = document.getElementById("inputLoginPassword")
-  let emailHelp = document.getElementById("emailHelp")
-  let passwordHelp = document.getElementById("passwordHelp")
-  
-  function verifyData(e){
-    emailHelp.innerText =""
-    passwordHelp.innerText =""
-    inputPassword.classList.remove("invalidEmail")
-    if(e.target.id==="inputLoginEmail")verifyEmail(e.target.id)
-    if(!inputEmail.classList.contains("invalidEmail") && inputEmail.value != ""
-    )setAllowLogin(true)
-    else(setAllowLogin(false))
-  }
-
-  function verifyEmail(id){
-    var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    var inputMail = document.getElementById(id).value
-    var elem = document.getElementById(id)
-    if(inputMail.match(mailformat)){
-      emailHelp.innerText = ""
-      elem.classList.remove("invalidEmail")
-    }
-    else{
-      elem.classList.add("invalidEmail")
-      emailHelp.innerText = "Invalid email format"
-    }
-  }
+  const [passwordMessage,setPasswordMessage] = useState("")
+  const [emailMessage,setEmailMessage]=useState("")
 
   async function submitlogin(e){
 		e.preventDefault()
@@ -41,26 +13,26 @@ export const SignInComponent = () => {
 		let data = new FormData(e.target)
 		let email = data.get("email")
 		let password = data.get("password")
-    let type = document.querySelector('input[name="flexRadioLoginAs"]:checked').value
+    let type = data.get("flexRadioLoginAs")
+
 		let resp = await actions.login(email,password,type)
 		if(resp !="ok"){
       switch(resp.status){
         case "Wrong email":
-          emailHelp.innerText = resp.msg
-          inputEmail.classList.add("invalidEmail")
+          setEmailMessage(resp.msg)
+          setPasswordMessage('')
           break;
         case "Wrong password":
-          passwordHelp.innerText = resp.msg
-          inputPassword.classList.add("invalidEmail")
+          setPasswordMessage(resp.msg)
+          setEmailMessage('')
           break;
-      }
-      
-    }else{ 
-      console.log("Login exitoso")
-      window.location.reload(true)
-    }
-
+      }      
+    }else window.location.reload(true)
 	}
+  function resetMessage(){
+    setEmailMessage('')
+    setPasswordMessage('')
+  }
 
   return (
     <React.Fragment>
@@ -138,14 +110,17 @@ export const SignInComponent = () => {
                     Email address
                   </label>
                   <input
+                    required
                     type="email"
                     className="form-control text-form"
                     id="inputLoginEmail"
                     name="email"
                     aria-describedby="emailHelp"
-                    onChange={verifyData}
+                    pattern = "^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
+                    onChange={resetMessage}
                   />
-                  <div id="emailHelp" className="form-text">                    
+                  <div id="emailHelp" className="form-text">  
+                  {emailMessage}                  
                   </div>
                 </div>
                 <div className="mb-3">
@@ -156,13 +131,15 @@ export const SignInComponent = () => {
                     Password
                   </label>
                   <input
+                    required
                     type="password"
                     className="form-control"
                     id="inputLoginPassword"
                     name="password"
-                    onChange={verifyData}
+                    onChange={resetMessage}
                   />
-                  <div id="passwordHelp" className="form-text">                    
+                  <div id="passwordHelp" className="form-text"> 
+                  {passwordMessage}                   
                   </div>
                 </div>
 
@@ -170,7 +147,6 @@ export const SignInComponent = () => {
                   type="submit"
                   className="btn btn-warning btn-lg btn-signin"
                   id = "buttonSignIn"
-                  disabled={!allowLogin}
                 >
                   Sign In
                 </button>

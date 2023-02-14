@@ -88,26 +88,11 @@ nav .btn {
   font-size: 14px;
 }
 /* Email style validation */
-.validEmail{
-  border-color: rgb(0, 189, 0) !important;
-  border-width: 3px !important;
-}
-.questionableEmail{
-  border-color: var(--mainColor) !important;
-  border-width: 2px !important;
-  background-color: rgb(255, 236, 162) !important;
-}
-.invalidEmail{
+.mb-3 > input:invalid{
   border-color: red !important;
-  border-width: 3px !important;
+  border-width: 2px !important;
 }
-.validEmail:focus{
-  box-shadow: none !important;
-}
-.questionableEmail:focus{
-  box-shadow: none !important;
-}
-.invalidEmail:focus{
+.mb-3 > input:invalid:focus{
   box-shadow: none !important;
 }
 
