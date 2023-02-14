@@ -4,21 +4,13 @@ import { Context } from "../store/appContext";
 
 export const RegistrationForm = () => {
   const { store, actions } = useContext(Context);
-  const [allowSignUp,setAllowSignUp]=useState(false)
+  const [usernameMessage, setUsernameMessage]=useState("")
+  const [emailMessage, setEmailMessage]=useState("")
+  const [passwordMessage, setPasswordMessage]=useState("")
   const {setNewProfile}= actions
 
-  let inputUsername = document.getElementById("inputSignupUsername")
-  let usernameHelp = document.getElementById("signupUsernameHelp")
-  let inputFirstName = document.getElementById("inputSignupFirstName")
-  let inputLastName = document.getElementById("inputSignupLastName")
-  let inputEmail = document.getElementById("inputSignupEmail")
-  let emailHelp = document.getElementById("signupEmailHelp")
-  let inputPassword = document.getElementById("inputSignupPassword")
   let inputConfirmPassword = document.getElementById("inputConfirmPassword")
-  let passwordHelp = document.getElementById("signupConfirmPaswordHelp")
-  let inputGender = document.getElementById("inputSignupGender")
-  let inputBirthday = document.getElementById("inputSignupBirthday")
-  let inputUserType = document.getElementById("flexRadioUsertype")
+
 
   async function submitSignup(e){
 		e.preventDefault()
@@ -26,76 +18,22 @@ export const RegistrationForm = () => {
     data.set('user_type',data.get("flexRadioUsertype"))
     data.delete("flexRadioUsertype")
 
-    let dataJSON = {}
-    for (var pair of data.entries()) {
-      dataJSON[pair[0]]=pair[1].toLocaleLowerCase()
+    let dataJson = {}
+    Array.from(data.entries()).forEach(elem=>{dataJson[elem[0]] = elem[1]})
+
+    if (dataJson.password!=dataJson.verifyPassword){
+      setPasswordMessage("Confirm password doesn't match password")
+      inputConfirmPassword.classList.add("invalidEmail")
+      return false
     }
 
     let resp = await setNewProfile(data)
 		if(resp !="ok"){
-      if('email_msg'in resp){
-        emailHelp.innerText = resp.email_msg
-      }
-      if('username_msg'in resp){
-        usernameHelp.innerText = resp.username_msg
-      }
-    }else{ 
-      console.log("Perfil creado")
-      window.location.reload(true)
-    }
+      if('email_msg'in resp) setEmailMessage(resp.email_msg)
+      if('username_msg'in resp)setUsernameMessage(resp.username_msg)
+    }else window.location.reload(true)
 
 	}
-
-  function verifyData(e){
-    let elem = e.target.id
-    if(elem==="inputSignupEmail") verifyEmail()
-    if(elem==="inputConfirmPassword") verifyPassword()
-    usernameHelp.innerHTML=""
-    emailHelp.innerHTML=""
-
-    let bool = Boolean(
-      inputUsername && inputUsername.value&& 
-      inputFirstName && inputFirstName.value &&
-      inputLastName && inputLastName.value &&
-      (
-        inputEmail && 
-        inputEmail.value && 
-        !inputEmail.classList.contains("invalidEmail")
-      ) &&
-      inputPassword && inputPassword.value &&
-      (
-        inputConfirmPassword && 
-        inputConfirmPassword.value && 
-        !inputConfirmPassword.classList.contains("invalidEmail")
-      ) &&
-      inputGender && inputGender.value &&
-      inputBirthday && inputBirthday.value
-      )
-
-    setAllowSignUp(bool)
-  }
-  function verifyEmail(){
-    var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    var emailValue = inputEmail.value
-    
-    if(emailValue.match(mailformat)){
-      emailHelp.innerText = ""
-      inputEmail.classList.remove("invalidEmail")
-    }
-    else{
-      inputEmail.classList.add("invalidEmail")
-      emailHelp.innerText = "Invalid email format"
-    }
-  }
-  function verifyPassword(){
-    if(inputPassword.value===inputConfirmPassword.value){
-      inputConfirmPassword.classList.remove("invalidEmail")
-      passwordHelp.innerText=""
-    }else{
-      inputConfirmPassword.classList.add("invalidEmail")
-      passwordHelp.innerText="Confirm password doesn't match password"
-    }
-  }
 
   return (
     <React.Fragment>
@@ -142,14 +80,15 @@ export const RegistrationForm = () => {
                     Username
                   </label>
                   <input
+                    required
                     name="username"
-                    onChange={verifyData}
                     type="text"
                     className="form-control text-form"
                     id="inputSignupUsername"
                     aria-describedby="signupUsernameHelp"
                   />
-                  <div id="signupUsernameHelp" className="incorrectFormInput form-text">            
+                  <div id="signupUsernameHelp" className="incorrectFormInput form-text">   
+                    {usernameMessage}         
                   </div>
                 </div>
 
@@ -161,8 +100,8 @@ export const RegistrationForm = () => {
                     First Name
                   </label>
                   <input
-                    name="first_name"
-                    onChange={verifyData} 
+                    required
+                    name="first_name" 
                     type="text" 
                     className="form-control" 
                     id="inputSignupFirstName" />
@@ -175,8 +114,8 @@ export const RegistrationForm = () => {
                     LastName
                   </label>
                   <input
+                    required
                     name="last_name"
-                    onChange={verifyData}
                     type="text"
                     className="form-control"
                     id="inputSignupLastName"
@@ -191,13 +130,15 @@ export const RegistrationForm = () => {
                     Email
                   </label>
                   <input
+                    required
                     name="email"
-                    onChange={verifyData}
                     type="email"
                     className="form-control"
+                    pattern = "^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
                     id="inputSignupEmail"
                   />
-                  <div id="signupEmailHelp" className="incorrectFormInput form-text">             
+                  <div id="signupEmailHelp" className="incorrectFormInput form-text"> 
+                   {emailMessage}            
                   </div>
                 </div>
                 
@@ -209,8 +150,8 @@ export const RegistrationForm = () => {
                     Password
                   </label>
                   <input
+                    required
                     name="password"
-                    onChange={verifyData}
                     type="password"
                     className="form-control"
                     id="inputSignupPassword"
@@ -224,12 +165,14 @@ export const RegistrationForm = () => {
                     Confirm Password
                   </label>
                   <input
-                    onChange={verifyData}
+                    required
                     type="password"
                     className="form-control"
+                    name="verifyPassword"
                     id="inputConfirmPassword"
                   />
-                  <div id="signupConfirmPaswordHelp" className="incorrectFormInput form-text">                   
+                  <div id="signupConfirmPaswordHelp" className="incorrectFormInput form-text">            
+                    {passwordMessage}       
                   </div>
                 </div>
 
@@ -256,8 +199,8 @@ export const RegistrationForm = () => {
                     Birthday
                   </label>
                   <input
-                    name="birthday"
-                    onChange={verifyData} 
+                    required
+                    name="birthday" 
                     className="form-control" 
                     id="inputSignupBirthday" 
                     type="date" 
@@ -270,7 +213,7 @@ export const RegistrationForm = () => {
                   </label>
                   <div className="form-check">
                     <input
-                      onChange={verifyData}
+                      required
                       className="form-check-input"
                       type="radio"
                       name="flexRadioUsertype"
@@ -287,7 +230,7 @@ export const RegistrationForm = () => {
                   </div>
                   <div className="form-check">
                     <input
-                      onChange={verifyData}
+                      required
                       className="form-check-input"
                       type="radio"
                       name="flexRadioUsertype"
@@ -317,7 +260,7 @@ export const RegistrationForm = () => {
                   <button 
                     type="submit" 
                     className="btn btn-warning" 
-                    disabled={!allowSignUp}>
+                  >
                     Create Account
                   </button>
                 </div>

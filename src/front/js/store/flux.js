@@ -160,13 +160,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 				if (!response.ok){
 					return response.json()
 				}
-				response.text().then(text => {
-					let data = JSON.parse(text)
+					let data = await response.json()
 					let id = data.id
 					let seed = data.seed
 					let resp = getActions().setProfileImage(id,seed)
 					return "ok"
-				})
 			},
 			setProfileImage:async (user_id,seed)=>{
 				const data = new FormData()

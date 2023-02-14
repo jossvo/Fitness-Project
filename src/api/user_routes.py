@@ -87,7 +87,7 @@ def new_user():
     if username_exists is not None: 
         msg["username_msg"]="Username is already in use"
     if email_exists is not None or username_exists is not None: 
-        return jsonify(msg) , 409, {'ContentType':'application/json'}
+        return jsonify(msg) , 409
 
     class_keys = ['first_name','last_name','email', 'password','birthday','gender',"username"]
 
@@ -95,7 +95,7 @@ def new_user():
     for key in class_keys:
         if key == 'email':
             if check_email(email):setattr(new_user,key,email)
-            else: return({"msg":"Invalid email, please verify!"})
+            else: return({"msg":"Invalid email, please verify!"}), 401
         if key == 'password':
             password = request.form.get('password')
             password = crypto.generate_password_hash(password).decode("utf-8")
