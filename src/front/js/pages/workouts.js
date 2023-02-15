@@ -44,7 +44,7 @@ export const Workouts = () => {
             className="workout-sidebar-title sidebar-height "
           >
             <CDBSidebarHeader prefix={<i className="fa fa-bars " />}>
-              Find Your Workout
+              Find the Workout or Coach
             </CDBSidebarHeader>
             <CDBSidebarContent>
               <CDBSidebarMenu>
@@ -52,13 +52,13 @@ export const Workouts = () => {
                   <input
                     className="form-control mr-sm-2"
                     type="text"
-                    placeholder="Search by workout name"
+                    placeholder="Type to search..."
                     value={searchName}
                     onChange={inputSearch}
                   />
                 </CDBSidebarMenuItem>
                 <CDBSidebarMenuItem icon="sticky-note">
-                  Filter by difficult
+                  Filter by Difficulty
                 </CDBSidebarMenuItem>
                 <CDBSidebarMenuItem className="mx-5 my-2">
                   {" "}
@@ -132,22 +132,9 @@ export const Workouts = () => {
 
           <div className="container  ">
             <div className="row ">
-              {store.workouts
-                ?.filter(
-                  (element) =>
-                    element.name
-                      .toLowerCase()
-                      .includes(searchName.toLowerCase()) ||
-                    element.coach_name
-                      .toLowerCase()
-                      .includes(searchName.toLowerCase())
-                )
-                .filter((element) =>
-                  selectedDifficulty
-                    ? element.difficulty === selectedDifficulty
-                    : true
-                )
-                .map((element, index) => (
+              {store.workouts?.filter((element) =>element.name.toLowerCase().includes(searchName.toLowerCase()) ||
+                    element.coach_name.toLowerCase().includes(searchName.toLowerCase())
+                ).filter((element) => selectedDifficulty ? element.difficulty === selectedDifficulty : true).map((element, index) => (
                   <div
                     className="col-sm-12 col-md-6 col-lg-4 col-xl-3 my-3"
                     key={element.id || index}
