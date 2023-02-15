@@ -8,6 +8,7 @@
 }
 .workout-main-container {
   display: flex;
+  height: 100vw;
 }
 .page-title-workoutLib {
   font-family: "Bebas Neue", sans-serif;

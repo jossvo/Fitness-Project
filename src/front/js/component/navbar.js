@@ -11,10 +11,10 @@ export const Navbar = () => {
       <nav className="navbar navbar-expand-lg ms-auto ">
         <div className="container-fluid mx-5  ">
           <Link to="/">
-            <a className="navbar-brand navbar-logo" href="#">
+            <span className="navbar-brand navbar-logo text-white" >
               <i className="fa-solid fa-dumbbell "></i>
               Fit Central
-            </a>
+            </span>
           </Link>
           <button
             className="navbar-toggler navbar-dark "
