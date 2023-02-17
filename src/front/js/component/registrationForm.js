@@ -44,16 +44,16 @@ export const RegistrationForm = () => {
         type="button"
         className="btn btn-light"
         data-bs-toggle="modal"
-        data-bs-target="#exampleModal"
+        data-bs-target="#registrationModal"
       >
         Join Now
       </button>
 
       <div
         className="modal fade "
-        id="exampleModal"
+        id="registrationModal"
         tabIndex="-1"
-        aria-labelledby="exampleModalLabel"
+        aria-labelledby="registrationModalLabel"
         aria-hidden="true"
       >
         <div className="modal-dialog ">
@@ -61,7 +61,7 @@ export const RegistrationForm = () => {
             <div className="modal-header">
               <h5
                 className="modal-title text-center"
-                id="exampleModalLabel"
+                id="registrationModalLabel"
               >
                 Join Now to Fit Central
               </h5>

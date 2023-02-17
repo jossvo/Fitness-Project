@@ -66,9 +66,8 @@ nav .btn {
 }
 
 /* .form-check-input:checked, */
-.form-check-input:focus,
-.form-check-input:checked{
-  background-color: var(--mainColor) !important;
+#registrationModal .form-check-input:focus,
+#registrationModal .form-check-input:checked{
   border-color: var(--mainColor) !important;
   box-shadow: 0px 0px 4px 3px rgba(253, 202, 0, 0.633) !important;
   -webkit-box-shadow: 0px 0px 4px 3px rgba(253, 202, 0, 0.633) !important;

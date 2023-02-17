@@ -69,8 +69,12 @@ class Coach(db.Model):
     last_name = db.Column(db.String(250), nullable=False)
     email = db.Column(db.String(250), unique=True, nullable=False)
     password = db.Column(db.String(250), nullable=False)
-    email = db.Column(db.String(250), unique=True,nullable=False)
     gender = db.Column(db.String(250), nullable=False)
+    share_gender = db.Column(db.Boolean())
+    location = db.Column(db.String(250))
+    share_location = db.Column(db.Boolean())
+    birthday = db.Column(db.Date(), nullable=False)
+    share_age = db.Column(db.Boolean())
     profile_picture = db.Column(db.String(250))
     profile_banner_picture = db.Column(db.String(250))
     bio = db.Column(db.String(250))
@@ -86,6 +90,19 @@ class Coach(db.Model):
     # no. wks bought
     # no. custom plans bought
     # general rating
+    def serialize_account_details(self):
+        return {
+            "first_name" : self.first_name.capitalize() , 
+            "last_name" : self.last_name.capitalize(), 
+            "username" : self.username.capitalize(), 
+            "email": self.email,
+            "gender" : self.gender.capitalize(),
+            "share_gender" : self.share_gender,
+            "date_of_birth" : self.birthday,
+            "share_age" : self.share_age,
+            "profile_picture": self.profile_picture,
+            "bio": self.bio
+        }
 
 class Workout(db.Model):
     __tablename__ = "workout"

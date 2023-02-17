@@ -76,7 +76,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			// functions to get information
 			getProfile: async()=>{
-				const resp = await fetch(apiUrl+"/userinfo",{
+				let urlRoute = ""
+				let store = getStore()
+
+				store.type==="u"? urlRoute="/userinfo"
+				:urlRoute="/coachinfo"
+
+				const resp = await fetch(apiUrl+urlRoute,{
 					headers:{
 						...getActions().getAutorizationHeader()
 					}
@@ -184,7 +190,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 				return "ok"
 			},
 			updateAccountDetails: async (postData)=>{
-				let response = await fetch(apiUrl +`/updateprofile`,{
+				let urlRoute = ""
+				let store = getStore()
+
+				store.type==="u"? urlRoute="/updateprofile"
+				:urlRoute="/updatecoachprofile"
+
+				let response = await fetch(apiUrl + urlRoute,{
 					method: 'PATCH',
 					headers: {
 						...getActions().getAutorizationHeader()
@@ -197,7 +209,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 				return "ok"
 			},
 			updateImage: async (postData)=>{
-				let response = await fetch(apiUrl +`/setprofilepic`,{
+				let urlRoute = ""
+				let store = getStore()
+				store.type==="u"? urlRoute="/setprofilepic"
+				:urlRoute="/setcoachprofilepic"
+				let response = await fetch(apiUrl +urlRoute,{
 					method: 'PATCH',
 					headers: {
 						...getActions().getAutorizationHeader()

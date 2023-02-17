@@ -23,16 +23,20 @@ export const ProfileSidebar = ({navTitle="User"}) => {
     },[])
 
     let publicLink =""
-    store?.type==="u"? publicLink = `/user/${store.id}`
-    :publicLink = `/coach/${store.id}`
+    let prefix = ""
+    if(store.type==="u") publicLink = `/user/${store.id}`
+    else{
+        publicLink = `/coach/${store.id}`
+        prefix = "/coach"
+    }
 
     let arrNav =[{name:"Public view",icon:"eye",navlink:publicLink},
-    {name:"Profile Information",icon:"user",navlink:"/settings/profile"},
-    {name:"Security",icon:"lock",navlink:"/settings/security"},
+    {name:"Profile Information",icon:"user",navlink:prefix+"/settings/profile"},
+    {name:"Security",icon:"lock",navlink:prefix+"/settings/security"},
     {name:"Billing",icon:"wallet",navlink:"/settings/billing"}
     ]
-    if(store.id==="c"){
-        arrNav[3]={name:"Programs",icon:"dumbell",navlink:"/settings/programs"}
+    if(store.type==="c"){
+        arrNav[3]={name:"Create program",icon:"calendar",navlink:prefix+"/settings/new_program"}
     }
 
   return (

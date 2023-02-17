@@ -7,7 +7,10 @@ from api.utils import generate_sitemap, APIException
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, create_refresh_token, get_jwt, JWTManager 
 from flask_bcrypt import Bcrypt
 from api.user_routes import check_email
-from api.user_routes import upload_image
+from api.user_routes import upload_image, update_image
+from flask_bcrypt import Bcrypt
+from firebase_admin import storage
+from datetime import timedelta
 import secrets
 import tempfile
 import re
@@ -32,6 +35,30 @@ def coach_login():
     token = create_access_token(identity=coach.id)
     refresh_token=create_refresh_token(identity=coach.id)
     return jsonify({"access_token":token,"refresh_token":refresh_token,"id":coach.id,"type":"c"})
+
+@api_coach.route('/coaches', methods=['GET'])
+def coaches():
+    users = User.query.all()
+
+    response_body = list(map(lambda p: p.serialize_account_details() ,users))
+    return jsonify(response_body), 200
+
+@api_coach.route('/coachinfo')
+@jwt_required()
+def get_coach_info():
+    coach_id=get_jwt_identity()
+    coach=Coach.query.get(coach_id)
+    if coach is None:
+        return jsonify({"msg":"Coach no encontrado"}), 404
+
+    response_data=coach.serialize_account_details()
+    # Se obtiene el bucket
+    bucket = storage.bucket(name='fit-central-7cf8b.appspot.com')
+    # Generar el recurso en el bucket
+    resource = bucket.blob(coach.profile_picture)
+    profile_pic_url=resource.generate_signed_url(version="v4",expiration=timedelta(seconds=7*86400), method="GET")
+    response_data["profile_picture"] = profile_pic_url
+    return jsonify(response_data)
 
 @api_coach.route('/coach/signup', methods=['POST'])
 def new_coach():
@@ -68,6 +95,49 @@ def new_coach():
 
     return jsonify({"msg":"Coach created","id":coach_id,"seed":seed,"type":"coach"})
 
+@api_coach.route('/updatecoachprofile', methods=['PATCH'])
+@jwt_required()
+def update_coach():
+    coach_id=get_jwt_identity()
+    coach=Coach.query.get(coach_id)
+
+    email = request.form.get('email').lower()
+    username = request.form.get('username').lower()
+    email_exists= Coach.query.filter(Coach.email==email).first()
+    username_exists= Coach.query.filter(Coach.username==username).first()
+
+    msg = {}
+    if email_exists is not None and email_exists.email is not coach.email: 
+        msg["email_msg"]="Email adress is already in use"
+    if username_exists is not None and username_exists.username is not coach.username:  
+        msg["username_msg"]="Username is already in use"
+    if  msg: 
+        return jsonify(msg) , 409
+
+    if coach is None:
+        return jsonify({"msg":"Usuario no encontrado"}), 404
+    class_keys=['last_name', 'birthday', 'facebook', 'username', 'share_age', 'twitter', 'email', 'instagram', 'gender', 'tiktok', 'share_gender', 'first_name', 'location', 'profile_picture', 'share_location', 'bio']
+
+    for key in class_keys:
+        if request.form.get(key) is not None :
+            if 'share' not in key:
+                if isinstance(request.form.get(key), str): 
+                    setattr(coach,key,request.form.get(key).lower())
+                else:setattr(coach,key,request.form.get(key))
+    
+    boolArr = {"true":True,"false":False}
+    coach.share_age = boolArr[request.form.get('share_age')]
+    coach.share_gender = boolArr[request.form.get('share_gender')]
+    
+    db.session.add(coach)
+    db.session.commit()
+    return "ok",200
+
+    # user = User.query.get(1)
+    # class_keys = list(vars(user).keys())
+    # print(class_keys)
+    # return "ok", 200
+
 @api_coach.route('/setcoachprofilepic/<coach_id>',methods=['POST'])
 def set_profile_pic(coach_id):
     file=request.files['file']
@@ -82,3 +152,23 @@ def set_profile_pic(coach_id):
 
 
     return jsonify({"msg":"Porfile picture set"})
+
+@api_coach.route('/setcoachprofilepic',methods=['PATCH'])
+@jwt_required()
+def update_coach_profile_pic():
+    coach_id=get_jwt_identity()
+    coach=Coach.query.get(coach_id)
+
+    file=request.files['file']
+    extension = file.filename.split('.')[1]
+    filename="coach_profile_pics/"+str(coach_id)+"."+extension
+    old_file = coach.profile_picture
+
+    if coach.profile_picture is None:upload_image(filename,file,extension)
+    else:update_image(old_file,filename,file,extension)
+
+    setattr(coach,'profile_picture',filename)
+    db.session.add(coach)
+    db.session.commit()
+
+    return jsonify({"msg":"Profile picture updated"})

@@ -54,7 +54,6 @@ def users():
 @jwt_required()
 def get_user_info():
     user_id=get_jwt_identity()
-    print(user_id)
     user=User.query.get(user_id)
     if user is None:
         return jsonify({"msg":"Usuario no encontrado"}), 404
@@ -141,8 +140,8 @@ def update_person():
         if request.form.get(key) is not None :
             if 'share' not in key:
                 if isinstance(request.form.get(key), str): 
-                    setattr(new_user,key,request.form.get(key).lower())
-                else:setattr(new_user,key,request.form.get(key))
+                    setattr(user,key,request.form.get(key).lower())
+                else:setattr(user,key,request.form.get(key))
     
     boolArr = {"true":True,"false":False}
     user.share_age = boolArr[request.form.get('share_age')]
@@ -217,3 +216,31 @@ def upload_image(filename,file, extension):
     # os.remove(file)
 
     return True
+
+# Ruta enviar correo con link
+@api_user.route('/recoverypassword', methods=['POST'])
+def send_recovery_password():
+    email=request.json.get('email')
+    user = User.query.filter(User.email==email).first()
+
+    if User is None:
+        return jsonify({"msg":"Invalid email "}), 403
+    
+    recovery_token=create_access_token(identity=user.id,expires_delta=timedelta(minutes=5),additional_claims={"recovery":True})
+    return jsonify({'msg':recovery_token})
+
+# Ruta que reciba el enlace
+@api_user.route('/resetpassword', methods=['POST'])
+@jwt_required()
+def reset_password():
+    new_password = request.json.get("password")
+    user_id=get_jwt_identity()
+    user=User.query.get(user_id)
+    user.password=crypto.generate_password_hash(password).decode("utf-8")
+
+    db.session.add(user)
+    db.session.flush()
+    jti=get_jwt()['jti']
+    # token blocked =
+    # db.session.add(token)
+    db.session.commit()

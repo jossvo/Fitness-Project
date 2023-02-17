@@ -6,10 +6,16 @@ import { Home } from "./pages/home";
 import { Demo } from "./pages/demo";
 import { Single } from "./pages/single";
 import injectContext from "./store/appContext";
+
 import { UserPublic } from "./userComponents/userPublic.jsx";
 import { ProfileInfo } from "./userComponents/profileInfo.jsx";
 import { ProfileSecurity } from "./userComponents/profileSecurity.jsx";
-import {userLayout} from "./userLayout";
+
+import { CoachInfo } from "./coachComponents/coach_Info.jsx";
+import { CoachPublic } from "./coachComponents/coach_profile_info.jsx";
+import {CoachSecurity} from "./coachComponents/coach_security.jsx";
+import { CreateProgram } from "./coachComponents/coach_create_program.jsx";
+
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
 
@@ -26,11 +32,18 @@ const Layout = () => {
           <Navbar />
           <Routes>
             <Route element={<Home />} path="/" />
+            {/* User routes */}
             <Route element={<UserPublic />} path="/user/:userid" />
             <Route element={<ProfileInfo />} path="/settings/profile" />
             <Route element={<UserPublic />} path="/settings/billing" />
             <Route element={<ProfileSecurity />} path="/settings/security" />
-            <Route element={<UserPublic />} path="/settings/notifications" />
+            {/* Coach routes */}
+            <Route element={<CoachPublic />} path="/coach/:userid" />
+            <Route element={<CoachInfo />} path="/coach/settings/profile" />
+            <Route element={<CoachPublic />} path="/coach/settings/billing" />
+            <Route element={<CoachSecurity />} path="/coach/settings/security" />
+            <Route element={<CreateProgram />} path="/coach/settings/new_program" />
+
             <Route element={<Demo />} path="/demo" />
             <Route element={<Single />} path="/single/:theid" />
             <Route element={<h1>Not found!</h1>} />
