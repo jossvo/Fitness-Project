@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/userLibStyle.css";
 import { element } from "prop-types";
+import { Link } from "react-router-dom";
 
 export const UserLibrary = () => {
   const { store, actions } = useContext(Context);
@@ -25,7 +26,7 @@ export const UserLibrary = () => {
         <div className="row">
           {store.workouts?.map((element) => {
             return (
-              <div key={element.uid} className="col-3">
+              <div key={element.uid} className="col-3 my-4">
                 <div className="card">
                   <h5 className="card-title-section text-center title-container">
                     {element.name}
@@ -62,10 +63,14 @@ export const UserLibrary = () => {
                       {element.coach_name}
                     </li>
                   </ul>
-
                   {/* <link to="#" className="btn btn-warning">
                   Start Now
                 </link> */}
+                </div>
+                <div className="btn-container-workouts my-3">
+                  <Link to="#" className="btn btn-warning btn-workout-library">
+                    START
+                  </Link>
                 </div>
               </div>
             );
