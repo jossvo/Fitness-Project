@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import "../../styles/workoutLibStyle.css";
 import { Context } from "../store/appContext";
-
 import {
   CDBSidebar,
   CDBSidebarContent,
@@ -12,13 +11,14 @@ import {
   CDBSidebarFooter,
 } from "cdbreact";
 
-export const Workouts = () => {{}
+export const Workouts = () => {
+  { }
   const { store, actions } = useContext(Context);
   const [searchName, setSearchName] = useState("");
   const [selectedDifficulty, setSelectedDifficulty] = useState("");
   const [selectedWeeks, setSelectedWeeks] = useState("");
 
-
+  const workoutArray = store.workouts
 
   useEffect(() => {
     async function fetchData() {
@@ -35,11 +35,11 @@ export const Workouts = () => {{}
     setSelectedDifficulty(event.target.value);
   };
 
-   const inputWeeks = (event) => {
+  const inputWeeks = (event) => {
     setSelectedWeeks(event.target.value);
   };
 
-
+  console.log(store.workouts)
   return (
     <>
       <div className="workout-main-container">
@@ -104,7 +104,7 @@ export const Workouts = () => {{}
                         Medium
                       </label>
                     </div>
-                    <div className="form-check disabled">
+                    <div className="form-check">
                       <input
                         className="form-check-input"
                         type="radio"
@@ -112,79 +112,108 @@ export const Workouts = () => {{}
                         id="hard"
                         value="Hard"
                         checked={selectedDifficulty === "Hard"}
-                        onChange={inputDifficulty}
-                      />
-                      <label
-                        className="form-check-label"
-                        htmlFor="exampleRadios3"
-                      >
-                        Hard
-                      </label>
-                    </div>
-                  </div>
-                </CDBSidebarMenuItem>
-                <CDBSidebarMenuItem icon="calendar">
-                  Filter by Weeks
-                </CDBSidebarMenuItem>
-                 <CDBSidebarMenuItem className="mx-5 my-2">
-                  <div>
-                    <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        name="difficulty"
-                        id="easy"
-                        value="Easy"
-                        checked={selectedDifficulty === "Easy"}
-                        onChange={inputDifficulty}
-                      />
-                      <label
-                        className="form-check-label"
-                        htmlFor="exampleRadios1"
-                      >
-                        1-4
-                      </label>
-                    </div>
-                    <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        name="difficulty"
-                        id="medium"
-                        value="Medium"
-                        checked={selectedDifficulty === "Medium"}
                         onChange={inputDifficulty}
                       />
                       <label
                         className="form-check-label"
                         htmlFor="exampleRadios2"
                       >
-                        5-9
-                      </label>
-                    </div>
-                    <div className="form-check disabled">
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        name="difficulty"
-                        id="hard"
-                        value="Hard"
-                        checked={selectedDifficulty === "Hard"}
-                        onChange={inputDifficulty}
-                      />
-                      <label
-                        className="form-check-label"
-                        htmlFor="exampleRadios3"
-                      >
-                        +10
+                        Hard
                       </label>
                     </div>
                   </div>
                 </CDBSidebarMenuItem>
 
-
               </CDBSidebarMenu>
+              <CDBSidebarMenuItem icon="calendar">
+                Filter by Weeks
+              </CDBSidebarMenuItem>
 
+              <CDBSidebarMenuItem className="mx-5 my-2">
+                <div>
+                  <div className="form-check mt-5">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name="weeks"
+                      id="four"
+                      value="4"
+                      checked={selectedWeeks === 4}
+                      onChange={inputWeeks}
+                    />
+                    <label className="form-check-label" htmlFor="exampleRadios1">4</label>
+                  </div>
+
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name="weeks"
+                      id="six"
+                      value="6"
+                      checked={selectedWeeks === 6}
+                      onChange={inputWeeks}
+                    />
+                    <label
+                      className="form-check-label"
+                      htmlFor="exampleRadios2"
+                    >
+                      6
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name="weeks"
+                      id="eight"
+                      value="8"
+                      checked={selectedWeeks === 8}
+                      onChange={inputWeeks}
+                    />
+                    <label
+                      className="form-check-label"
+                      htmlFor="exampleRadios2"
+                    >
+                      8
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name="weeks"
+                      id="ten"
+                      value="10"
+                      checked={selectedWeeks === 10}
+                      onChange={inputWeeks}
+                    />
+                    <label
+                      className="form-check-label"
+                      htmlFor="exampleRadios2"
+                    >
+                      10
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name="weeks"
+                      id="twelve"
+                      value="12"
+                      checked={selectedWeeks === 12}
+                      onChange={inputWeeks}
+                    />
+                    <label
+                      className="form-check-label"
+                      htmlFor="exampleRadios2"
+                    >
+                      12
+                    </label>
+                  </div>
+                </div>
+              </CDBSidebarMenuItem>
             </CDBSidebarContent>
 
             <CDBSidebarFooter
@@ -198,11 +227,11 @@ export const Workouts = () => {{}
             Workout Library
           </h1>
 
-          <div className="container  ">
+          <div className="container-fluid overflow-auto">
             <div className="row ">
               {store.workouts?.filter((element) => element.name.toLowerCase().includes(searchName.toLowerCase()) ||
                 element.coach_name.toLowerCase().includes(searchName.toLowerCase())
-              ).filter((element) => selectedDifficulty ? element.difficulty === selectedDifficulty : true).map((element, index) => (
+              ).filter((element) => selectedDifficulty ? element.difficulty === selectedDifficulty : true).filter((element) => selectedWeeks ? element.weeks == selectedWeeks : true).map((element, index) => (
                 <div
                   className="col-sm-12 col-md-6 col-lg-4 col-xl-3 my-3"
                   key={element.id || index}
@@ -250,12 +279,6 @@ export const Workouts = () => {{}
                       className="btn btn-warning btn-workout-library"
                     >
                       Buy
-                    </Link>
-                    <Link
-                      to={`/workout/${element.id}`}
-                      className="btn btn-secondary btn-workout-library"
-                    >
-                      Details
                     </Link>
                   </div>
                 </div>
