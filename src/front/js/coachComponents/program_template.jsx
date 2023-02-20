@@ -12,7 +12,7 @@ export const ProgramTemplate = () => {
   const [userID, setUserID] = useState();
   const [UserAssignHelp,setUserAssignHelp] = useState("")
   const [workoutID, setWorkoutID] = useState();
-  const [allowWorkoutAssign, setAllowWorkoutAssign] = useState(false);
+  const [isPublicState, setIsPublicState] = useState(true);
   const [disableList, setDisableList] = useState(false);
 
   let exercises = [
@@ -45,9 +45,9 @@ export const ProgramTemplate = () => {
     else setDisableList(false);
   }
   function workoutTypeChange(e){
-    e.target.value==="false"?setAllowWorkoutAssign(false)
-    :setAllowWorkoutAssign(true)
-    if(allowWorkoutAssign)setUserAssignHelp("")
+    e.target.value==="false"?setIsPublicState(false)
+    :setIsPublicState(true)
+    if(!isPublicState)setUserAssignHelp("")
   }
   //New exercise Div
   function allowNewExercise() {
@@ -106,14 +106,17 @@ export const ProgramTemplate = () => {
   // Update profile data from Account Details form
   async function updateData(e) {
     e.preventDefault();
-    if(allowWorkoutAssign && !userID){
+    if(!isPublicState && !userID){
         setUserAssignHelp("Workout must be assigned to user if private")
         return false
     }
     const data = new FormData(e.target);
-    for (var pair of data.entries()) {
-        console.log(pair[0]+ ', ' + pair[1]); 
-    }
+    data.set('is_public',data.get('type'))
+    if(userID)data.set('user_id',userID)
+
+    // for (var pair of data.entries()) {
+    //     console.log(pair[0]+ ', ' + pair[1]); 
+    // }
   }
 
   return (
@@ -229,7 +232,7 @@ export const ProgramTemplate = () => {
                                         id="inputWorkoutDifficulty"
                                         onChange={workoutTypeChange}
                                     >
-                                        {[{type:"public",value:false},{type:"private",value:true}].map((elem,index)=>{
+                                        {[{type:"public",value:true},{type:"private",value:false}].map((elem,index)=>{
                                             return <option value={elem.value} key={index}>{elem.type}</option>
                                         })}
                                     </select>
@@ -246,7 +249,7 @@ export const ProgramTemplate = () => {
                                         id="inputUserToAssign"
                                         options={users}
                                         onChange={handleSelectUserChange}
-                                        isDisabled={!allowWorkoutAssign}
+                                        isDisabled={isPublicState}
                                     />
                                     <div id="UserAssignHelp" className="form-text" style={{color:"red"}} >
                                         {UserAssignHelp}                    
