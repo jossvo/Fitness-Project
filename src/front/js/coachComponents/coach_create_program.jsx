@@ -3,6 +3,7 @@ import { Context } from "../store/appContext";
 import {useNavigate} from "react-router-dom"
 import Select from "react-select";
 import { ProfileSidebar } from "../userComponents/profileSidebar.jsx";
+import { ProgramTemplate } from "./program_template.jsx";
 import "../../styles/coachStyle.css";
 
 
@@ -10,12 +11,18 @@ export const CreateProgram = () => {
   const { store, actions } = useContext(Context);
   const { updateAccountDetails , updateImage, setProfileImage} = actions
   const [exercise,setExercise] = useState()
+  const [exerciseId,setExerciseId]=useState(1)
   const [disableList,setDisableList]=useState(false)
 
   let exercises = [
     {label:"ejercicio 1",value:"1"},
     {label:"ejercicio 2",value:"2"},
     {label:"ejercicio 3",value:"3"},
+  ]
+  let workouts =[
+    {label:"rutina 1",value:"1"},
+    {label:"rutina 2",value:"2"},
+    {label:"rutina 3",value:"3"},
   ]
   function handleSelectExerciseChange({value}){
     setExercise(value)
@@ -25,72 +32,51 @@ export const CreateProgram = () => {
       setDisableList(true)
     }else setDisableList(false)
   }
+  //New exercise Div
+  function allowNewExercise(){
+    if(disableList){
+      return(
+        <div className="newExerciseCreateWorkoutDiv row">
+          <div className="row gx-3 mb-3">
+            <div className="col-md-7">
+              <label className="small mb-1" htmlFor="inputNewExercise">
+                New Exercise Name
+              </label>
+              <input
+                required
+                className="form-control"
+                id="inputNewExercise"
+                type="text"
+                placeholder="Enter your first name"
+                name="new_exercise"
+              />
+            </div>
 
-  // Update profile data from Account Details form
-  async function updateData(e){
-    e.preventDefault()
-    const data = new FormData(e.target);
-    data.set('share_gender',data.get("inputRadioGender"))
-    data.set('share_age',data.get("inputRadioAge"))
+            <div className="col-md-5">
+              <label className="small mb-1" htmlFor="inputNewExerciseVideo">
+                New Exercise Video
+              </label>
+              <input className="form-control" 
+              type="file" accept="video/mp4,video/x-m4v,video/*" 
+              id="inputNewExerciseVideo"
+              />
+            </div>
+          </div>
 
-    let resp = await updateAccountDetails(data)
-    if(resp !="ok"){
-
-    }else window.location.reload(true)
-  }
-  async function updateProfilePicture(e){
-    e.preventDefault()
-    const data = new FormData(e.target);
-    let resp = await updateImage(data)
-    if (resp)window.location.reload(true)
-  }
-
-  return (
-    <div className="profileDiv"
-      style={{ backgroundColor: "#e3e6e6", display: "flex", height: "100vh" }}
-    >
-      <ProfileSidebar navTitle="Coach"/>
-      <div
-        className="container overflow-auto"
-        style={{ height: "95vh", width: "90%", marginTop: "5vh" }}
-      >
-        <div className="row" style={{marginBottom:"calc(var(--bs-gutter-x))"}}>
-          <div className="col-xl-12">
-            <div className="card mb-4 mb-xl-0">
-              <div className="card-header">Workout Details</div>
-              <div className="row gx-3 mb-3 workoutDetailsDiv" style={{paddingLeft:"calc(var(--bs-gutter-x) * .5)"}}>
-                <div className="col-md-4" style={{backgroundColor:"rgba(0,0,0,.03)", borderRight:"2px",borderColor:"black"}}>
-                  <form onSubmit={updateProfilePicture}>
-                    <div className="card-body text-center">
-                      <img
-                        id="profileImg"
-                        className="img-account-profile rounded-circle mb-2"
-                        src=""
-                        alt="profile picture"
-                      />
-
-                      <div className="small font-italic text-muted mb-4">
-                        JPG or PNG no larger than 5 MB
-                      </div>
-
-                      <div className="mb-3" >
-                        <input
-                        required 
-                        name="file"
-                        className="form-control form-control-sm" 
-                        accept="image/png, image/jpeg" 
-                        id="inputProfileImg" 
-                        type="file" 
-                        />
-                      </div>
-                    </div>
-                  </form>
-                </div>
-              </div>
+          <div className="row gx-3 mb-3">
+            <div className="col-md-12">
+              <label htmlFor="inputNewExerciseDescription" className="small mb-1">
+                New Exercise Description</label>
+              <textarea className="form-control" id="inputNewExerciseDescription" rows="2"></textarea>
             </div>
           </div>
         </div>
-
+      )
+    }
+  }
+  function allowAddExercies(){
+    if(exerciseId){
+      return(
         <div className="row">
           <div className="col-xl-4">
             <div className="card mb-4 mb-xl-0">
@@ -109,6 +95,8 @@ export const CreateProgram = () => {
                         Exercise Library
                       </label>
                       <Select
+                        required={true}
+                        isClearable={true}
                         placeholder="Select exercise..."
                         id="inputExercise"
                         options={exercises}
@@ -125,6 +113,8 @@ export const CreateProgram = () => {
                       </div>
                     </div>
                   </div>
+                  {/* Section visible if want to create a new exercise */}
+                  {allowNewExercise()}
 
                   <div className="row gx-3 mb-3">
                     <div className="col-md-2">
@@ -227,7 +217,35 @@ export const CreateProgram = () => {
             </div>
           </div>
         </div>
-      </div>
+      )
+    }
+  }
+
+  // Update profile data from Account Details form
+  async function updateData(e){
+    e.preventDefault()
+    const data = new FormData(e.target);
+    data.set('share_gender',data.get("inputRadioGender"))
+    data.set('share_age',data.get("inputRadioAge"))
+
+    let resp = await updateAccountDetails(data)
+    if(resp !="ok"){
+
+    }else window.location.reload(true)
+  }
+  async function updateProfilePicture(e){
+    e.preventDefault()
+    const data = new FormData(e.target);
+    let resp = await updateImage(data)
+    if (resp)window.location.reload(true)
+  }
+
+  return (
+    <div className="profileDiv"
+      style={{ backgroundColor: "#e3e6e6", display: "flex", height: "100vh" }}
+    >
+      <ProfileSidebar navTitle="Coach"/>
+      <ProgramTemplate/>
     </div>
   );
 };

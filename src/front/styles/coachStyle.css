@@ -1,3 +1,7 @@
 .workoutDetailsDiv{
     margin-bottom: 0% !important;
 }
+.newExerciseCreateWorkoutDiv{
+    background-color: rgba(113,113,113,0.19);
+    justify-content: center;
+}
