@@ -69,3 +69,33 @@ def new_workout():
     # class_keys = list(vars(user).keys())
     # print(class_keys)
     # return "ok", 200
+
+@api_workout.route('/workouts/<workout_id>',methods=['PATCH'])
+@jwt_required()
+def update_workout(workout_id):
+    workout = Workout.query.get(workout_id)
+    coach_id=get_jwt_identity()
+    if workout is None:
+        return jsonify({"msg": "Program not found"}), 404
+
+    if workout.coach_id is not coach_id:
+        return jsonify({"msg": "Current coach can't modify this workout"}), 401
+
+    class_keys = ['name', 'days_per_week', 'description', 'weeks', 'difficulty']
+    for key in class_keys:
+        setattr(workout,key,request.form.get(key))
+
+    boolArr = {"true":True,"false":False}
+    workout.is_public = boolArr[request.form.get('is_public')]
+    
+    if request.form.get('file') is not None:
+        file=request.files['file']
+        extension = "jpg"
+        filename="workout_pics/"+str(workout.id)+"."+extension
+        upload_image(filename,file,extension)
+        setattr(workout,'wk_image',filename)
+
+    db.session.add(workout)
+    db.session.commit()
+
+    return({"msg":"Workout updated"})

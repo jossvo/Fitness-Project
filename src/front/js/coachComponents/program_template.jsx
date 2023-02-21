@@ -4,10 +4,11 @@ import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import { ProfileSidebar } from "../userComponents/profileSidebar.jsx";
 import "../../styles/coachStyle.css";
+import { bool } from "prop-types";
 
 export const ProgramTemplate = () => {
   const { store, actions } = useContext(Context);
-  const {setNewElement,getDetails} = actions;
+  const {setNewElement,getDetails,updateWorkout} = actions;
   const [allowPopulation, setAllowPopulation] = useState(false)
 
   const [exercise, setExercise] = useState();
@@ -150,15 +151,20 @@ export const ProgramTemplate = () => {
     // for (var pair of data.entries()) {
     //     console.log(pair[0]+ ', ' + pair[1]); 
     // }
+    if(data.get('file').size===0 || data.get('file').name==='')data.delete('file')
+
     if(!workoutID){
       let response = await setNewElement('workouts',data)
       if(response !="ok"){
         alert("Something went wrong! Please try again")
       }else window.location.reload(true)
-    }else{
-      // To be defined 'PATCH' method for workout info
-      console.log("This will be the patch method")
+      return false
     }
+    let response = await updateWorkout(data,workoutID)
+    if(response !="ok"){
+      alert("Something went wrong! Please try again")
+    }else window.location.reload(true)
+  
 
   }
 
@@ -195,7 +201,7 @@ export const ProgramTemplate = () => {
                             Workout Image
                           </label>
                           <input
-                              required
+                              required={workoutID?false:true}
                               name="file"
                               className="form-control form-control-sm"
                               accept="image/png, image/jpeg"
