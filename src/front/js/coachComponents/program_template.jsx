@@ -7,13 +7,46 @@ import "../../styles/coachStyle.css";
 
 export const ProgramTemplate = () => {
   const { store, actions } = useContext(Context);
-  const { updateAccountDetails} = actions;
+  const {setNewElement,getDetails} = actions;
+  const [allowPopulation, setAllowPopulation] = useState(false)
+
   const [exercise, setExercise] = useState();
   const [userID, setUserID] = useState();
   const [UserAssignHelp,setUserAssignHelp] = useState("")
   const [workoutID, setWorkoutID] = useState();
+
+  const [workoutImage,setWorkoutImage]=useState("https://picsum.photos/seed/picsum/200/200")
   const [isPublicState, setIsPublicState] = useState(true);
   const [disableList, setDisableList] = useState(false);
+
+  useEffect(() => {
+    if(store.wkID){
+      async function fetchData(){
+        actions.getDetails('workouts',store.wkID);
+      }
+      fetchData()
+      setWorkoutID(store.wkID)
+    }
+  },[store.wkID]);
+
+  // useEffect and function to populate form with fetch data
+  useEffect(() => {
+    setData()
+  },[store["workoutsDetail"]]);
+
+  async function setData(){
+    if(store["workoutsDetail"]){
+      let workout = store["workoutsDetail"]
+      setWorkoutImage(workout.wk_image)
+      document.getElementById("inputWorkoutName").value=workout.name
+      document.getElementById("inputWorkoutWeeks").value=workout.weeks
+      document.getElementById("inputWorkoutDays").value=workout.days_per_week
+      document.getElementById("inputWorkoutDifficulty").value=workout.difficulty
+      document.getElementById("inputWorkoutDescription").value=workout.description
+      document.getElementById("inputWorkoutType").value=workout.isPublic
+    }
+  }
+
 
   let exercises = [
     { label: "ejercicio 1", value: "1" },
@@ -117,6 +150,16 @@ export const ProgramTemplate = () => {
     // for (var pair of data.entries()) {
     //     console.log(pair[0]+ ', ' + pair[1]); 
     // }
+    if(!workoutID){
+      let response = await setNewElement('workouts',data)
+      if(response !="ok"){
+        alert("Something went wrong! Please try again")
+      }else window.location.reload(true)
+    }else{
+      // To be defined 'PATCH' method for workout info
+      console.log("This will be the patch method")
+    }
+
   }
 
   return (
@@ -137,21 +180,30 @@ export const ProgramTemplate = () => {
                     style={{ paddingLeft: "calc(var(--bs-gutter-x) * .5)" }}
                 >
                     <div
-                    className="col-md-4 card-body d-flex align-items-end "
+                    id="workoutImage"
+                    className="col-md-4 card-body  "
                     style={{
-                        backgroundImage:"url('https://picsum.photos/seed/picsum/200/200')",
+                        backgroundImage:`url(${workoutImage})`,
                         backgroundSize:"cover",
                         borderRight: "2px",
                         borderColor: "black",
                         }}
                     >
-                            <input
-                                name="file"
-                                className="form-control form-control-sm"
-                                accept="image/png, image/jpeg"
-                                id="inputWorkoutImage"
-                                type="file"
-                            />
+                      <div className="d-flex align-items-end h-100">
+                        <div className="d-flex flex-column p-2 rounded" style={{backgroundColor:"white"}}>
+                          <label className="form-label" htmlFor="inputWorkoutImage">
+                            Workout Image
+                          </label>
+                          <input
+                              required
+                              name="file"
+                              className="form-control form-control-sm"
+                              accept="image/png, image/jpeg"
+                              id="inputWorkoutImage"
+                              type="file"
+                          />
+                        </div>
+                      </div>
                     </div>
 
                     <div className="col-md-8" style={{paddingLeft:"0px"}}>
@@ -216,20 +268,20 @@ export const ProgramTemplate = () => {
                                         aria-label="Default select example"
                                         id="inputWorkoutDifficulty"
                                     >
-                                        {["easy","medium","intermediate"].map((difficulty,index)=>{
+                                        {["easy","medium","hard"].map((difficulty,index)=>{
                                             return <option value={difficulty} key={index}>{difficulty}</option>
                                         })}
                                     </select>
                                 </div>
                                 <div className="col-md-3" style={{ position: "relative" }}>
-                                    <label className="form-label" htmlFor="inputWorkoutDifficulty">
+                                    <label className="form-label" htmlFor="inputWorkoutType">
                                         Type
                                     </label>
                                     <select
                                         name="type"
                                         className="form-select"
                                         aria-label="Default select example"
-                                        id="inputWorkoutDifficulty"
+                                        id="inputWorkoutType"
                                         onChange={workoutTypeChange}
                                     >
                                         {[{type:"public",value:true},{type:"private",value:false}].map((elem,index)=>{
@@ -258,14 +310,14 @@ export const ProgramTemplate = () => {
                             </div>
                             <div className="row gx-3 mb-3">
                                 <div className="col-md-12">
-                                    <label className="form-label" htmlFor="inputWorkoutDescription">Workout Description</label>
-                                    <textarea className="form-control" id="inputWorkoutDescription" rows="3" required></textarea>
+                                    <label className="form-label" htmlFor="inputWorkoutDescription" >Workout Description</label>
+                                    <textarea className="form-control" id="inputWorkoutDescription" rows="3" name="description" required></textarea>
                                 </div>
                             </div>
                             
                             <div className="d-flex justify-content-end">
                                 <button className="btn btn-primary" type="submit">
-                                Create Workout
+                                {workoutID?"Update Workout":"Create Workout"}
                                 </button>
                             </div>
                         </div>

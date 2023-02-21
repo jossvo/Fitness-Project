@@ -9,12 +9,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 				let refreshToken = localStorage.getItem("refreshToken")
 				let id = localStorage.getItem("id")
 				let type = localStorage.getItem("type")
+				let wkID = localStorage.getItem("wkID")
 				setStore({
 					accessToken:accessToken,
 					refreshToken:refreshToken,
 					id:id,
 					type:type
 				})
+				if(wkID)setStore({wkID:wkID})
 			},
 			// login functions
 			login: async (email,password,type)=>{
@@ -56,23 +58,23 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({accessToken,refreshToken})
 
 			},
-			logout:async ()=>{
-				if(!getStore().accessToken)return;
-				const resp = await fetch(apiUrl+"/api/logout",{
-					method: 'POST',
-					headers: {
-						...getActions().getAutorizationHeader()
-					}
-				})
-				if(!resp.ok){
-					console.error(resp.statusText)
-					return false
-				}
-				localStorage.removeItem("accessToken")
-				localStorage.removeItem("refreshToken")
-				setStore({accessToken:null,refreshToken:null})
-				return "ok"
-			},
+			// logout:async ()=>{
+			// 	if(!getStore().accessToken)return;
+			// 	const resp = await fetch(apiUrl+"/api/logout",{
+			// 		method: 'POST',
+			// 		headers: {
+			// 			...getActions().getAutorizationHeader()
+			// 		}
+			// 	})
+			// 	if(!resp.ok){
+			// 		console.error(resp.statusText
+			// 		return false
+			// 	}
+			// 	localStorage.removeItem("accessToken")
+			// 	localStorage.removeItem("refreshToken")
+			// 	setStore({accessToken:null,refreshToken:null})
+			// 	return "ok"
+			// },
 
 			// functions to get information
 			getProfile: async()=>{
@@ -161,16 +163,44 @@ const getState = ({ getStore, getActions, setStore }) => {
 				if(!response.ok)return false
 				else return "ok"
 			},
+			setNewElement: async (url,data)=>{
+				const response = await fetch(apiUrl+"/"+url, {
+					method:'POST',
+					headers:{
+						...getActions().getAutorizationHeader()
+					},
+					body: data
+				})
+				if(!response.ok){
+					response.text().then(text => {
+						let errorObj = JSON.parse(text)
+						switch(errorObj.msg){
+							case "Token has expired":
+								getActions().updateTokens()
+								break;
+							default:
+								console.log(errorObj.msg)
+								throw new Error(errorObj.msg)
+						}
+					})
+					return false
+				}
+				else{
+					let data = await response.json()
+					localStorage.setItem('wkID',data.wk_id)
+					return "ok"
+				}
+			},
 			// functions to update information
 			updateTokens:async ()=>{
-				const resp = await fetch(apiUrl+"/refresh", {
+				const response = await fetch(apiUrl+"/refresh", {
 					method:'POST',
 					headers: {
 						"Authorization":"Bearer " + localStorage.refreshToken
 					}
 				})
-				if(!resp.ok){
-					resp.text().then(text => {
+				if(!response.ok){
+					response.text().then(text => {
 						let errorObj = JSON.parse(text)
 						switch(errorObj.msg){
 							case "Token has expired":
@@ -181,7 +211,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						}
 					})
 				}
-				const data = await resp.json()
+				const data = await response.json()
 				setStore({
 					accessToken:data.access_token
 				})

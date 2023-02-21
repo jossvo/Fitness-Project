@@ -129,8 +129,8 @@ class Workout(db.Model):
             "days_per_week" : self.days_per_week , 
             "difficulty" : self.difficulty , 
             "description" : self.description , 
-            "isfree" : self.isfree ,  
-            "wk_image" : self.wk_image , 
+            "isPublic" : self.is_public ,  
+            "wk_image" : self.wk_image
         }
     
 class Category(db.Model):
