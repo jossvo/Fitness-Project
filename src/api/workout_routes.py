@@ -23,6 +23,13 @@ def get_workouts():
     response_body = list(map(lambda w: w.serialize_library() ,workouts))
     return jsonify(response_body), 200
 
+@api_workout.route('/exercise_library')
+def get_exercises():
+    exercises = Exercise_Library.query.all()
+
+    response_body = list(map(lambda e: e.serialize_library() ,exercises))
+    return jsonify(response_body), 200
+
 @api_workout.route('/workouts/<workout_id>')
 def get_single_workout(workout_id):
     workout = Workout.query.get(workout_id)

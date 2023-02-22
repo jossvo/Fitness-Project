@@ -49,6 +49,13 @@ def users():
     response_body = list(map(lambda p: p.serialize_account_details() ,users))
     return jsonify(response_body), 200
 
+@api_user.route('/user_library')
+def get_exercises():
+    users = User.query.all()
+
+    response_body = list(map(lambda e: e.serialize_library() ,users))
+    return jsonify(response_body), 200
+
 # Get single user, simple without jwt, then with jwt
 @api_user.route('/userinfo')
 @jwt_required()

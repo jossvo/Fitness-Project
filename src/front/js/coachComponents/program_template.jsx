@@ -15,15 +15,19 @@ export const ProgramTemplate = () => {
   const [userID, setUserID] = useState();
   const [UserAssignHelp,setUserAssignHelp] = useState("")
   const [workoutID, setWorkoutID] = useState();
-
+  const [workoutWeeks,setWorkoutWeeks] = useState(15);
+  const [workoutDays,setWorkoutDays] = useState(7);
   const [workoutImage,setWorkoutImage]=useState("https://picsum.photos/seed/picsum/200/200")
+
   const [isPublicState, setIsPublicState] = useState(true);
   const [disableList, setDisableList] = useState(false);
-
+  let workout = ""
   useEffect(() => {
     if(store.wkID){
       async function fetchData(){
         actions.getDetails('workouts',store.wkID);
+        actions.getList('exercise_library')
+        actions.getList('user_library')
       }
       fetchData()
       setWorkoutID(store.wkID)
@@ -37,23 +41,17 @@ export const ProgramTemplate = () => {
 
   async function setData(){
     if(store["workoutsDetail"]){
-      let workout = store["workoutsDetail"]
+      workout = store["workoutsDetail"]
       setWorkoutImage(workout.wk_image)
       document.getElementById("inputWorkoutName").value=workout.name
-      document.getElementById("inputWorkoutWeeks").value=workout.weeks
-      document.getElementById("inputWorkoutDays").value=workout.days_per_week
+      setWorkoutWeeks(workout.weeks)
+      setWorkoutDays(workout.days_per_week)
       document.getElementById("inputWorkoutDifficulty").value=workout.difficulty
       document.getElementById("inputWorkoutDescription").value=workout.description
       document.getElementById("inputWorkoutType").value=workout.isPublic
     }
   }
 
-
-  let exercises = [
-    { label: "ejercicio 1", value: "1" },
-    { label: "ejercicio 2", value: "2" },
-    { label: "ejercicio 3", value: "3" },
-  ];
   let users = [
     { label: "usuario 1", value: "1" },
     { label: "usuario 2", value: "2" },
@@ -90,7 +88,7 @@ export const ProgramTemplate = () => {
         <div className="newExerciseCreateWorkoutDiv row">
           <div className="row gx-3 mb-3">
             <div className="col-md-7">
-              <label className="small mb-1" htmlFor="inputNewExercise">
+              <label className="form-label" htmlFor="inputNewExercise">
                 New Exercise Name
               </label>
               <input
@@ -104,7 +102,7 @@ export const ProgramTemplate = () => {
             </div>
 
             <div className="col-md-5">
-              <label className="small mb-1" htmlFor="inputNewExerciseVideo">
+              <label className="form-label" htmlFor="inputNewExerciseVideo">
                 New Exercise Video
               </label>
               <input
@@ -120,7 +118,7 @@ export const ProgramTemplate = () => {
             <div className="col-md-12">
               <label
                 htmlFor="inputNewExerciseDescription"
-                className="small mb-1"
+                className="form-label"
               >
                 New Exercise Description
               </label>
@@ -137,7 +135,7 @@ export const ProgramTemplate = () => {
   }
 
 
-  // Update profile data from Account Details form
+  // Upload/update workout data from Account Details form
   async function updateData(e) {
     e.preventDefault();
     if(!isPublicState && !userID){
@@ -164,8 +162,6 @@ export const ProgramTemplate = () => {
     if(response !="ok"){
       alert("Something went wrong! Please try again")
     }else window.location.reload(true)
-  
-
   }
 
   return (
@@ -238,6 +234,8 @@ export const ProgramTemplate = () => {
                                         name="weeks"
                                         className="form-select"
                                         aria-label="Default select example"
+                                        value={workoutWeeks}
+                                        onChange={e=>setWorkoutWeeks(e.target.value)}
                                         id="inputWorkoutWeeks"
                                     >
                                         {[...Array(16).keys()].slice(1).map((week,index) =>{
@@ -256,6 +254,8 @@ export const ProgramTemplate = () => {
                                         name="days_per_week"
                                         className="form-select"
                                         aria-label="Default select example"
+                                        value={workoutDays}
+                                        onChange={e=>setWorkoutDays(e.target.value)}
                                         id="inputWorkoutDays"
                                     >
                                         {[...Array(8).keys()].slice(1).map((day,index) =>{
@@ -303,9 +303,9 @@ export const ProgramTemplate = () => {
                                     </label>
                                     <Select
                                         isClearable={true}
-                                        placeholder="Select exercise..."
+                                        placeholder="Select user..."
                                         id="inputUserToAssign"
-                                        options={users}
+                                        options={store["user_library"]}
                                         onChange={handleSelectUserChange}
                                         isDisabled={isPublicState}
                                     />
@@ -345,26 +345,24 @@ export const ProgramTemplate = () => {
             <div className="card mb-4">
               <div className="card-header">Exercise Details</div>
               <div className="card-body">
-                <form onSubmit={updateData}>
+                <form>
                   <div className="row gx-3 mb-3">
                     <div className="col-md-10">
-                      <label className="small mb-1" htmlFor="inputExercise">
+                      <label className="form-label" htmlFor="inputExercise">
                         Exercise Library
                       </label>
                       <Select
-                        required={true}
                         isClearable={true}
                         placeholder="Select exercise..."
                         id="inputExercise"
-                        options={exercises}
+                        options={store["exercise_library"]}
                         onChange={handleSelectExerciseChange}
                         isDisabled={disableList}
                       />
                     </div>
-                    <div className="col-md-2" style={{ position: "relative" }}>
+                    <div className="col-md-2 d-flex align-items-end">
                       <div
                         className="form-check"
-                        style={{ position: "absolute", top: "40%" }}
                       >
                         <input
                           className="form-check-input"
@@ -374,7 +372,7 @@ export const ProgramTemplate = () => {
                           onChange={handleOtherExerciseCheckbox}
                         />
                         <label
-                          className="small mb-1"
+                          className="form-label"
                           htmlFor="flexCheckChecked"
                         >
                           Other
@@ -387,101 +385,103 @@ export const ProgramTemplate = () => {
 
                   <div className="row gx-3 mb-3">
                     <div className="col-md-2">
-                      <label className="small mb-1" htmlFor="inputUsername">
+                      <label className="form-label" htmlFor="inputExerciseAssignWeek">
                         Week
                       </label>
                       <select
-                        name="gender"
+                        name="week"
                         className="form-select"
                         aria-label="Default select example"
-                        id="inputGender"
+                        id="inputExerciseAssignWeek"
                       >
-                        <option defaultValue disabled>
-                          Choose One
-                        </option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                        <option value="Other">Other</option>
+                        {[...Array(workoutWeeks+1).keys()].slice(1).map((week,index) =>{
+                            return <option value={week} key={index}>{week}</option>
+                        })}
                       </select>
                     </div>
 
                     <div className="col-md-2">
-                      <label className="small mb-1" htmlFor="inputUsername">
+                      <label className="form-label" htmlFor="inputExerciseAssignDay">
                         Day
                       </label>
                       <select
-                        name="gender"
+                        name="day"
                         className="form-select"
                         aria-label="Default select example"
-                        id="inputGender"
+                        id="inputExerciseAssignDay"
                       >
-                        <option defaultValue disabled>
-                          Choose One
-                        </option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                        <option value="Other">Other</option>
+                        {[...Array(workoutDays+1).keys()].slice(1).map((day,index) =>{
+                            return <option value={day} key={index}>{day}</option>
+                        })}
                       </select>
                     </div>
 
                     <div className="col-md-2">
-                      <label className="small mb-1" htmlFor="inputUsername">
+                      <label className="form-label" htmlFor="inputExerciseAssignOrder">
                         Order
                       </label>
-                      <select
-                        name="gender"
-                        className="form-select"
-                        aria-label="Default select example"
-                        id="inputGender"
-                      >
-                        <option defaultValue disabled>
-                          Choose One
-                        </option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                        <option value="Other">Other</option>
-                      </select>
+                      <input
+                          disabled
+                          className="form-control"
+                          id="inputExerciseAssignOrder"
+                          type="number"
+                          value={0}
+                          style={{height:"48%"}}
+                          name="order"
+                      />
+                    </div>
+
+                    <div className="col-md-2">
+                      <label className="form-label" htmlFor="inputExerciseAssignSets">
+                        Sets
+                      </label>
+                      <input
+                          required
+                          className="form-control"
+                          id="inputExerciseAssignSets"
+                          type="number" min="0" step="1"
+                          placeholder="0"
+                          style={{height:"48%"}}
+                          name="sets"
+                      />
+                    </div>
+
+                    <div className="col-md-2">
+                      <label className="form-label" htmlFor="inputExerciseAssignReps">
+                        Reps
+                      </label>
+                      <input
+                          required
+                          className="form-control"
+                          id="inputExerciseAssignReps"
+                          type="number" min="0" step="1"
+                          placeholder="0"
+                          style={{height:"48%"}}
+                          name="reps"
+                      />
+                    </div>
+
+                    <div className="col-md-2">
+                      <label className="form-label" htmlFor="inputExerciseAssignRest">
+                        Rest (sec)
+                      </label>
+                      <input
+                          required
+                          className="form-control"
+                          id="inputExerciseAssignRest"
+                          type="number" min="0" step="1"
+                          placeholder="0"
+                          style={{height:"48%"}}
+                          name="rest_between_sets"
+                      />
                     </div>
                   </div>
 
                   <div className="row gx-3 mb-3">
-                    <div className="col-md-6">
-                      <label className="small mb-1" htmlFor="inputFirstName">
-                        First name
-                      </label>
-                      <input
-                        required
-                        className="form-control"
-                        id="inputFirstName"
-                        type="text"
-                        placeholder="Enter your first name"
-                        name="first_name"
-                      />
-                      <div
-                        id="FirstNameHelp"
-                        className="form-text"
-                        style={{ color: "red" }}
-                      ></div>
-                    </div>
-
-                    <div className="col-md-6">
-                      <label className="small mb-1" htmlFor="inputLastName">
-                        Last name
-                      </label>
-                      <input
-                        required
-                        className="form-control"
-                        id="inputLastName"
-                        type="text"
-                        placeholder="Enter your last name"
-                        name="last_name"
-                      />
-                      <div
-                        id="LastNameHelp"
-                        className="form-text"
-                        style={{ color: "red" }}
-                      ></div>
-                    </div>
+                      <div className="col-md-12">
+                          <label className="form-label" htmlFor="inputExerciseAssignDescription" >Additional Exercise Description</label>
+                          <textarea className="form-control" id="inputExerciseAssignDescription" rows="2" name="description" required></textarea>
+                      </div>
                   </div>
 
                   <button className="btn btn-primary" type="submit">

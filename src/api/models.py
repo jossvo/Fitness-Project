@@ -60,6 +60,11 @@ class User(db.Model):
             "profile_picture": self.profile_picture,
             "bio": self.bio
         }
+    def serialize_library(self):
+        return {
+            "label":self.first_name.capitalize() + " "+ self.last_name.capitalize(),
+            "value":self.id
+        }
 
 class Coach(db.Model):
     __tablename__ = 'coach'
@@ -154,6 +159,13 @@ class Exercise_Library(db.Model): #Library with public and private exercises
     description = db.Column(db.String(250), nullable=False)
     coach_id = db.Column(db.Integer(),db.ForeignKey("coach.id",ondelete="cascade"))
     video = db.Column(db.String(250), nullable=False)
+    
+    def serialize_library(self):
+        return {
+            "label":self.name,
+            "value":self.id,
+            "video":self.video
+        }
 
 class Exercise_Assign(db.Model): #Exercise_Assigned_to_Workout
     __tablename__ = "exercise_assign"
