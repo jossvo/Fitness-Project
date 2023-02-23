@@ -17,6 +17,7 @@ export const Workouts = () => {
   const [searchName, setSearchName] = useState("");
   const [selectedDifficulty, setSelectedDifficulty] = useState("");
   const [selectedWeeks, setSelectedWeeks] = useState("");
+  const [workoutsArr,setworkoutsArr] = useState([])
 
   const workoutArray = store.workouts
 
@@ -27,9 +28,41 @@ export const Workouts = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    setworkoutsArr(store.workouts)
+  }, [store.workouts]);
+
   const inputSearch = (event) => {
     setSearchName(event.target.value);
   };
+  function getWorkouts(){
+    if(!store.workouts)return[]
+    let output = [...store.workouts]
+    if(searchName){
+      output=output.filter((element) => element.name.toLowerCase().includes(searchName.toLowerCase()) || element.coach_name.toLowerCase().includes(searchName.toLowerCase()))
+    }
+
+    if(selectedDifficulty){
+      output = output.filter((element) =>  element.difficulty === selectedDifficulty)
+    }
+    if(selectedWeeks){
+      let weeksArr = []
+      switch(selectedWeeks){
+        case "1":
+          weeksArr=[1,2,3,4]
+          break;
+        case "2":
+          weeksArr=[5,6,7,8,9]
+          break;
+        case "3":
+          weeksArr=[10,11,12,13,14,15]
+          break;
+      }
+  
+      output=output.filter((element) => weeksArr.includes(element.weeks)===true)
+    }
+    return output
+  }
 
   const inputDifficulty = (event) => {
     setSelectedDifficulty(event.target.value);
@@ -38,8 +71,11 @@ export const Workouts = () => {
   const inputWeeks = (event) => {
     setSelectedWeeks(event.target.value);
   };
+  useEffect(() => {
+    
+  }, [selectedWeeks]);
+  
 
-  console.log(store.workouts)
   return (
     <>
       <div className="workout-main-container">
@@ -137,11 +173,10 @@ export const Workouts = () => {
                       type="radio"
                       name="weeks"
                       id="four"
-                      value="4"
-                      checked={selectedWeeks === 4}
+                      value="1"
                       onChange={inputWeeks}
                     />
-                    <label className="form-check-label" htmlFor="exampleRadios1">4</label>
+                    <label className="form-check-label" htmlFor="exampleRadios1">1-4</label>
                   </div>
 
                   <div className="form-check">
@@ -150,15 +185,14 @@ export const Workouts = () => {
                       type="radio"
                       name="weeks"
                       id="six"
-                      value="6"
-                      checked={selectedWeeks === 6}
+                      value="2"
                       onChange={inputWeeks}
                     />
                     <label
                       className="form-check-label"
                       htmlFor="exampleRadios2"
                     >
-                      6
+                      5-9
                     </label>
                   </div>
                   <div className="form-check">
@@ -167,51 +201,17 @@ export const Workouts = () => {
                       type="radio"
                       name="weeks"
                       id="eight"
-                      value="8"
-                      checked={selectedWeeks === 8}
+                      value="3"
                       onChange={inputWeeks}
                     />
                     <label
                       className="form-check-label"
                       htmlFor="exampleRadios2"
                     >
-                      8
+                      10+
                     </label>
                   </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="radio"
-                      name="weeks"
-                      id="ten"
-                      value="10"
-                      checked={selectedWeeks === 10}
-                      onChange={inputWeeks}
-                    />
-                    <label
-                      className="form-check-label"
-                      htmlFor="exampleRadios2"
-                    >
-                      10
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="radio"
-                      name="weeks"
-                      id="twelve"
-                      value="12"
-                      checked={selectedWeeks === 12}
-                      onChange={inputWeeks}
-                    />
-                    <label
-                      className="form-check-label"
-                      htmlFor="exampleRadios2"
-                    >
-                      12
-                    </label>
-                  </div>
+                  
                 </div>
               </CDBSidebarMenuItem>
             </CDBSidebarContent>
@@ -229,9 +229,7 @@ export const Workouts = () => {
 
           <div className="container-fluid overflow-auto">
             <div className="row ">
-              {store.workouts?.filter((element) => element.name.toLowerCase().includes(searchName.toLowerCase()) ||
-                element.coach_name.toLowerCase().includes(searchName.toLowerCase())
-              ).filter((element) => selectedDifficulty ? element.difficulty === selectedDifficulty : true).filter((element) => selectedWeeks ? element.weeks == selectedWeeks : true).map((element, index) => (
+              {getWorkouts().map((element, index) => (
                 <div
                   className="col-sm-12 col-md-6 col-lg-4 col-xl-3 my-3"
                   key={element.id || index}
