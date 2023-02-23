@@ -52,11 +52,6 @@ export const ProgramTemplate = () => {
     }
   }
 
-  let users = [
-    { label: "usuario 1", value: "1" },
-    { label: "usuario 2", value: "2" },
-    { label: "usuario 3", value: "3" },
-  ];
 
   function handleSelectExerciseChange(e) {
     if(e!==null)setExercise(e.value);
@@ -153,9 +148,9 @@ export const ProgramTemplate = () => {
 
     if(!workoutID){
       let response = await setNewElement('workouts',data)
-      if(response !="ok"){
+      if(response ==="error"){
         alert("Something went wrong! Please try again")
-      }else window.location.reload(true)
+      }else console.log(response)
       return false
     }
     let response = await updateWorkout(data,workoutID)

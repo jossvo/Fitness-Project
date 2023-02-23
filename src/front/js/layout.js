@@ -43,6 +43,7 @@ const Layout = () => {
             <Route element={<CoachPublic />} path="/coach/settings/billing" />
             <Route element={<CoachSecurity />} path="/coach/settings/security" />
             <Route element={<CreateProgram />} path="/coach/settings/new_program" />
+            <Route element={<CreateProgram />} path="/coach/settings/edit_program/:program_id" />
 
             <Route element={<Demo />} path="/demo" />
             <Route element={<Single />} path="/single/:theid" />

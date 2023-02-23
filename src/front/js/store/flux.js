@@ -183,12 +183,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 								throw new Error(errorObj.msg)
 						}
 					})
-					return false
+					return "error"
 				}
 				else{
 					let data = await response.json()
-					localStorage.setItem('wkID',data.wk_id)
-					return "ok"
+					return data.wk_id
 				}
 			},
 			// functions to update information
