@@ -1,38 +1,50 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../store/appContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate , useParams } from "react-router-dom";
 import Select from "react-select";
 import { ProfileSidebar } from "../userComponents/profileSidebar.jsx";
 import "../../styles/coachStyle.css";
 import { bool } from "prop-types";
 
 export const ProgramTemplate = () => {
+  const navigate = useNavigate();
+  let { program_id } = useParams();
+
   const { store, actions } = useContext(Context);
   const {setNewElement,getDetails,updateWorkout} = actions;
   const [allowPopulation, setAllowPopulation] = useState(false)
 
   const [exercise, setExercise] = useState();
+  const [exerciseAssignedId,setExerciseAssignedId] = useState();
   const [userID, setUserID] = useState();
   const [UserAssignHelp,setUserAssignHelp] = useState("")
-  const [workoutID, setWorkoutID] = useState();
+  const [workoutID, setWorkoutID] = useState(program_id);
   const [workoutWeeks,setWorkoutWeeks] = useState(15);
   const [workoutDays,setWorkoutDays] = useState(7);
   const [workoutImage,setWorkoutImage]=useState("https://picsum.photos/seed/picsum/200/200")
 
+  const [updateList,setUpdateList]=useState()
   const [isPublicState, setIsPublicState] = useState(true);
   const [disableList, setDisableList] = useState(false);
+
   let workout = ""
   useEffect(() => {
-    if(store.wkID){
-      async function fetchData(){
-        actions.getDetails('workouts',store.wkID);
-        actions.getList('exercise_library')
-        actions.getList('user_library')
-      }
-      fetchData()
-      setWorkoutID(store.wkID)
+    async function fetchData(){
+      actions.getDetails('workouts',workoutID);
+      actions.getList('exercise_library')
+      actions.getList('user_library')
     }
-  },[store.wkID]);
+    fetchData()
+  },[workoutID]);
+
+  // useEffect to update exercise library and get all assigned exercises
+  useEffect(() => {
+    async function fetchData(){
+      actions.getList('exercise_library')
+      actions.getList(`exercise_assigned/${workoutID}`,'exerciseAssigned')
+    }
+    fetchData()
+  },[updateList]);
 
   // useEffect and function to populate form with fetch data
   useEffect(() => {
@@ -104,6 +116,7 @@ export const ProgramTemplate = () => {
                 className="form-control"
                 type="file"
                 accept="video/mp4,video/x-m4v,video/*"
+                name="new_exercise_video"
                 id="inputNewExerciseVideo"
               />
             </div>
@@ -120,6 +133,7 @@ export const ProgramTemplate = () => {
               <textarea
                 className="form-control"
                 id="inputNewExerciseDescription"
+                name="new_exercise_description"
                 rows="2"
               ></textarea>
             </div>
@@ -130,7 +144,7 @@ export const ProgramTemplate = () => {
   }
 
 
-  // Upload/update workout data from Account Details form
+  // Upload/update workout data from Workout Details form
   async function updateData(e) {
     e.preventDefault();
     if(!isPublicState && !userID){
@@ -140,22 +154,51 @@ export const ProgramTemplate = () => {
     const data = new FormData(e.target);
     data.set('is_public',data.get('type'))
     if(userID)data.set('user_id',userID)
-
-    // for (var pair of data.entries()) {
-    //     console.log(pair[0]+ ', ' + pair[1]); 
-    // }
     if(data.get('file').size===0 || data.get('file').name==='')data.delete('file')
 
     if(!workoutID){
       let response = await setNewElement('workouts',data)
       if(response ==="error"){
         alert("Something went wrong! Please try again")
-      }else console.log(response)
+      }else navigate(`/coach/settings/edit_program/${response}`)
       return false
     }
     let response = await updateWorkout(data,workoutID)
     if(response !="ok"){
       alert("Something went wrong! Please try again")
+    }//else window.location.reload(true)
+  }
+
+  // Upload/update exercise data from Exercise Assign Details form
+  async function updateExerciseAssign(e){
+    e.preventDefault();
+    const data = new FormData(e.target);
+    let newExerciseData = new FormData()
+    let exerciseAssignedID=""
+    //If need to first upload new exercise
+    
+    if(data.get('new_exercise')!=""&&!exercise){
+      newExerciseData.set('name',data.get('new_exercise'))
+      newExerciseData.set('description',data.get('new_exercise_description'))
+      newExerciseData.set('file',data.get('new_exercise_video'))
+
+      let response = await setNewElement('exercise',newExerciseData)
+      if(response ==="error"){
+        alert("Something went wrong! Please try again")
+        return false
+      }
+      exerciseAssignedID=response
+    }
+    //If exercise from available exercises list
+    if(exerciseAssignedID==="")exerciseAssignedID=exercise
+    data.set('workout_id',workoutID)
+    data.set('order',store.exercise_library.length+1)
+    data.set('exercise_id',exerciseAssignedID)
+
+    let newResponse = await setNewElement('assign_exercise',data)
+    if(newResponse ==="error"){
+      alert("Something went wrong! Please try again")
+      return false
     }else window.location.reload(true)
   }
 
@@ -333,6 +376,11 @@ export const ProgramTemplate = () => {
           <div className="col-xl-4">
             <div className="card mb-4 mb-xl-0">
               <div className="card-header">Exercise order</div>
+              <ul className="list-group">
+                {store.exerciseAssigned?.map((elem,index)=>{
+                  return <li className="list-group-item" key={index}>{elem.name}</li>
+                })}
+              </ul>
             </div>
           </div>
 
@@ -340,7 +388,7 @@ export const ProgramTemplate = () => {
             <div className="card mb-4">
               <div className="card-header">Exercise Details</div>
               <div className="card-body">
-                <form>
+                <form onSubmit={updateExerciseAssign}>
                   <div className="row gx-3 mb-3">
                     <div className="col-md-10">
                       <label className="form-label" htmlFor="inputExercise">
@@ -373,6 +421,9 @@ export const ProgramTemplate = () => {
                           Other
                         </label>
                       </div>
+                    </div>
+                    <div id="exerciseAssignHelp" className="form-text" style={{color:"red"}}> 
+                    {!disableList && !exercise?"Favor de asignar ejercicio":""}         
                     </div>
                   </div>
                   {/* Section visible if want to create a new exercise */}
@@ -475,13 +526,15 @@ export const ProgramTemplate = () => {
                   <div className="row gx-3 mb-3">
                       <div className="col-md-12">
                           <label className="form-label" htmlFor="inputExerciseAssignDescription" >Additional Exercise Description</label>
-                          <textarea className="form-control" id="inputExerciseAssignDescription" rows="2" name="description" required></textarea>
+                          <textarea className="form-control" id="inputExerciseAssignDescription" rows="2" name="description"></textarea>
                       </div>
                   </div>
 
-                  <button className="btn btn-primary" type="submit">
-                    Save changes
-                  </button>
+                  <div className="d-flex justify-content-end">
+                      <button className="btn btn-primary" type="submit">
+                      {exerciseAssignedId?"Edit Exercise":"Assign Exercise"}
+                      </button>
+                  </div>
                 </form>
               </div>
             </div>

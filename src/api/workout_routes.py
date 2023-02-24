@@ -23,13 +23,6 @@ def get_workouts():
     response_body = list(map(lambda w: w.serialize_library() ,workouts))
     return jsonify(response_body), 200
 
-@api_workout.route('/exercise_library')
-def get_exercises():
-    exercises = Exercise_Library.query.all()
-
-    response_body = list(map(lambda e: e.serialize_library() ,exercises))
-    return jsonify(response_body), 200
-
 @api_workout.route('/workouts/<workout_id>')
 def get_single_workout(workout_id):
     workout = Workout.query.get(workout_id)
@@ -70,7 +63,7 @@ def new_workout():
 
     db.session.commit()
 
-    return({"msg":"Workout created","wk_id":new_workout.id})
+    return({"msg":"Workout created","id":new_workout.id})
 
     # user = Workout.query.get(1)
     # class_keys = list(vars(user).keys())

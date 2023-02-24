@@ -14,6 +14,7 @@ from api.commands import setup_commands
 from api.user_routes import api_user
 from api.coach_routes import api_coach
 from api.workout_routes import api_workout
+from api.excersise_routes import api_exercise
 from flask_jwt_extended import JWTManager 
 # Importando firebase
 import firebase_admin
@@ -33,6 +34,7 @@ app.url_map.strict_slashes = False
 app.register_blueprint(api_user,url_prefix="/")
 app.register_blueprint(api_coach,url_prefix="/")
 app.register_blueprint(api_workout,url_prefix="/")
+app.register_blueprint(api_exercise,url_prefix="/")
 
 jwt = JWTManager(app)
 

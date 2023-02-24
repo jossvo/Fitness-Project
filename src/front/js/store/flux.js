@@ -119,14 +119,28 @@ const getState = ({ getStore, getActions, setStore }) => {
 				  setStore(newStore);
 				}
 			},
-			getList: async (elements) => {
-				let response = await fetch(apiUrl +`/${elements}`);
+			getList: async (elements,name=elements) => {
+				let response = await fetch(apiUrl +`/${elements}`,{
+					method: 'GET',
+					headers:{
+						...getActions().getAutorizationHeader()
+					}
+				});
 				if (!response.ok)
-				  console.error(`Error en la petición ${response.statusText}`);
+					response.text().then(text => {
+						let errorObj = JSON.parse(text)
+						switch(errorObj.msg){
+							case "Token has expired":
+								getActions().updateTokens()
+								break;
+							default:
+								throw new Error(errorObj.msg)
+						}
+					})
 				else {
 				  let data = await response.json();
 				  let newStore = {};
-				  newStore[elements] = data;
+				  newStore[name] = data;
 				  setStore(newStore);
 				}
 			},
@@ -187,7 +201,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 				else{
 					let data = await response.json()
-					return data.wk_id
+					return data.id
 				}
 			},
 			// functions to update information

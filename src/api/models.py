@@ -158,7 +158,7 @@ class Exercise_Library(db.Model): #Library with public and private exercises
     name = db.Column(db.String(250), nullable=False)
     description = db.Column(db.String(250), nullable=False)
     coach_id = db.Column(db.Integer(),db.ForeignKey("coach.id",ondelete="cascade"))
-    video = db.Column(db.String(250), nullable=False)
+    video = db.Column(db.String(250))
     
     def serialize_library(self):
         return {
@@ -181,6 +181,17 @@ class Exercise_Assign(db.Model): #Exercise_Assigned_to_Workout
     reps = db.Column(db.Integer())
     rest_between_sets = db.Column(db.Float())
     description = db.Column(db.String(250))
+
+    def serialize_list(self):
+        return {
+            "week":self.week,
+            "day":self.day,
+            "order":self.order,
+            "name": self.exercise.name,
+            "sets":self.sets,
+            "reps":self.reps,
+            "rest":self.rest_between_sets
+        }
     
 class Exercise_Status(db.Model):
     id = db.Column(db.Integer(),primary_key=True)
