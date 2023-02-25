@@ -10,6 +10,7 @@ import injectContext from "./store/appContext";
 import { UserPublic } from "./userComponents/userPublic.jsx";
 import { ProfileInfo } from "./userComponents/profileInfo.jsx";
 import { ProfileSecurity } from "./userComponents/profileSecurity.jsx";
+import { Workouts } from "./pages/workouts";
 
 import { CoachInfo } from "./coachComponents/coach_Info.jsx";
 import { CoachPublic } from "./coachComponents/coach_profile_info.jsx";
@@ -47,6 +48,7 @@ const Layout = () => {
 
             <Route element={<Demo />} path="/demo" />
             <Route element={<Single />} path="/single/:theid" />
+            <Route element={<Workouts />} path="/workouts" />
             <Route element={<h1>Not found!</h1>} />
           </Routes>
           <Footer />

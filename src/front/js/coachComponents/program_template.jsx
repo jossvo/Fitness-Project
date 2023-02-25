@@ -432,7 +432,7 @@ export const ProgramTemplate = () => {
                 <div className="row gx-3 mb-3 p-1 ps-3 pe-3 pt-3">
                   <div className="col-md-6">
                     <label className="form-label" htmlFor="inputExerciseAssignOrder">
-                      Selected Week
+                      Week
                     </label>
                     <input
                         disabled

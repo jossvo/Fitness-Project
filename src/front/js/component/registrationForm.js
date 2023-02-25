@@ -51,9 +51,9 @@ export const RegistrationForm = () => {
 
       <div
         className="modal fade "
-        id="registrationModal"
-        tabIndex="-1"
-        aria-labelledby="registrationModalLabel"
+        id="exampleModal"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
         aria-hidden="true"
       >
         <div className="modal-dialog ">
@@ -98,7 +98,7 @@ export const RegistrationForm = () => {
 
                 <div className="col-md-6">
                   <label
-                    hmtlfor="inputSignupFirstName"
+                    for="inputName"
                     className="form-label text-light label-text"
                   >
                     First Name
@@ -112,7 +112,7 @@ export const RegistrationForm = () => {
                 </div>
                 <div className="col-md-6">
                   <label
-                    hmtlfor="inputSignupLastName"
+                    for="inputLastName"
                     className="form-label text-light label-text"
                   >
                     LastName
@@ -128,7 +128,7 @@ export const RegistrationForm = () => {
 
                 <div className="col-md-12 emailInputDiv">
                   <label
-                    hmtlfor="inputSignupEmail"
+                    for="inputEmail4"
                     className="form-label text-light label-text"
                   >
                     Email
@@ -164,7 +164,7 @@ export const RegistrationForm = () => {
                 </div>
                 <div className="col-md-12">
                   <label
-                    hmtlfor="inputConfirmPassword"
+                    for="inputPassword4"
                     className="form-label text-light label-text"
                   >
                     Confirm Password
@@ -212,8 +212,8 @@ export const RegistrationForm = () => {
                     placeholder="Enter your age" 
                   />
                 </div>
-                <div className="col-md-4">
-                  <label hmtlfor="registerAs" className="form-label text-light label-text">
+                <div className="col-md-12">
+                  <label for="registerAs" className="form-label text-light">
                     Register As
                   </label>
                   <div className="form-check">
@@ -228,7 +228,7 @@ export const RegistrationForm = () => {
                     />
                     <label
                       className="form-check-label text-light"
-                      hmtlfor="flexRadioUsertype1"
+                      for="flexRadioDefault1"
                     >
                       User
                     </label>
@@ -238,14 +238,13 @@ export const RegistrationForm = () => {
                       required
                       className="form-check-input"
                       type="radio"
-                      name="flexRadioUsertype"
-                      value="coach"
-                      id="flexRadioUsertype2"
-                      
+                      name="flexRadioDefault"
+                      id="flexRadioDefault2"
+                      checked
                     />
                     <label
                       className="form-check-label text-light"
-                      hmtlfor="flexRadioUsertype2"
+                      for="flexRadioDefault2"
                     >
                       Coach
                     </label>
@@ -266,8 +265,13 @@ export const RegistrationForm = () => {
                     type="submit" 
                     className="btn btn-warning" 
                   >
-                    Create Account
-                  </button>
+                    <option selected disabled>
+                      Choose One
+                    </option>
+                    <option value="1">Male</option>
+                    <option value="2">Female</option>
+                    <option value="3">Other</option>
+                  </select>
                 </div>
               </form>
               {/* Fin de Form de Registro */}
