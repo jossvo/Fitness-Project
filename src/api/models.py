@@ -184,6 +184,7 @@ class Exercise_Assign(db.Model): #Exercise_Assigned_to_Workout
 
     def serialize_list(self):
         return {
+            "id":self.id,
             "week":self.week,
             "day":self.day,
             "order":self.order,

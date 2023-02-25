@@ -11,8 +11,7 @@ export const ProgramTemplate = () => {
   let { program_id } = useParams();
 
   const { store, actions } = useContext(Context);
-  const {setNewElement,getDetails,updateWorkout} = actions;
-  const [allowPopulation, setAllowPopulation] = useState(false)
+  const {setNewElement,getDetails,getList ,updateWorkout,updateExercise} = actions;
 
   const [exercise, setExercise] = useState();
   const [exerciseAssignedId,setExerciseAssignedId] = useState();
@@ -23,6 +22,8 @@ export const ProgramTemplate = () => {
   const [workoutDays,setWorkoutDays] = useState(7);
   const [workoutImage,setWorkoutImage]=useState("https://picsum.photos/seed/picsum/200/200")
 
+  const [weekFilter, setWeekFilter]=useState(1)
+  const [dayFilter, setDayFilter]=useState(1)
   const [updateList,setUpdateList]=useState()
   const [isPublicState, setIsPublicState] = useState(true);
   const [disableList, setDisableList] = useState(false);
@@ -30,9 +31,9 @@ export const ProgramTemplate = () => {
   let workout = ""
   useEffect(() => {
     async function fetchData(){
-      actions.getDetails('workouts',workoutID);
-      actions.getList('exercise_library')
-      actions.getList('user_library')
+      getDetails('workouts',workoutID);
+      getList('exercise_library')
+      getList('user_library')
     }
     fetchData()
   },[workoutID]);
@@ -40,8 +41,8 @@ export const ProgramTemplate = () => {
   // useEffect to update exercise library and get all assigned exercises
   useEffect(() => {
     async function fetchData(){
-      actions.getList('exercise_library')
-      actions.getList(`exercise_assigned/${workoutID}`,'exerciseAssigned')
+      getList('exercise_library')
+      getList(`exercise_assigned/${workoutID}`,'exerciseAssigned')
     }
     fetchData()
   },[updateList]);
@@ -192,7 +193,7 @@ export const ProgramTemplate = () => {
     //If exercise from available exercises list
     if(exerciseAssignedID==="")exerciseAssignedID=exercise
     data.set('workout_id',workoutID)
-    data.set('order',store.exercise_library.length+1)
+    data.set('order',store.exerciseAssigned.length+1)
     data.set('exercise_id',exerciseAssignedID)
 
     let newResponse = await setNewElement('assign_exercise',data)
@@ -200,6 +201,13 @@ export const ProgramTemplate = () => {
       alert("Something went wrong! Please try again")
       return false
     }else window.location.reload(true)
+  }
+
+  // Upload/update exercise data from Exercise Assign Details form
+  async function updateExerciseOrder(exerciseID,newOrder,oldExerciseNewOrder){
+    let exerciseList = store.exerciseAssigned
+    let response = await updateExercise()
+    console.log({exercise_change_id:exerciseID,new_order:newOrder+1,old_exercise:exerciseList[newOrder].id,old_exercise_new_order:oldExerciseNewOrder+1})
   }
 
   return (
@@ -371,74 +379,25 @@ export const ProgramTemplate = () => {
             </div>
           </div>
         </div>
+
         
-        {workoutID?<div className="row gx-3 mb-3">
-          <div className="col-xl-4">
-            <div className="card mb-4 mb-xl-0">
-              <div className="card-header">Exercise order</div>
-              <ul className="list-group">
-                {store.exerciseAssigned?.map((elem,index)=>{
-                  return <li className="list-group-item" key={index}>{elem.name}</li>
-                })}
-              </ul>
-            </div>
-          </div>
-
-          <div className="col-xl-8">
-            <div className="card mb-4">
-              <div className="card-header">Exercise Details</div>
-              <div className="card-body">
-                <form onSubmit={updateExerciseAssign}>
+        {workoutID?<div>
+          <div className="row gx-3 mb-3">
+            <div className="col-xl-12">
+              <div className="card mb-4 mb-xl-0">
+                <div className="card-header">Select parameters to edit:</div>
+                <div className="card-body">
                   <div className="row gx-3 mb-3">
-                    <div className="col-md-10">
-                      <label className="form-label" htmlFor="inputExercise">
-                        Exercise Library
-                      </label>
-                      <Select
-                        isClearable={true}
-                        placeholder="Select exercise..."
-                        id="inputExercise"
-                        options={store["exercise_library"]}
-                        onChange={handleSelectExerciseChange}
-                        isDisabled={disableList}
-                      />
-                    </div>
-                    <div className="col-md-2 d-flex align-items-end">
-                      <div
-                        className="form-check"
-                      >
-                        <input
-                          className="form-check-input"
-                          type="checkbox"
-                          value=""
-                          id="flexCheckChecked"
-                          onChange={handleOtherExerciseCheckbox}
-                        />
-                        <label
-                          className="form-label"
-                          htmlFor="flexCheckChecked"
-                        >
-                          Other
-                        </label>
-                      </div>
-                    </div>
-                    <div id="exerciseAssignHelp" className="form-text" style={{color:"red"}}> 
-                    {!disableList && !exercise?"Favor de asignar ejercicio":""}         
-                    </div>
-                  </div>
-                  {/* Section visible if want to create a new exercise */}
-                  {allowNewExercise()}
-
-                  <div className="row gx-3 mb-3">
-                    <div className="col-md-2">
-                      <label className="form-label" htmlFor="inputExerciseAssignWeek">
-                        Week
+                    <div className="col-md-6">
+                      <label className="form-label" htmlFor="inputExerciseAsssignOrderWeek">
+                        Select Week
                       </label>
                       <select
                         name="week"
                         className="form-select"
                         aria-label="Default select example"
-                        id="inputExerciseAssignWeek"
+                        onChange={(e)=>setWeekFilter(e.target.value)}
+                        id="inputExerciseAsssignOrderWeek"
                       >
                         {[...Array(workoutWeeks+1).keys()].slice(1).map((week,index) =>{
                             return <option value={week} key={index}>{week}</option>
@@ -446,96 +405,235 @@ export const ProgramTemplate = () => {
                       </select>
                     </div>
 
-                    <div className="col-md-2">
-                      <label className="form-label" htmlFor="inputExerciseAssignDay">
-                        Day
+                    <div className="col-md-6">
+                      <label className="form-label" htmlFor="inputExerciseAsssignOrderWeek">
+                        Select Day
                       </label>
                       <select
-                        name="day"
+                        name="week"
                         className="form-select"
                         aria-label="Default select example"
-                        id="inputExerciseAssignDay"
+                        id="inputExerciseAsssignOrderWeek"
                       >
-                        {[...Array(workoutDays+1).keys()].slice(1).map((day,index) =>{
-                            return <option value={day} key={index}>{day}</option>
+                        {[...Array(workoutWeeks+1).keys()].slice(1).map((week,index) =>{
+                            return <option value={week} key={index}>{week}</option>
                         })}
                       </select>
                     </div>
-
-                    <div className="col-md-2">
-                      <label className="form-label" htmlFor="inputExerciseAssignOrder">
-                        Order
-                      </label>
-                      <input
-                          disabled
-                          className="form-control"
-                          id="inputExerciseAssignOrder"
-                          type="number"
-                          value={0}
-                          style={{height:"48%"}}
-                          name="order"
-                      />
-                    </div>
-
-                    <div className="col-md-2">
-                      <label className="form-label" htmlFor="inputExerciseAssignSets">
-                        Sets
-                      </label>
-                      <input
-                          required
-                          className="form-control"
-                          id="inputExerciseAssignSets"
-                          type="number" min="0" step="1"
-                          placeholder="0"
-                          style={{height:"48%"}}
-                          name="sets"
-                      />
-                    </div>
-
-                    <div className="col-md-2">
-                      <label className="form-label" htmlFor="inputExerciseAssignReps">
-                        Reps
-                      </label>
-                      <input
-                          required
-                          className="form-control"
-                          id="inputExerciseAssignReps"
-                          type="number" min="0" step="1"
-                          placeholder="0"
-                          style={{height:"48%"}}
-                          name="reps"
-                      />
-                    </div>
-
-                    <div className="col-md-2">
-                      <label className="form-label" htmlFor="inputExerciseAssignRest">
-                        Rest (sec)
-                      </label>
-                      <input
-                          required
-                          className="form-control"
-                          id="inputExerciseAssignRest"
-                          type="number" min="0" step="1"
-                          placeholder="0"
-                          style={{height:"48%"}}
-                          name="rest_between_sets"
-                      />
-                    </div>
                   </div>
-
-                  <div className="row gx-3 mb-3">
-                      <div className="col-md-12">
-                          <label className="form-label" htmlFor="inputExerciseAssignDescription" >Additional Exercise Description</label>
-                          <textarea className="form-control" id="inputExerciseAssignDescription" rows="2" name="description"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="row gx-3 mb-3">
+            <div className="col-xl-4">
+              <div className="card mb-4 mb-xl-0">
+                <div className="card-header">Exercise order</div>
+                <div className="row gx-3 mb-3 p-1 ps-3 pe-3 pt-3">
+                  <div className="col-md-6">
+                    <label className="form-label" htmlFor="inputExerciseAssignOrder">
+                      Selected Week
+                    </label>
+                    <input
+                        disabled
+                        className="form-control"
+                        id="inputExerciseAssignOrder"
+                        type="number"
+                        value={weekFilter}
+                        style={{height:"48%"}}
+                        name="order"
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <label className="form-label" htmlFor="inputExerciseAsssignOrderWeek">
+                      Select Day
+                    </label>
+                    <select
+                      className="form-select"
+                      aria-label="Default select example"
+                      id="inputExerciseAsssignOrderWeek"
+                    >
+                    </select>
+                  </div>
+                </div>
+                <ul className="list-group">
+                  {store.exerciseAssigned?.map((elem,index)=>{
+                    return( 
+                      <li className="list-group-item" key={index} >
+                        <div className="d-flex justify-content-between">
+                          <div className="align-self-center">
+                            <h6 className="m-0">{elem.name}</h6>
+                            <p className="m-0">week:{elem.week} | day:{elem.day} | sets:{elem.sets} | reps:{elem.reps} | rest:{elem.rest} sec</p>
+                          </div>
+                          <div className="d-flex flex-column exerciseOrderDiv align-self-center"> 
+                            <i className={index===0?"fa fa-caret-up arrowDisabled":"fa fa-caret-up"}
+                              onClick={()=>{index===0?"":updateExerciseOrder(elem.id,index-1,index)}}>
+                            </i>
+                            <i className={index===store.exerciseAssigned.length-1?
+                              "fa fa-caret-down arrowDisabled":"fa fa-caret-down"} 
+                              onClick={()=>{alert('abajo')}}></i>
+                          </div>
+                        </div>
+                      </li>
+                    )
+                  })}
+                </ul>
+              </div>
+            </div>
+  
+            <div className="col-xl-8">
+              <div className="card mb-4">
+                <div className="card-header">Exercise Details</div>
+                <div className="card-body">
+                  <form onSubmit={updateExerciseAssign}>
+                    <div className="row gx-3 mb-3">
+                      <div className="col-md-10">
+                        <label className="form-label" htmlFor="inputExercise">
+                          Exercise Library
+                        </label>
+                        <Select
+                          isClearable={true}
+                          placeholder="Select exercise..."
+                          id="inputExercise"
+                          options={store["exercise_library"]}
+                          onChange={handleSelectExerciseChange}
+                          isDisabled={disableList}
+                        />
                       </div>
-                  </div>
-
-                  <div className="d-flex justify-content-end">
-                      <button className="btn btn-primary" type="submit">
-                      {exerciseAssignedId?"Edit Exercise":"Assign Exercise"}
-                      </button>
-                  </div>
-                </form>
+                      <div className="col-md-2 d-flex align-items-end">
+                        <div
+                          className="form-check"
+                        >
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            value=""
+                            id="flexCheckChecked"
+                            onChange={handleOtherExerciseCheckbox}
+                          />
+                          <label
+                            className="form-label"
+                            htmlFor="flexCheckChecked"
+                          >
+                            Other
+                          </label>
+                        </div>
+                      </div>
+                      <div id="exerciseAssignHelp" className="form-text" style={{color:"red"}}> 
+                      {!disableList && !exercise?"Favor de asignar ejercicio":""}         
+                      </div>
+                    </div>
+                    {/* Section visible if want to create a new exercise */}
+                    {allowNewExercise()}
+  
+                    <div className="row gx-3 mb-3">
+                      <div className="col-md-2">
+                        <label className="form-label" htmlFor="inputExerciseAssignWeek">
+                          Week
+                        </label>
+                        <select
+                          name="week"
+                          className="form-select"
+                          aria-label="Default select example"
+                          id="inputExerciseAssignWeek"
+                        >
+                          {[...Array(workoutWeeks+1).keys()].slice(1).map((week,index) =>{
+                              return <option value={week} key={index}>{week}</option>
+                          })}
+                        </select>
+                      </div>
+  
+                      <div className="col-md-2">
+                        <label className="form-label" htmlFor="inputExerciseAssignDay">
+                          Day
+                        </label>
+                        <select
+                          name="day"
+                          className="form-select"
+                          aria-label="Default select example"
+                          id="inputExerciseAssignDay"
+                        >
+                          {[...Array(workoutDays+1).keys()].slice(1).map((day,index) =>{
+                              return <option value={day} key={index}>{day}</option>
+                          })}
+                        </select>
+                      </div>
+  
+                      <div className="col-md-2">
+                        <label className="form-label" htmlFor="inputExerciseAssignOrder">
+                          Order
+                        </label>
+                        <input
+                            disabled
+                            className="form-control"
+                            id="inputExerciseAssignOrder"
+                            type="number"
+                            value={store.exerciseAssigned?store.exerciseAssigned.length+1:0}
+                            style={{height:"48%"}}
+                            name="order"
+                        />
+                      </div>
+  
+                      <div className="col-md-2">
+                        <label className="form-label" htmlFor="inputExerciseAssignSets">
+                          Sets
+                        </label>
+                        <input
+                            required
+                            className="form-control"
+                            id="inputExerciseAssignSets"
+                            type="number" min="0" step="1"
+                            placeholder="0"
+                            style={{height:"48%"}}
+                            name="sets"
+                        />
+                      </div>
+  
+                      <div className="col-md-2">
+                        <label className="form-label" htmlFor="inputExerciseAssignReps">
+                          Reps
+                        </label>
+                        <input
+                            required
+                            className="form-control"
+                            id="inputExerciseAssignReps"
+                            type="number" min="0" step="1"
+                            placeholder="0"
+                            style={{height:"48%"}}
+                            name="reps"
+                        />
+                      </div>
+  
+                      <div className="col-md-2">
+                        <label className="form-label" htmlFor="inputExerciseAssignRest">
+                          Rest (sec)
+                        </label>
+                        <input
+                            required
+                            className="form-control"
+                            id="inputExerciseAssignRest"
+                            type="number" min="0" step="1"
+                            placeholder="0"
+                            style={{height:"48%"}}
+                            name="rest_between_sets"
+                        />
+                      </div>
+                    </div>
+  
+                    <div className="row gx-3 mb-3">
+                        <div className="col-md-12">
+                            <label className="form-label" htmlFor="inputExerciseAssignDescription" >Additional Exercise Description</label>
+                            <textarea className="form-control" id="inputExerciseAssignDescription" rows="2" name="description"></textarea>
+                        </div>
+                    </div>
+  
+                    <div className="d-flex justify-content-end">
+                        <button className="btn btn-primary" type="submit">
+                        {exerciseAssignedId?"Edit Exercise":"Assign Exercise"}
+                        </button>
+                    </div>
+                  </form>
+                </div>
               </div>
             </div>
           </div>

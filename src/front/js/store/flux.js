@@ -1,3 +1,5 @@
+import { func } from "prop-types";
+
 const apiUrl = process.env.BACKEND_URL
 
 const getState = ({ getStore, getActions, setStore }) => {
@@ -271,6 +273,30 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			updateWorkout: async (formData,workout_id)=>{
 				let response = await fetch(apiUrl +`/workouts/${workout_id}`,{
+					method: 'PATCH',
+					headers: {
+						...getActions().getAutorizationHeader()
+					},
+					body: formData,
+				});
+				if (!response.ok){
+					response.text().then(text => {
+						let errorObj = JSON.parse(text)
+						switch(errorObj.msg){
+							case "Token has expired":
+								getActions().updateTokens()
+								break;
+							default:
+								console.log(errorObj.msg)
+								throw new Error(errorObj.msg)
+						}
+					})
+					return false
+				}
+				return "ok"
+			},
+			updateExercise: async (formData,itemType, exercise_id)=>{
+				let response = await fetch(apiUrl +`/${itemType}/${exercise_id}`,{
 					method: 'PATCH',
 					headers: {
 						...getActions().getAutorizationHeader()

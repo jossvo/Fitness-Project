@@ -5,3 +5,6 @@
     background-color: rgba(113,113,113,0.19);
     justify-content: center;
 }
+.exerciseOrderDiv .arrowDisabled{
+    color: lightgray;
+}
