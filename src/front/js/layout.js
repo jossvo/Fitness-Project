@@ -48,7 +48,7 @@ const Layout = () => {
 
             <Route element={<Demo />} path="/demo" />
             <Route element={<Single />} path="/single/:theid" />
-            <Route element={<Workouts />} path="/workouts" />
+            <Route element={<Workouts />} path="/programs" />
             <Route element={<h1>Not found!</h1>} />
           </Routes>
           <Footer />

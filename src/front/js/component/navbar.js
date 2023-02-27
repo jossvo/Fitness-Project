@@ -9,12 +9,12 @@ export const Navbar = () => {
   const { store, actions } = useContext(Context);
   let arrNav = []
   store.id? arrNav=[
-    ["Programs","#"],
+    ["Programs","/programs"],
     ["Coaches","#"],
     ["FAQS","#"],
     ["Account",`/${store.type==="u"?"user":"coach"}/${store.id}`],
     ["My Plans","#"]]
-  : arrNav=[["Programs","#"],["Coaches","#"],["FAQS","#"]]
+  : arrNav=[["Programs","/programs"],["Coaches","#"],["FAQS","#"]]
 
   return (
     <div>
