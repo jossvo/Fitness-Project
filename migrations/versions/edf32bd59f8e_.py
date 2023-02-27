@@ -1,14 +1,8 @@
 """empty message
 
-<<<<<<<< HEAD:migrations/versions/75bcb7f480ce_.py
-Revision ID: 75bcb7f480ce
+Revision ID: edf32bd59f8e
 Revises: 
-Create Date: 2023-02-25 01:26:55.341530
-========
-Revision ID: 567873ea8b05
-Revises: 
-Create Date: 2023-02-09 22:14:35.165178
->>>>>>>> origin/WorkoutLib:migrations/versions/567873ea8b05_.py
+Create Date: 2023-02-27 18:42:21.941890
 
 """
 from alembic import op
@@ -16,11 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-<<<<<<<< HEAD:migrations/versions/75bcb7f480ce_.py
-revision = '75bcb7f480ce'
-========
-revision = '567873ea8b05'
->>>>>>>> origin/WorkoutLib:migrations/versions/567873ea8b05_.py
+revision = 'edf32bd59f8e'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -76,10 +66,7 @@ def upgrade():
     sa.Column('height', sa.String(length=250), nullable=True),
     sa.Column('share_height', sa.Boolean(), nullable=True),
     sa.Column('profile_picture', sa.String(length=250), nullable=True),
-<<<<<<<< HEAD:migrations/versions/75bcb7f480ce_.py
     sa.Column('profile_banner_picture', sa.String(length=250), nullable=True),
-========
->>>>>>>> origin/WorkoutLib:migrations/versions/567873ea8b05_.py
     sa.Column('bio', sa.String(length=600), nullable=True),
     sa.Column('facebook', sa.String(length=250), nullable=True),
     sa.Column('twitter', sa.String(length=250), nullable=True),
