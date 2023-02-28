@@ -88,11 +88,12 @@ def update_workout(workout_id):
     boolArr = {"true":True,"false":False}
     workout.is_public = boolArr[request.form.get('is_public')]
     
-    if request.form.get('file') is not None:
+    if request.files['file']:
         file=request.files['file']
-        extension = "jpg"
+        extension = file.filename.split('.')[1]
         filename="workout_pics/"+str(workout.id)+"."+extension
-        upload_image(filename,file,extension)
+        old_file = workout.wk_image
+        update_image(old_file,filename,file,extension)
         setattr(workout,'wk_image',filename)
 
     db.session.add(workout)

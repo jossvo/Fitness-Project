@@ -167,7 +167,7 @@ export const ProgramTemplate = () => {
     let response = await updateWorkout(data,workoutID)
     if(response !="ok"){
       alert("Something went wrong! Please try again")
-    }//else window.location.reload(true)
+    }else window.location.reload(true)
   }
 
   // Upload/update exercise data from Exercise Assign Details form
@@ -406,14 +406,15 @@ export const ProgramTemplate = () => {
                     </div>
 
                     <div className="col-md-6">
-                      <label className="form-label" htmlFor="inputExerciseAsssignOrderWeek">
+                      <label className="form-label" htmlFor="inputExerciseAsssignOrderDay">
                         Select Day
                       </label>
                       <select
                         name="week"
                         className="form-select"
                         aria-label="Default select example"
-                        id="inputExerciseAsssignOrderWeek"
+                        onChange={(e)=>setDayFilter(e.target.value)}
+                        id="inputExerciseAsssignOrderDay"
                       >
                         {[...Array(workoutWeeks+1).keys()].slice(1).map((week,index) =>{
                             return <option value={week} key={index}>{week}</option>
@@ -429,33 +430,6 @@ export const ProgramTemplate = () => {
             <div className="col-xl-4">
               <div className="card mb-4 mb-xl-0">
                 <div className="card-header">Exercise order</div>
-                <div className="row gx-3 mb-3 p-1 ps-3 pe-3 pt-3">
-                  <div className="col-md-6">
-                    <label className="form-label" htmlFor="inputExerciseAssignOrder">
-                      Week
-                    </label>
-                    <input
-                        disabled
-                        className="form-control"
-                        id="inputExerciseAssignOrder"
-                        type="number"
-                        value={weekFilter}
-                        style={{height:"48%"}}
-                        name="order"
-                    />
-                  </div>
-                  <div className="col-md-6">
-                    <label className="form-label" htmlFor="inputExerciseAsssignOrderWeek">
-                      Select Day
-                    </label>
-                    <select
-                      className="form-select"
-                      aria-label="Default select example"
-                      id="inputExerciseAsssignOrderWeek"
-                    >
-                    </select>
-                  </div>
-                </div>
                 <ul className="list-group">
                   {store.exerciseAssigned?.map((elem,index)=>{
                     return( 
