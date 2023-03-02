@@ -33,7 +33,7 @@ export const CoachPublic = () => {
   return (
     <>
      <div className="d-flex">
-     <ProfileSidebar  navTitle="Coach" />
+     <ProfileSidebar  navTitle="Coach" className="sidebar-coach" />
       {/* Main Container */}
       <div className="container-fluid px-0 main-container">
         {/* <ProfileSidebar navTitle="Coach" /> */}
@@ -54,21 +54,21 @@ export const CoachPublic = () => {
           </section>
           {/* END Coach Profile Section */}
           {/* Start of statistics */}
-          <section className="d-flex justify-content-center align-items-center pb-5 statistics-section">
+          <section className="d-flex justify-content-center align-items-center py-5 statistics-section">
             <div className="d-flex flex-column align-items-center">
-              <h5 className="text-center">No. of Reviews</h5>
+              <h5 className="text-center text-statistics">No. of Reviews</h5>
               <div className="circle-statistics-section d-flex align-items-center justify-content-center">
                 <h3 className="text-white text-center">6</h3>
               </div>
             </div>
             <div className="d-flex flex-column align-items-center">
-              <h5 className="text-center">No. of Sales</h5>
+              <h5 className="text-center text-statistics">No. of Sales</h5>
               <div className="circle-statistics-section d-flex align-items-center justify-content-center">
                 <h3 className="text-white text-center">10</h3>
               </div>
             </div>
             <div className="d-flex flex-column align-items-center">
-              <h5 className="text-center">No. of Workouts</h5>
+              <h5 className="text-center text-statistics">No. of Workouts</h5>
               <div className="circle-statistics-section d-flex align-items-center justify-content-center">
                 <h3 className="text-white text-center">3</h3>
               </div>

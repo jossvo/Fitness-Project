@@ -43,10 +43,14 @@
 }
 .statistics-section {
   gap: 20px;
+  background-color: #ecf0f1;
 }
 .circle-statistics-section {
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background-color: RGB(175, 175, 174);
+  background-color: RGB(72, 81, 77);
+}
+.text-statistics{
+font-family: "Bebas Neue", sans-serif
 }

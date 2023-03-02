@@ -41,7 +41,7 @@ export const ProfileSidebar = ({navTitle="User"}) => {
 
   return (
 	<div style={{ display: 'flex', height: '100vh', overflow: 'scroll initial' }}>
-        <CDBSidebar textColor="rgba(254,202,0,1)" backgroundColor="rgba(27,28,26,1)" toggled="false">
+        <CDBSidebar textColor="#E1B12C" backgroundColor="rgba(27,28,26,1)" toggled="false">
             <CDBSidebarHeader prefix={<i className="fa fa-bars fa-large"></i>}>
                 <a href="/settings" className="text-decoration-none" style={{ color: 'inherit' }}>
                     {navTitle}
