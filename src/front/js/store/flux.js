@@ -317,6 +317,38 @@ const getState = ({ getStore, getActions, setStore }) => {
 					})
 					return false
 				}
+				let data = await response.json();
+				let newStore = {};
+				newStore['workoutsDetail'] = data;
+				setStore(newStore);
+				return "ok"
+			},
+			updateExerciseOrder: async (formData)=>{
+				let response = await fetch(apiUrl +`/assign_exercise_order`,{
+					method: 'PATCH',
+					headers: {
+						...getActions().getAutorizationHeader()
+					},
+					body: formData,
+				});
+				if (!response.ok){
+					response.text().then(text => {
+						let errorObj = JSON.parse(text)
+						switch(errorObj.msg){
+							case "Token has expired":
+								getActions().updateTokens()
+								break;
+							default:
+								console.log(errorObj.msg)
+								throw new Error(errorObj.msg)
+						}
+					})
+					return false
+				}
+				let data = await response.json();
+				let newStore = {};
+				newStore['exerciseAssigned'] = data;
+				setStore(newStore);
 				return "ok"
 			}
 		}

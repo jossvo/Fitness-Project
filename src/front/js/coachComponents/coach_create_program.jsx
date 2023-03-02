@@ -242,7 +242,7 @@ export const CreateProgram = () => {
 
   return (
     <div className="profileDiv"
-      style={{ backgroundColor: "#e3e6e6", display: "flex", height: "100vh" }}
+      style={{ backgroundColor: "#e3e6e6", display: "flex"}}
     >
       <ProfileSidebar navTitle="Coach"/>
       <ProgramTemplate/>

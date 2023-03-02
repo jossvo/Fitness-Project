@@ -11,7 +11,7 @@ export const ProgramTemplate = () => {
   let { program_id } = useParams();
 
   const { store, actions } = useContext(Context);
-  const {setNewElement,getDetails,getList ,updateWorkout,updateExercise} = actions;
+  const {setNewElement,getDetails,getList ,updateWorkout,updateExercise,updateExerciseOrder} = actions;
 
   const [exercise, setExercise] = useState();
   const [exerciseAssignedId,setExerciseAssignedId] = useState();
@@ -28,8 +28,6 @@ export const ProgramTemplate = () => {
   const [isPublicState, setIsPublicState] = useState(true);
   const [disableList, setDisableList] = useState(false);
 
-  const selectInputExerciseRef = useRef();
-
   let workout = ""
   useEffect(() => {
     async function fetchData(){
@@ -37,7 +35,7 @@ export const ProgramTemplate = () => {
       getList('exercise_library')
       getList('user_library')
     }
-    fetchData()
+    if(workoutID)fetchData()
   },[workoutID]);
 
   // useEffect to update exercise library and get all assigned exercises
@@ -98,6 +96,10 @@ export const ProgramTemplate = () => {
       filteredArr=[...store.exerciseAssigned]
       filteredArr = filteredArr.filter(elem=>elem.week===weekFilter)
       filteredArr = filteredArr.filter(elem=>elem.day===dayFilter)
+      filteredArr = filteredArr.sort((e1, e2) => 
+      (e1.order > e2.order) ? 1 
+      : (e1.order < e2.order) ? -1 : 0
+      )
     }
     return filteredArr
   }
@@ -179,7 +181,8 @@ export const ProgramTemplate = () => {
     let response = await updateWorkout(data,workoutID)
     if(response !="ok"){
       alert("Something went wrong! Please try again")
-    }else window.location.reload(true)
+      return false
+    }alert("Workout updated")
   }
 
   // Upload/update exercise data from Exercise Assign Details form
@@ -197,9 +200,9 @@ export const ProgramTemplate = () => {
 
       let response = await setNewElement('exercise',newExerciseData)
       if(response ==="error"){
-        alert("Something went wrong! Please try again")
+        alert("Exercise couldn't be created: Something went wrong! Please try again")
         return false
-      }
+      }alert("Exercise created!")
       exerciseAssignedID=response
     }
     //If exercise from available exercises list
@@ -212,42 +215,35 @@ export const ProgramTemplate = () => {
 
     let newResponse = await setNewElement('assign_exercise',data)
     if(newResponse ==="error"){
-      alert("Something went wrong! Please try again")
+      alert("Exercise couldn't be assigned: Something went wrong! Please try again")
       return false
     }else{
       document.getElementById("exerciseAssignForm").reset();
       setExercise(null)
       setUpdateList(true)
-    }
+      setDisableList(false)
+    }alert("Exercise uploaded!")
   }
 
   // Upload/update exercise data from Exercise Assign Details form
-  async function updateExerciseOrder(exerciseID,newOrder,oldExerciseNewOrder){
+  async function updateExerciseOrderFunction(exerciseID,newOrder){
     let data = new FormData()
-    let exercise_change_id = exerciseID
-    let new_order = newOrder+1
     let old_exercise = filteredExerciseOrderList()[newOrder].id
-    let old_exercise_new_order=oldExerciseNewOrder+1
     //Form data and 'PATCH' method for first item
-    data.set('order',new_order)
-    let response = await updateExercise(data,"assign_exercise", exercise_change_id)
+    data.set('new_exercise',exerciseID)
+    data.set('old_exercise',old_exercise)
+
+    let response = await updateExerciseOrder(data)
     if(response !="ok"){
       alert("Something went wrong! Please try again")
       return false
     }
-    //Form data and 'PATCH' method for second item
-    data.set('order',old_exercise_new_order)
-    response = await updateExercise(data,"assign_exercise", old_exercise)
-    if(response !="ok"){
-      alert("Something went wrong! Please try again")
-      return false
-    }setUpdateList(true)
   }
 
   return (
       <div
-        className="container overflow-auto"
-        style={{ height: "95vh", width: "90%", marginTop: "5vh" }}
+        className="container"
+        style={{ width: "90%", marginTop: "5vh", minHeight: "90vh"}}
       >
         <div
           className="row"
@@ -471,15 +467,15 @@ export const ProgramTemplate = () => {
                         <div className="d-flex justify-content-between">
                           <div className="align-self-center">
                             <h6 className="m-0">{elem.name}</h6>
-                            <p className="m-0">week:{elem.week} | day:{elem.day} | sets:{elem.sets} | reps:{elem.reps} | rest:{elem.rest} sec</p>
+                            <p className="m-0">order:{elem.order} | sets:{elem.sets} | reps:{elem.reps} | rest:{elem.rest} sec</p>
                           </div>
                           <div className="d-flex flex-column exerciseOrderDiv align-self-center"> 
                             <i className={index===0?"fa fa-caret-up arrowDisabled":"fa fa-caret-up"}
-                              onClick={()=>{index===0?"":updateExerciseOrder(elem.id,index-1,index)}}>
+                              onClick={()=>{index===0?"":updateExerciseOrderFunction(elem.id,index-1)}}>
                             </i>
                             <i className={index===filteredExerciseOrderList().length-1?
                               "fa fa-caret-down arrowDisabled":"fa fa-caret-down"} 
-                              onClick={()=>{index===filteredExerciseOrderList().length-1?"":updateExerciseOrder(elem.id,index+1,index)}}></i>
+                              onClick={()=>{index===filteredExerciseOrderList().length-1?"":updateExerciseOrderFunction(elem.id,index+1)}}></i>
                           </div>
                         </div>
                       </li>
@@ -553,7 +549,7 @@ export const ProgramTemplate = () => {
   
                       <div className="col-md-4">
                         <label className="form-label" htmlFor="inputExerciseAssignReps">
-                          Reps
+                          Repetitions
                         </label>
                         <input
                             required
@@ -568,7 +564,7 @@ export const ProgramTemplate = () => {
   
                       <div className="col-md-4">
                         <label className="form-label" htmlFor="inputExerciseAssignRest">
-                          Rest (sec)
+                          Rest between sets (in sec)
                         </label>
                         <input
                             required

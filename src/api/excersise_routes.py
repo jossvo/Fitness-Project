@@ -72,19 +72,27 @@ def new_exercise_assign():
 
     return({"msg":"Exercise succesfully assigned"})
 
-@api_exercise.route('/assign_exercise_order/<exercise_id>',methods=['PATCH'])
+@api_exercise.route('/assign_exercise_order',methods=['PATCH'])
 @jwt_required()
-def update_exercise_order(exercise_id):
-    exercise_assigned = Exercise_Assign.query.get(exercise_id)
-    if exercise_assigned is None:
+def update_exercise_order():
+    new_exercise = Exercise_Assign.query.get(request.form.get('new_exercise'))
+    old_exercise = Exercise_Assign.query.get(request.form.get('old_exercise'))
+    if new_exercise is None or old_exercise is None:
         return jsonify({"msg": "Exercise not found"}), 404
 
-    setattr(exercise_assigned,key,request.form.get('order'))
+    new_order=old_exercise.order
+    old_order=new_exercise.order
 
-    db.session.add(exercise_assigned)
+    setattr(new_exercise,'order',new_order)
+    setattr(old_exercise,'order',old_order)
+
+    exercises = Exercise_Assign.query.filter(Exercise_Assign.workout_id==new_exercise.workout_id).all()
+    response_body = list(map(lambda e: e.serialize_list(),exercises))
+    db.session.add(new_exercise)
+    db.session.add(old_exercise)
     db.session.commit()
 
-    return({"msg":"Exercise order updated"})
+    return jsonify(response_body), 200
 
 @api_exercise.route('/assign_exercise/<exercise_id>',methods=['PATCH'])
 @jwt_required()
