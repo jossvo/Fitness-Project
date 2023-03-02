@@ -32,6 +32,8 @@ export const CoachPublic = () => {
 
   return (
     <>
+     <div className="d-flex">
+     <ProfileSidebar  navTitle="Coach" />
       {/* Main Container */}
       <div className="container-fluid px-0 main-container">
         {/* <ProfileSidebar navTitle="Coach" /> */}
@@ -189,6 +191,7 @@ export const CoachPublic = () => {
           </section>
           {/* END OF REVIEW SECTION */}
         </div>
+      </div>
       </div>
     </>
   );
