@@ -21,7 +21,7 @@ import firebase_admin
 from firebase_admin import credentials
 
 # Se cargan las credenciales
-cred = credentials.Certificate("/workspace/Fitness-Project/firebase-key.json")
+cred = credentials.Certificate("./firebase-key.json")
 #Se inicializa la aplicación
 firebase_admin.initialize_app(cred)
 
