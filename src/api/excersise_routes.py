@@ -71,3 +71,33 @@ def new_exercise_assign():
     db.session.commit()
 
     return({"msg":"Exercise succesfully assigned"})
+
+@api_exercise.route('/assign_exercise_order/<exercise_id>',methods=['PATCH'])
+@jwt_required()
+def update_exercise_order(exercise_id):
+    exercise_assigned = Exercise_Assign.query.get(exercise_id)
+    if exercise_assigned is None:
+        return jsonify({"msg": "Exercise not found"}), 404
+
+    setattr(exercise_assigned,key,request.form.get('order'))
+
+    db.session.add(exercise_assigned)
+    db.session.commit()
+
+    return({"msg":"Exercise order updated"})
+
+@api_exercise.route('/assign_exercise/<exercise_id>',methods=['PATCH'])
+@jwt_required()
+def update_exercise(exercise_id):
+    exercise_assigned = Exercise_Assign.query.get(exercise_id)
+    if exercise_assigned is None:
+        return jsonify({"msg": "Exercise not found"}), 404
+
+    class_keys = ['week', 'day', 'order', 'sets', 'reps', 'rest_between_sets','exercise_id']
+    for key in class_keys:
+        setattr(exercise_assigned,key,request.form.get(key))
+
+    db.session.add(exercise_assigned)
+    db.session.commit()
+
+    return({"msg":"Exercise updated"})

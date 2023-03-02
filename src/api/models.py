@@ -1,4 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
+from firebase_admin import storage
+from datetime import timedelta
 
 db = SQLAlchemy()
 
@@ -127,6 +129,13 @@ class Workout(db.Model):
     # reviews - done by table Workout_Review
 
     def serialize_library(self):
+        # Se obtiene el bucket
+        bucket=storage.bucket(name="fit-central-7cf8b.appspot.com")
+        # Generar el recurso en el bucket
+        resource=bucket.blob(self.wk_image)
+        # Genera la url firmada
+        workout_profile_pic=resource.generate_signed_url(version="v4", expiration=timedelta(minutes=10), method="GET")
+
         return {
             "coach_name": self.coach.first_name.capitalize() + " "+ self.coach.last_name.capitalize(),
             "name": self.name,
@@ -135,7 +144,7 @@ class Workout(db.Model):
             "difficulty" : self.difficulty , 
             "description" : self.description , 
             "isPublic" : self.is_public ,  
-            "wk_image" : self.wk_image
+            "wk_image" : workout_profile_pic
         }
     
 class Category(db.Model):
@@ -176,7 +185,7 @@ class Exercise_Assign(db.Model): #Exercise_Assigned_to_Workout
     day = db.Column(db.Integer())
     order = db.Column(db.Integer())
     exercise_id = db.Column(db.Integer(),db.ForeignKey("exercise_library.id",ondelete="cascade"))
-    exercise = db.relationship(Exercise_Library)
+    exercise = db.relationship(Exercise_Library,lazy=False)
     sets = db.Column(db.Integer())
     reps = db.Column(db.Integer())
     rest_between_sets = db.Column(db.Float())

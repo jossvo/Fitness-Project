@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { Context } from "../store/appContext";
 import { useNavigate , useParams } from "react-router-dom";
 import Select from "react-select";
@@ -28,6 +28,8 @@ export const ProgramTemplate = () => {
   const [isPublicState, setIsPublicState] = useState(true);
   const [disableList, setDisableList] = useState(false);
 
+  const selectInputExerciseRef = useRef();
+
   let workout = ""
   useEffect(() => {
     async function fetchData(){
@@ -44,7 +46,7 @@ export const ProgramTemplate = () => {
       getList('exercise_library')
       getList(`exercise_assigned/${workoutID}`,'exerciseAssigned')
     }
-    fetchData()
+    if(workoutID)fetchData()
   },[updateList]);
 
   // useEffect and function to populate form with fetch data
@@ -68,8 +70,9 @@ export const ProgramTemplate = () => {
 
   function handleSelectExerciseChange(e) {
     if(e!==null)setExercise(e.value);
-    else setExercise(e)
+    else setExercise(null)
   }
+  const test=()=>console.log(exercise)
   function handleSelectUserChange(e) {
     if(e!==null){
         setUserID(e.value)
@@ -88,6 +91,15 @@ export const ProgramTemplate = () => {
     e.target.value==="false"?setIsPublicState(false)
     :setIsPublicState(true)
     if(!isPublicState)setUserAssignHelp("")
+  }
+  function filteredExerciseOrderList(){
+    let filteredArr = []
+    if(store.exerciseAssigned){
+      filteredArr=[...store.exerciseAssigned]
+      filteredArr = filteredArr.filter(elem=>elem.week===weekFilter)
+      filteredArr = filteredArr.filter(elem=>elem.day===dayFilter)
+    }
+    return filteredArr
   }
   //New exercise Div
   function allowNewExercise() {
@@ -191,23 +203,45 @@ export const ProgramTemplate = () => {
       exerciseAssignedID=response
     }
     //If exercise from available exercises list
-    if(exerciseAssignedID==="")exerciseAssignedID=exercise
+    if(exerciseAssignedID==="")exerciseAssignedID=exercise.value
     data.set('workout_id',workoutID)
-    data.set('order',store.exerciseAssigned.length+1)
+    data.set('order',filteredExerciseOrderList().length+1)
+    data.set('week',weekFilter)
+    data.set('day',dayFilter)
     data.set('exercise_id',exerciseAssignedID)
 
     let newResponse = await setNewElement('assign_exercise',data)
     if(newResponse ==="error"){
       alert("Something went wrong! Please try again")
       return false
-    }else window.location.reload(true)
+    }else{
+      document.getElementById("exerciseAssignForm").reset();
+      setExercise(null)
+      setUpdateList(true)
+    }
   }
 
   // Upload/update exercise data from Exercise Assign Details form
   async function updateExerciseOrder(exerciseID,newOrder,oldExerciseNewOrder){
-    let exerciseList = store.exerciseAssigned
-    let response = await updateExercise()
-    console.log({exercise_change_id:exerciseID,new_order:newOrder+1,old_exercise:exerciseList[newOrder].id,old_exercise_new_order:oldExerciseNewOrder+1})
+    let data = new FormData()
+    let exercise_change_id = exerciseID
+    let new_order = newOrder+1
+    let old_exercise = filteredExerciseOrderList()[newOrder].id
+    let old_exercise_new_order=oldExerciseNewOrder+1
+    //Form data and 'PATCH' method for first item
+    data.set('order',new_order)
+    let response = await updateExercise(data,"assign_exercise", exercise_change_id)
+    if(response !="ok"){
+      alert("Something went wrong! Please try again")
+      return false
+    }
+    //Form data and 'PATCH' method for second item
+    data.set('order',old_exercise_new_order)
+    response = await updateExercise(data,"assign_exercise", old_exercise)
+    if(response !="ok"){
+      alert("Something went wrong! Please try again")
+      return false
+    }setUpdateList(true)
   }
 
   return (
@@ -396,7 +430,7 @@ export const ProgramTemplate = () => {
                         name="week"
                         className="form-select"
                         aria-label="Default select example"
-                        onChange={(e)=>setWeekFilter(e.target.value)}
+                        onChange={(e)=>setWeekFilter(parseInt(e.target.value))}
                         id="inputExerciseAsssignOrderWeek"
                       >
                         {[...Array(workoutWeeks+1).keys()].slice(1).map((week,index) =>{
@@ -413,7 +447,7 @@ export const ProgramTemplate = () => {
                         name="week"
                         className="form-select"
                         aria-label="Default select example"
-                        onChange={(e)=>setDayFilter(e.target.value)}
+                        onChange={(e)=>setDayFilter(parseInt(e.target.value))}
                         id="inputExerciseAsssignOrderDay"
                       >
                         {[...Array(workoutWeeks+1).keys()].slice(1).map((week,index) =>{
@@ -431,7 +465,7 @@ export const ProgramTemplate = () => {
               <div className="card mb-4 mb-xl-0">
                 <div className="card-header">Exercise order</div>
                 <ul className="list-group">
-                  {store.exerciseAssigned?.map((elem,index)=>{
+                  {filteredExerciseOrderList().map((elem,index)=>{
                     return( 
                       <li className="list-group-item" key={index} >
                         <div className="d-flex justify-content-between">
@@ -443,9 +477,9 @@ export const ProgramTemplate = () => {
                             <i className={index===0?"fa fa-caret-up arrowDisabled":"fa fa-caret-up"}
                               onClick={()=>{index===0?"":updateExerciseOrder(elem.id,index-1,index)}}>
                             </i>
-                            <i className={index===store.exerciseAssigned.length-1?
+                            <i className={index===filteredExerciseOrderList().length-1?
                               "fa fa-caret-down arrowDisabled":"fa fa-caret-down"} 
-                              onClick={()=>{alert('abajo')}}></i>
+                              onClick={()=>{index===filteredExerciseOrderList().length-1?"":updateExerciseOrder(elem.id,index+1,index)}}></i>
                           </div>
                         </div>
                       </li>
@@ -459,7 +493,7 @@ export const ProgramTemplate = () => {
               <div className="card mb-4">
                 <div className="card-header">Exercise Details</div>
                 <div className="card-body">
-                  <form onSubmit={updateExerciseAssign}>
+                  <form id="exerciseAssignForm" onSubmit={updateExerciseAssign}>
                     <div className="row gx-3 mb-3">
                       <div className="col-md-10">
                         <label className="form-label" htmlFor="inputExercise">
@@ -468,9 +502,10 @@ export const ProgramTemplate = () => {
                         <Select
                           isClearable={true}
                           placeholder="Select exercise..."
+                          value={exercise}
                           id="inputExercise"
                           options={store["exercise_library"]}
-                          onChange={handleSelectExerciseChange}
+                          onChange={setExercise}
                           isDisabled={disableList}
                         />
                       </div>
@@ -501,54 +536,7 @@ export const ProgramTemplate = () => {
                     {allowNewExercise()}
   
                     <div className="row gx-3 mb-3">
-                      <div className="col-md-2">
-                        <label className="form-label" htmlFor="inputExerciseAssignWeek">
-                          Week
-                        </label>
-                        <select
-                          name="week"
-                          className="form-select"
-                          aria-label="Default select example"
-                          id="inputExerciseAssignWeek"
-                        >
-                          {[...Array(workoutWeeks+1).keys()].slice(1).map((week,index) =>{
-                              return <option value={week} key={index}>{week}</option>
-                          })}
-                        </select>
-                      </div>
-  
-                      <div className="col-md-2">
-                        <label className="form-label" htmlFor="inputExerciseAssignDay">
-                          Day
-                        </label>
-                        <select
-                          name="day"
-                          className="form-select"
-                          aria-label="Default select example"
-                          id="inputExerciseAssignDay"
-                        >
-                          {[...Array(workoutDays+1).keys()].slice(1).map((day,index) =>{
-                              return <option value={day} key={index}>{day}</option>
-                          })}
-                        </select>
-                      </div>
-  
-                      <div className="col-md-2">
-                        <label className="form-label" htmlFor="inputExerciseAssignOrder">
-                          Order
-                        </label>
-                        <input
-                            disabled
-                            className="form-control"
-                            id="inputExerciseAssignOrder"
-                            type="number"
-                            value={store.exerciseAssigned?store.exerciseAssigned.length+1:0}
-                            style={{height:"48%"}}
-                            name="order"
-                        />
-                      </div>
-  
-                      <div className="col-md-2">
+                      <div className="col-md-4">
                         <label className="form-label" htmlFor="inputExerciseAssignSets">
                           Sets
                         </label>
@@ -563,7 +551,7 @@ export const ProgramTemplate = () => {
                         />
                       </div>
   
-                      <div className="col-md-2">
+                      <div className="col-md-4">
                         <label className="form-label" htmlFor="inputExerciseAssignReps">
                           Reps
                         </label>
@@ -578,7 +566,7 @@ export const ProgramTemplate = () => {
                         />
                       </div>
   
-                      <div className="col-md-2">
+                      <div className="col-md-4">
                         <label className="form-label" htmlFor="inputExerciseAssignRest">
                           Rest (sec)
                         </label>
