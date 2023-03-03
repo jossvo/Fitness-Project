@@ -2,9 +2,10 @@ import React, { useContext, useEffect, useState, useRef } from "react";
 import { Context } from "../store/appContext";
 import { useNavigate , useParams } from "react-router-dom";
 import Select from "react-select";
-import { ProfileSidebar } from "../userComponents/profileSidebar.jsx";
+
 import "../../styles/coachStyle.css";
-import { bool } from "prop-types";
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
 export const ProgramTemplate = () => {
   const navigate = useNavigate();
@@ -27,6 +28,9 @@ export const ProgramTemplate = () => {
   const [updateList,setUpdateList]=useState()
   const [isPublicState, setIsPublicState] = useState(true);
   const [disableList, setDisableList] = useState(false);
+
+  const [show, setShow] = useState(false);
+  const [fetchMessage,setFetchMessage] = useState('Loading, please wait');
 
   let workout = ""
   useEffect(() => {
@@ -53,7 +57,7 @@ export const ProgramTemplate = () => {
   },[store["workoutsDetail"]]);
 
   async function setData(){
-    if(store["workoutsDetail"]){
+    if(store["workoutsDetail"]&&workoutID){
       workout = store["workoutsDetail"]
       setWorkoutImage(workout.wk_image)
       document.getElementById("inputWorkoutName").value=workout.name
@@ -182,12 +186,14 @@ export const ProgramTemplate = () => {
     if(response !="ok"){
       alert("Something went wrong! Please try again")
       return false
-    }alert("Workout updated")
+    }
   }
 
   // Upload/update exercise data from Exercise Assign Details form
   async function updateExerciseAssign(e){
     e.preventDefault();
+    setShow(true)
+    setFetchMessage('Please wait while we upload this')
     const data = new FormData(e.target);
     let newExerciseData = new FormData()
     let exerciseAssignedID=""
@@ -200,9 +206,10 @@ export const ProgramTemplate = () => {
 
       let response = await setNewElement('exercise',newExerciseData)
       if(response ==="error"){
-        alert("Exercise couldn't be created: Something went wrong! Please try again")
+        setFetchMessage("Exercise couldn't be created: Something went wrong! Please try again")
+        setTimeout(setShow(false), 4000)
         return false
-      }alert("Exercise created!")
+      }
       exerciseAssignedID=response
     }
     //If exercise from available exercises list
@@ -215,14 +222,19 @@ export const ProgramTemplate = () => {
 
     let newResponse = await setNewElement('assign_exercise',data)
     if(newResponse ==="error"){
-      alert("Exercise couldn't be assigned: Something went wrong! Please try again")
+      setFetchMessage("Exercise couldn't be assigned: Something went wrong! Please try again")
+      setTimeout(setShow(false), 4000)
       return false
     }else{
       document.getElementById("exerciseAssignForm").reset();
       setExercise(null)
       setUpdateList(true)
       setDisableList(false)
-    }alert("Exercise uploaded!")
+    }
+    setFetchMessage("Information successfully changed!")
+    setTimeout(() => {
+      setShow(false);
+    }, 2000)
   }
 
   // Upload/update exercise data from Exercise Assign Details form
@@ -457,25 +469,30 @@ export const ProgramTemplate = () => {
             </div>
           </div>
           <div className="row gx-3 mb-3">
-            <div className="col-xl-4">
+            <div className="col-xl-4 ">
               <div className="card mb-4 mb-xl-0">
                 <div className="card-header">Exercise order</div>
-                <ul className="list-group">
+                <ul className="list-group overflow-auto">
                   {filteredExerciseOrderList().map((elem,index)=>{
                     return( 
-                      <li className="list-group-item" key={index} >
-                        <div className="d-flex justify-content-between">
-                          <div className="align-self-center">
-                            <h6 className="m-0">{elem.name}</h6>
-                            <p className="m-0">order:{elem.order} | sets:{elem.sets} | reps:{elem.reps} | rest:{elem.rest} sec</p>
-                          </div>
-                          <div className="d-flex flex-column exerciseOrderDiv align-self-center"> 
-                            <i className={index===0?"fa fa-caret-up arrowDisabled":"fa fa-caret-up"}
-                              onClick={()=>{index===0?"":updateExerciseOrderFunction(elem.id,index-1)}}>
-                            </i>
-                            <i className={index===filteredExerciseOrderList().length-1?
-                              "fa fa-caret-down arrowDisabled":"fa fa-caret-down"} 
-                              onClick={()=>{index===filteredExerciseOrderList().length-1?"":updateExerciseOrderFunction(elem.id,index+1)}}></i>
+                      <li className="exerciseOrderLiDiv" key={index} >
+                        <div>
+                          <span className="deleteExerciseAssignSpan align-self-center" >
+                            <i className="fa fa-trash"></i>
+                          </span>
+                          <div className="exerciseAssignOrderLiData d-flex justify-content-between">
+                            <div className="align-self-center">
+                              <h6 className="m-0">{elem.name}</h6>
+                              <p className="m-0"> {elem.sets}x{elem.reps} | rest: {elem.rest} sec</p>
+                            </div>
+                            <div className="d-flex flex-column exerciseOrderDiv align-self-center"> 
+                              <i className={index===0?"fa fa-caret-up arrowDisabled":"fa fa-caret-up"}
+                                onClick={()=>{index===0?"":updateExerciseOrderFunction(elem.id,index-1)}}>
+                              </i>
+                              <i className={index===filteredExerciseOrderList().length-1?
+                                "fa fa-caret-down arrowDisabled":"fa fa-caret-down"} 
+                                onClick={()=>{index===filteredExerciseOrderList().length-1?"":updateExerciseOrderFunction(elem.id,index+1)}}></i>
+                            </div>
                           </div>
                         </div>
                       </li>
@@ -586,9 +603,18 @@ export const ProgramTemplate = () => {
                     </div>
   
                     <div className="d-flex justify-content-end">
-                        <button className="btn btn-primary" type="submit">
+                        <button className="btn btn-primary">
                         {exerciseAssignedId?"Edit Exercise":"Assign Exercise"}
                         </button>
+                    </div>
+                    <div data-keyboard="false" data-backdrop="static">
+                      <Modal id="workoutModal" show={show} data-backdrop="static" data-keyboard="false">
+                        <div className="spinner-container w-100 d-flex justify-content-center">
+                          <div className="loading-spinner">
+                          </div>
+                        </div>
+                        <Modal.Body>{fetchMessage}</Modal.Body>
+                      </Modal>
                     </div>
                   </form>
                 </div>
