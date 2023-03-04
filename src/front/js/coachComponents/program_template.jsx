@@ -12,13 +12,11 @@ export const ProgramTemplate = () => {
   let { program_id } = useParams();
 
   const { store, actions } = useContext(Context);
-  const {setNewElement,getDetails,getList ,updateWorkout,updateExercise,updateExerciseOrder} = actions;
+  const {setNewElement,getDetails,getList ,updateWorkout,updateExercise,updateExerciseOrder,deleteExerciseAssigned} = actions;
 
   const [exercise, setExercise] = useState();
-  const [exerciseAssignedId,setExerciseAssignedId] = useState();
   const [userID, setUserID] = useState();
   const [UserAssignHelp,setUserAssignHelp] = useState("")
-  const [workoutID, setWorkoutID] = useState(program_id);
   const [workoutWeeks,setWorkoutWeeks] = useState(15);
   const [workoutDays,setWorkoutDays] = useState(7);
   const [workoutImage,setWorkoutImage]=useState("https://picsum.photos/seed/picsum/200/200")
@@ -34,21 +32,26 @@ export const ProgramTemplate = () => {
 
   let workout = ""
   useEffect(() => {
+    console.log(program_id)
     async function fetchData(){
-      getDetails('workouts',workoutID);
+      getDetails('workouts',program_id);
       getList('exercise_library')
       getList('user_library')
     }
-    if(workoutID)fetchData()
-  },[workoutID]);
+    if(program_id)fetchData()
+    else {
+      document.getElementById("createWorkoutForm").reset()
+      setWorkoutImage("https://picsum.photos/seed/picsum/200/200")
+    }
+  },[program_id]);
 
   // useEffect to update exercise library and get all assigned exercises
   useEffect(() => {
     async function fetchData(){
       getList('exercise_library')
-      getList(`exercise_assigned/${workoutID}`,'exerciseAssigned')
+      getList(`exercise_assigned/${program_id}`,'exerciseAssigned')
     }
-    if(workoutID)fetchData()
+    if(program_id)fetchData()
   },[updateList]);
 
   // useEffect and function to populate form with fetch data
@@ -57,7 +60,7 @@ export const ProgramTemplate = () => {
   },[store["workoutsDetail"]]);
 
   async function setData(){
-    if(store["workoutsDetail"]&&workoutID){
+    if(store["workoutsDetail"]&&program_id){
       workout = store["workoutsDetail"]
       setWorkoutImage(workout.wk_image)
       document.getElementById("inputWorkoutName").value=workout.name
@@ -69,12 +72,6 @@ export const ProgramTemplate = () => {
     }
   }
 
-
-  function handleSelectExerciseChange(e) {
-    if(e!==null)setExercise(e.value);
-    else setExercise(null)
-  }
-  const test=()=>console.log(exercise)
   function handleSelectUserChange(e) {
     if(e!==null){
         setUserID(e.value)
@@ -175,14 +172,16 @@ export const ProgramTemplate = () => {
     if(userID)data.set('user_id',userID)
     if(data.get('file').size===0 || data.get('file').name==='')data.delete('file')
 
-    if(!workoutID){
+    if(!program_id){
       let response = await setNewElement('workouts',data)
       if(response ==="error"){
         alert("Something went wrong! Please try again")
-      }else navigate(`/coach/settings/edit_program/${response}`)
+      }else {
+        navigate(`/coach/settings/edit_program/${response}`)
+      }
       return false
     }
-    let response = await updateWorkout(data,workoutID)
+    let response = await updateWorkout(data,program_id)
     if(response !="ok"){
       alert("Something went wrong! Please try again")
       return false
@@ -214,7 +213,7 @@ export const ProgramTemplate = () => {
     }
     //If exercise from available exercises list
     if(exerciseAssignedID==="")exerciseAssignedID=exercise.value
-    data.set('workout_id',workoutID)
+    data.set('workout_id',program_id)
     data.set('order',filteredExerciseOrderList().length+1)
     data.set('week',weekFilter)
     data.set('day',dayFilter)
@@ -264,7 +263,7 @@ export const ProgramTemplate = () => {
           <div className="col-xl-12">
             <div className="card mb-4 mb-xl-0">
               <div className="card-header">Workout Details</div>
-              <form onSubmit={updateData}>
+              <form id="createWorkoutForm" onSubmit={updateData}>
                 <div
                     className="row gx-3 mb-3 workoutDetailsDiv"
                     style={{ paddingLeft: "calc(var(--bs-gutter-x) * .5)" }}
@@ -285,7 +284,7 @@ export const ProgramTemplate = () => {
                             Workout Image
                           </label>
                           <input
-                              required={workoutID?false:true}
+                              required={program_id?false:true}
                               name="file"
                               className="form-control form-control-sm"
                               accept="image/png, image/jpeg"
@@ -411,7 +410,7 @@ export const ProgramTemplate = () => {
                             
                             <div className="d-flex justify-content-end">
                                 <button className="btn btn-primary" type="submit">
-                                {workoutID?"Update Workout":"Create Workout"}
+                                {program_id?"Update Workout":"Create Workout"}
                                 </button>
                             </div>
                         </div>
@@ -423,7 +422,7 @@ export const ProgramTemplate = () => {
         </div>
 
         
-        {workoutID?<div>
+        {program_id?<div>
           <div className="row gx-3 mb-3">
             <div className="col-xl-12">
               <div className="card mb-4 mb-xl-0">
@@ -477,7 +476,7 @@ export const ProgramTemplate = () => {
                     return( 
                       <li className="exerciseOrderLiDiv" key={index} >
                         <div>
-                          <span className="deleteExerciseAssignSpan align-self-center" >
+                          <span className="deleteExerciseAssignSpan align-self-center" onClick={()=>deleteExerciseAssigned(elem.id)} >
                             <i className="fa fa-trash"></i>
                           </span>
                           <div className="exerciseAssignOrderLiData d-flex justify-content-between">
@@ -604,7 +603,7 @@ export const ProgramTemplate = () => {
   
                     <div className="d-flex justify-content-end">
                         <button className="btn btn-primary">
-                        {exerciseAssignedId?"Edit Exercise":"Assign Exercise"}
+                          Assign Exercise
                         </button>
                     </div>
                     <div data-keyboard="false" data-backdrop="static">

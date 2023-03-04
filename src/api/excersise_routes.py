@@ -109,3 +109,17 @@ def update_exercise(exercise_id):
     db.session.commit()
 
     return({"msg":"Exercise updated"})
+
+@api_exercise.route('/assign_exercise/<exercise_id>',methods=['DELETE'])
+@jwt_required()
+def delete_exercise_assign(exercise_id):
+    exercise_assigned = Exercise_Assign.query.get(exercise_id)
+    if exercise_assigned is None:
+        return jsonify({"msg":"Exercise not found"}), 404
+
+    workout_id = exercise_assigned.workout_id
+    db.session.delete(exercise_assigned)
+    db.session.commit()
+    exercises = Exercise_Assign.query.filter(Exercise_Assign.workout_id==workout_id).all()
+    response_body = list(map(lambda e: e.serialize_list(),exercises))
+    return jsonify(response_body), 200

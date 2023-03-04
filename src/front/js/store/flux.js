@@ -348,6 +348,33 @@ const getState = ({ getStore, getActions, setStore }) => {
 				newStore['exerciseAssigned'] = data;
 				setStore(newStore);
 				return "ok"
+			},
+			deleteExerciseAssigned: async (exercise_id)=>{
+				let response = await fetch(apiUrl +`/assign_exercise/${exercise_id}`,{
+					method: 'DELETE',
+					headers: {
+						...getActions().getAutorizationHeader()
+					}
+				});
+				if (!response.ok){
+					response.text().then(text => {
+						let errorObj = JSON.parse(text)
+						switch(errorObj.msg){
+							case "Token has expired":
+								getActions().updateTokens()
+								break;
+							default:
+								console.log(errorObj.msg)
+								throw new Error(errorObj.msg)
+						}
+					})
+					return false
+				}
+				let data = await response.json();
+				let newStore = {};
+				newStore['exerciseAssigned'] = data;
+				setStore(newStore);
+				return "ok"
 			}
 		}
 	};

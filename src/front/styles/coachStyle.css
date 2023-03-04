@@ -33,6 +33,9 @@
     transform: translate(-50%, -50%);
   }
   /* Css for exercise in exercise order list*/
+  .list-group{
+    border-top-left-radius: 0% ;
+  }
   .exerciseOrderLiDiv{
     border-bottom: .7px solid lightgray;
     position: relative;
