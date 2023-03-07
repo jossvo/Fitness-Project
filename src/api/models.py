@@ -165,9 +165,12 @@ class Exercise_Library(db.Model): #Library with public and private exercises
     __tablename__ = "exercise_library"
     id = db.Column(db.Integer(),primary_key=True)
     name = db.Column(db.String(250), nullable=False)
-    description = db.Column(db.String(250), nullable=False)
+    description = db.Column(db.String(750), nullable=False)
     coach_id = db.Column(db.Integer(),db.ForeignKey("coach.id",ondelete="cascade"))
     video = db.Column(db.String(250))
+
+    def __repr__(self):
+        return '<Exercise %r>' % self.name
     
     def serialize_library(self):
         return {

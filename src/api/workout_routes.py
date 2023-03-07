@@ -88,7 +88,7 @@ def update_workout(workout_id):
     boolArr = {"true":True,"false":False}
     workout.is_public = boolArr[request.form.get('is_public')]
     
-    if request.files['file']:
+    if request.form.get('file'):
         file=request.files['file']
         extension = file.filename.split('.')[1]
         filename="workout_pics/"+str(workout.id)+"."+extension
@@ -99,4 +99,4 @@ def update_workout(workout_id):
     db.session.add(workout)
     db.session.commit()
 
-    return({"msg":"Workout updated"})
+    return jsonify(workout.serialize_library())

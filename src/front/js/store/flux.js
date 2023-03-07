@@ -11,14 +11,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 				let refreshToken = localStorage.getItem("refreshToken")
 				let id = localStorage.getItem("id")
 				let type = localStorage.getItem("type")
-				let wkID = localStorage.getItem("wkID")
 				setStore({
 					accessToken:accessToken,
 					refreshToken:refreshToken,
 					id:id,
 					type:type
 				})
-				if(wkID)setStore({wkID:wkID})
 			},
 			// login functions
 			login: async (email,password,type)=>{
@@ -31,7 +29,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					headers:{
 						"Content-Type":"application/json"
 					},
-					body:JSON.stringify({email,password})
+					body:JSON.stringify({email:email,password:password})
 				})
 				if(!resp.ok){
 					return resp.json()
@@ -317,6 +315,65 @@ const getState = ({ getStore, getActions, setStore }) => {
 					})
 					return false
 				}
+				let data = await response.json();
+				let newStore = {};
+				newStore['workoutsDetail'] = data;
+				setStore(newStore);
+				return "ok"
+			},
+			updateExerciseOrder: async (formData)=>{
+				let response = await fetch(apiUrl +`/assign_exercise_order`,{
+					method: 'PATCH',
+					headers: {
+						...getActions().getAutorizationHeader()
+					},
+					body: formData,
+				});
+				if (!response.ok){
+					response.text().then(text => {
+						let errorObj = JSON.parse(text)
+						switch(errorObj.msg){
+							case "Token has expired":
+								getActions().updateTokens()
+								break;
+							default:
+								console.log(errorObj.msg)
+								throw new Error(errorObj.msg)
+						}
+					})
+					return false
+				}
+				let data = await response.json();
+				let newStore = {};
+				newStore['exerciseAssigned'] = data;
+				setStore(newStore);
+				return "ok"
+			},
+			deleteExerciseAssigned: async (exercise_id)=>{
+				let response = await fetch(apiUrl +`/assign_exercise/${exercise_id}`,{
+					method: 'DELETE',
+					headers: {
+						...getActions().getAutorizationHeader()
+					}
+				});
+				if (!response.ok){
+					response.text().then(text => {
+						let errorObj = JSON.parse(text)
+						switch(errorObj.msg){
+							case "Token has expired":
+								getActions().updateTokens()
+								break;
+							default:
+								console.log(errorObj.msg)
+								throw new Error(errorObj.msg)
+						}
+					})
+					return false
+				}
+				let data = await response.json();
+				let newStore = {};
+				newStore['exerciseAssigned'] = data;
+				setStore(newStore);
 				return "ok"
 			}
 		}

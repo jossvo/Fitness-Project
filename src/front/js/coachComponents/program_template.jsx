@@ -2,22 +2,21 @@ import React, { useContext, useEffect, useState, useRef } from "react";
 import { Context } from "../store/appContext";
 import { useNavigate , useParams } from "react-router-dom";
 import Select from "react-select";
-import { ProfileSidebar } from "../userComponents/profileSidebar.jsx";
+
 import "../../styles/coachStyle.css";
-import { bool } from "prop-types";
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
 export const ProgramTemplate = () => {
   const navigate = useNavigate();
   let { program_id } = useParams();
 
   const { store, actions } = useContext(Context);
-  const {setNewElement,getDetails,getList ,updateWorkout,updateExercise} = actions;
+  const {setNewElement,getDetails,getList ,updateWorkout,updateExercise,updateExerciseOrder,deleteExerciseAssigned} = actions;
 
   const [exercise, setExercise] = useState();
-  const [exerciseAssignedId,setExerciseAssignedId] = useState();
   const [userID, setUserID] = useState();
   const [UserAssignHelp,setUserAssignHelp] = useState("")
-  const [workoutID, setWorkoutID] = useState(program_id);
   const [workoutWeeks,setWorkoutWeeks] = useState(15);
   const [workoutDays,setWorkoutDays] = useState(7);
   const [workoutImage,setWorkoutImage]=useState("https://picsum.photos/seed/picsum/200/200")
@@ -28,25 +27,31 @@ export const ProgramTemplate = () => {
   const [isPublicState, setIsPublicState] = useState(true);
   const [disableList, setDisableList] = useState(false);
 
-  const selectInputExerciseRef = useRef();
+  const [show, setShow] = useState(false);
+  const [fetchMessage,setFetchMessage] = useState('Loading, please wait');
 
   let workout = ""
   useEffect(() => {
+    console.log(program_id)
     async function fetchData(){
-      getDetails('workouts',workoutID);
+      getDetails('workouts',program_id);
       getList('exercise_library')
       getList('user_library')
     }
-    fetchData()
-  },[workoutID]);
+    if(program_id)fetchData()
+    else {
+      document.getElementById("createWorkoutForm").reset()
+      setWorkoutImage("https://picsum.photos/seed/picsum/200/200")
+    }
+  },[program_id]);
 
   // useEffect to update exercise library and get all assigned exercises
   useEffect(() => {
     async function fetchData(){
       getList('exercise_library')
-      getList(`exercise_assigned/${workoutID}`,'exerciseAssigned')
+      getList(`exercise_assigned/${program_id}`,'exerciseAssigned')
     }
-    if(workoutID)fetchData()
+    if(program_id)fetchData()
   },[updateList]);
 
   // useEffect and function to populate form with fetch data
@@ -55,7 +60,7 @@ export const ProgramTemplate = () => {
   },[store["workoutsDetail"]]);
 
   async function setData(){
-    if(store["workoutsDetail"]){
+    if(store["workoutsDetail"]&&program_id){
       workout = store["workoutsDetail"]
       setWorkoutImage(workout.wk_image)
       document.getElementById("inputWorkoutName").value=workout.name
@@ -67,12 +72,6 @@ export const ProgramTemplate = () => {
     }
   }
 
-
-  function handleSelectExerciseChange(e) {
-    if(e!==null)setExercise(e.value);
-    else setExercise(null)
-  }
-  const test=()=>console.log(exercise)
   function handleSelectUserChange(e) {
     if(e!==null){
         setUserID(e.value)
@@ -98,6 +97,10 @@ export const ProgramTemplate = () => {
       filteredArr=[...store.exerciseAssigned]
       filteredArr = filteredArr.filter(elem=>elem.week===weekFilter)
       filteredArr = filteredArr.filter(elem=>elem.day===dayFilter)
+      filteredArr = filteredArr.sort((e1, e2) => 
+      (e1.order > e2.order) ? 1 
+      : (e1.order < e2.order) ? -1 : 0
+      )
     }
     return filteredArr
   }
@@ -169,22 +172,27 @@ export const ProgramTemplate = () => {
     if(userID)data.set('user_id',userID)
     if(data.get('file').size===0 || data.get('file').name==='')data.delete('file')
 
-    if(!workoutID){
+    if(!program_id){
       let response = await setNewElement('workouts',data)
       if(response ==="error"){
         alert("Something went wrong! Please try again")
-      }else navigate(`/coach/settings/edit_program/${response}`)
+      }else {
+        navigate(`/coach/settings/edit_program/${response}`)
+      }
       return false
     }
-    let response = await updateWorkout(data,workoutID)
+    let response = await updateWorkout(data,program_id)
     if(response !="ok"){
       alert("Something went wrong! Please try again")
-    }else window.location.reload(true)
+      return false
+    }
   }
 
   // Upload/update exercise data from Exercise Assign Details form
   async function updateExerciseAssign(e){
     e.preventDefault();
+    setShow(true)
+    setFetchMessage('Please wait while we upload this')
     const data = new FormData(e.target);
     let newExerciseData = new FormData()
     let exerciseAssignedID=""
@@ -197,14 +205,15 @@ export const ProgramTemplate = () => {
 
       let response = await setNewElement('exercise',newExerciseData)
       if(response ==="error"){
-        alert("Something went wrong! Please try again")
+        setFetchMessage("Exercise couldn't be created: Something went wrong! Please try again")
+        setTimeout(setShow(false), 4000)
         return false
       }
       exerciseAssignedID=response
     }
     //If exercise from available exercises list
     if(exerciseAssignedID==="")exerciseAssignedID=exercise.value
-    data.set('workout_id',workoutID)
+    data.set('workout_id',program_id)
     data.set('order',filteredExerciseOrderList().length+1)
     data.set('week',weekFilter)
     data.set('day',dayFilter)
@@ -212,42 +221,40 @@ export const ProgramTemplate = () => {
 
     let newResponse = await setNewElement('assign_exercise',data)
     if(newResponse ==="error"){
-      alert("Something went wrong! Please try again")
+      setFetchMessage("Exercise couldn't be assigned: Something went wrong! Please try again")
+      setTimeout(setShow(false), 4000)
       return false
     }else{
       document.getElementById("exerciseAssignForm").reset();
       setExercise(null)
       setUpdateList(true)
+      setDisableList(false)
     }
+    setFetchMessage("Information successfully changed!")
+    setTimeout(() => {
+      setShow(false);
+    }, 2000)
   }
 
   // Upload/update exercise data from Exercise Assign Details form
-  async function updateExerciseOrder(exerciseID,newOrder,oldExerciseNewOrder){
+  async function updateExerciseOrderFunction(exerciseID,newOrder){
     let data = new FormData()
-    let exercise_change_id = exerciseID
-    let new_order = newOrder+1
     let old_exercise = filteredExerciseOrderList()[newOrder].id
-    let old_exercise_new_order=oldExerciseNewOrder+1
     //Form data and 'PATCH' method for first item
-    data.set('order',new_order)
-    let response = await updateExercise(data,"assign_exercise", exercise_change_id)
+    data.set('new_exercise',exerciseID)
+    data.set('old_exercise',old_exercise)
+
+    let response = await updateExerciseOrder(data)
     if(response !="ok"){
       alert("Something went wrong! Please try again")
       return false
     }
-    //Form data and 'PATCH' method for second item
-    data.set('order',old_exercise_new_order)
-    response = await updateExercise(data,"assign_exercise", old_exercise)
-    if(response !="ok"){
-      alert("Something went wrong! Please try again")
-      return false
-    }setUpdateList(true)
   }
 
   return (
       <div
-        className="container overflow-auto"
-        style={{ height: "95vh", width: "90%", marginTop: "5vh" }}
+        className="container"
+        style={{ width: "90%", marginTop: "5vh", minHeight: "90vh"}}
       >
         <div
           className="row"
@@ -256,7 +263,7 @@ export const ProgramTemplate = () => {
           <div className="col-xl-12">
             <div className="card mb-4 mb-xl-0">
               <div className="card-header">Workout Details</div>
-              <form onSubmit={updateData}>
+              <form id="createWorkoutForm" onSubmit={updateData}>
                 <div
                     className="row gx-3 mb-3 workoutDetailsDiv"
                     style={{ paddingLeft: "calc(var(--bs-gutter-x) * .5)" }}
@@ -277,7 +284,7 @@ export const ProgramTemplate = () => {
                             Workout Image
                           </label>
                           <input
-                              required={workoutID?false:true}
+                              required={program_id?false:true}
                               name="file"
                               className="form-control form-control-sm"
                               accept="image/png, image/jpeg"
@@ -403,7 +410,7 @@ export const ProgramTemplate = () => {
                             
                             <div className="d-flex justify-content-end">
                                 <button className="btn btn-primary" type="submit">
-                                {workoutID?"Update Workout":"Create Workout"}
+                                {program_id?"Update Workout":"Create Workout"}
                                 </button>
                             </div>
                         </div>
@@ -415,7 +422,7 @@ export const ProgramTemplate = () => {
         </div>
 
         
-        {workoutID?<div>
+        {program_id?<div>
           <div className="row gx-3 mb-3">
             <div className="col-xl-12">
               <div className="card mb-4 mb-xl-0">
@@ -461,25 +468,30 @@ export const ProgramTemplate = () => {
             </div>
           </div>
           <div className="row gx-3 mb-3">
-            <div className="col-xl-4">
+            <div className="col-xl-4 ">
               <div className="card mb-4 mb-xl-0">
                 <div className="card-header">Exercise order</div>
-                <ul className="list-group">
+                <ul className="list-group overflow-auto">
                   {filteredExerciseOrderList().map((elem,index)=>{
                     return( 
-                      <li className="list-group-item" key={index} >
-                        <div className="d-flex justify-content-between">
-                          <div className="align-self-center">
-                            <h6 className="m-0">{elem.name}</h6>
-                            <p className="m-0">week:{elem.week} | day:{elem.day} | sets:{elem.sets} | reps:{elem.reps} | rest:{elem.rest} sec</p>
-                          </div>
-                          <div className="d-flex flex-column exerciseOrderDiv align-self-center"> 
-                            <i className={index===0?"fa fa-caret-up arrowDisabled":"fa fa-caret-up"}
-                              onClick={()=>{index===0?"":updateExerciseOrder(elem.id,index-1,index)}}>
-                            </i>
-                            <i className={index===filteredExerciseOrderList().length-1?
-                              "fa fa-caret-down arrowDisabled":"fa fa-caret-down"} 
-                              onClick={()=>{index===filteredExerciseOrderList().length-1?"":updateExerciseOrder(elem.id,index+1,index)}}></i>
+                      <li className="exerciseOrderLiDiv" key={index} >
+                        <div>
+                          <span className="deleteExerciseAssignSpan align-self-center" onClick={()=>deleteExerciseAssigned(elem.id)} >
+                            <i className="fa fa-trash"></i>
+                          </span>
+                          <div className="exerciseAssignOrderLiData d-flex justify-content-between">
+                            <div className="align-self-center">
+                              <h6 className="m-0">{elem.name}</h6>
+                              <p className="m-0"> {elem.sets}x{elem.reps} | rest: {elem.rest} sec</p>
+                            </div>
+                            <div className="d-flex flex-column exerciseOrderDiv align-self-center"> 
+                              <i className={index===0?"fa fa-caret-up arrowDisabled":"fa fa-caret-up"}
+                                onClick={()=>{index===0?"":updateExerciseOrderFunction(elem.id,index-1)}}>
+                              </i>
+                              <i className={index===filteredExerciseOrderList().length-1?
+                                "fa fa-caret-down arrowDisabled":"fa fa-caret-down"} 
+                                onClick={()=>{index===filteredExerciseOrderList().length-1?"":updateExerciseOrderFunction(elem.id,index+1)}}></i>
+                            </div>
                           </div>
                         </div>
                       </li>
@@ -553,7 +565,7 @@ export const ProgramTemplate = () => {
   
                       <div className="col-md-4">
                         <label className="form-label" htmlFor="inputExerciseAssignReps">
-                          Reps
+                          Repetitions
                         </label>
                         <input
                             required
@@ -568,7 +580,7 @@ export const ProgramTemplate = () => {
   
                       <div className="col-md-4">
                         <label className="form-label" htmlFor="inputExerciseAssignRest">
-                          Rest (sec)
+                          Rest between sets (in sec)
                         </label>
                         <input
                             required
@@ -590,9 +602,18 @@ export const ProgramTemplate = () => {
                     </div>
   
                     <div className="d-flex justify-content-end">
-                        <button className="btn btn-primary" type="submit">
-                        {exerciseAssignedId?"Edit Exercise":"Assign Exercise"}
+                        <button className="btn btn-primary">
+                          Assign Exercise
                         </button>
+                    </div>
+                    <div data-keyboard="false" data-backdrop="static">
+                      <Modal id="workoutModal" show={show} data-backdrop="static" data-keyboard="false">
+                        <div className="spinner-container w-100 d-flex justify-content-center">
+                          <div className="loading-spinner">
+                          </div>
+                        </div>
+                        <Modal.Body>{fetchMessage}</Modal.Body>
+                      </Modal>
                     </div>
                   </form>
                 </div>
