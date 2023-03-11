@@ -8,7 +8,7 @@ class User(db.Model):
     first_name = db.Column(db.String(250), nullable=False)
     last_name = db.Column(db.String(250), nullable=False)
     username = db.Column(db.String(250), unique=True,nullable=False)
-    email = db.Column(db.String(250), unique=True,nullable=False)
+    email = db.Column(db.String(250), unique=True,nullable=False)  
     gender = db.Column(db.String(250), nullable=False)
     share_gender = db.Column(db.Boolean())
     password = db.Column(db.String(250), nullable=False) 
@@ -109,11 +109,19 @@ class Coach(db.Model):
             "bio": self.bio
         }
 
+    def serialize_workouts(self):
+        workouts=list(map(lambda w: w.serialize_library(), self.workouts))
+        return {"workouts":workouts}
+    
+    def serialize_workouts_users(self):
+        users=list(map(lambda w: w.serialize_users(), self.workouts))
+        return users
+
 class Workout(db.Model):
     __tablename__ = "workout"
     id = db.Column(db.Integer(),primary_key=True)
     coach_id = db.Column(db.Integer(),db.ForeignKey("coach.id"))
-    coach = db.relationship(Coach)
+    coach = db.relationship(Coach, backref='workouts', lazy=False)
     name = db.Column(db.String(250), nullable=False)
     weeks = db.Column(db.Integer())
     days_per_week = db.Column(db.Integer())
@@ -137,6 +145,11 @@ class Workout(db.Model):
             "isPublic" : self.is_public ,  
             "wk_image" : self.wk_image
         }
+    def serialize_users(self):
+        users=list(map(lambda u: u.serialize()
+        , self.users))
+        return users
+
     
 class Category(db.Model):
     __tablename__ = "category"
@@ -204,9 +217,15 @@ class Workout_User(db.Model): #User_Purchased_Workouts
     __tablename__ = "workout_user"
     id = db.Column(db.Integer(),primary_key=True)
     workout_id = db.Column(db.Integer(),db.ForeignKey("workout.id",ondelete="cascade"))
-    workout = db.relationship(Workout)
+    workout = db.relationship(Workout, backref='users', lazy=False)
     user_id = db.Column(db.Integer(),db.ForeignKey("user.id",ondelete="cascade"))
     user = db.relationship(User)
+
+    def serialize(self):
+        return {
+            "user_id":self.user_id
+        }
+    
 
 
 class Workout_Review(db.Model):
@@ -219,6 +238,9 @@ class Workout_Review(db.Model):
     rating = db.Column(db.Integer())
     review = db.Column(db.String(250))
 
+    def serialize_review_rating(self):
+        return self.rating
+
 class Coach_Review(db.Model):
     __tablename__ = "coach_review"
     id = db.Column(db.Integer(),primary_key=True)
@@ -228,3 +250,6 @@ class Coach_Review(db.Model):
     user = db.relationship(User)
     rating = db.Column(db.Integer())
     review = db.Column(db.String(250))
+
+    def serialize_review_rating(self):
+        return self.rating

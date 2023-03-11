@@ -605,7 +605,7 @@ export const ProgramTemplate = () => {
                       </div>
   
                       <div className="col-md-2">
-                        <label className="form-label" htmlFor="inputExerciseAssignRest">
+                        <label className={`offcanvas ${offCanvasvar?"show":""}`} htmlFor="inputExerciseAssignRest">
                           Rest (sec)
                         </label>
                         <input

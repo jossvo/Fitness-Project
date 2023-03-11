@@ -42,15 +42,16 @@
   overflow-y: hidden;
 }
 .statistics-section {
-  gap: 20px;
+  gap: 24rem;
   background-color: #ecf0f1;
 }
-.circle-statistics-section {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background-color: RGB(72, 81, 77);
+.titles-font {
+ font-family: "Bebas Neue", sans-serif
 }
 .text-statistics{
 font-family: "Bebas Neue", sans-serif
 }
+/* .card-coach-profile {
+height: 420px;
+
+} */
