@@ -35,9 +35,10 @@ def handle_coachusers(coach_id):
     if coach is None:
         return "Not found", 404
     users=coach.serialize_workouts_users()
-    response_body = {
-        "workouts": users
-    }
-    print(users)
+    users= list(map(lambda u:len(u),users))
+    response_body = {'users':sum(users)}
+    
+    #print(type(users))
 
     return response_body, 200
+

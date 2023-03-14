@@ -83,7 +83,10 @@ def get_coach_info_public(coach_id):
     profile_pic_url=resource.generate_signed_url(version="v4",expiration=timedelta(seconds=7*86400), method="GET")
     response_data["profile_picture"] = profile_pic_url
     response_data["workouts"] = len(workouts)
-    # response_data["users"] = len(users) #Esto genera el error (revisar mas tarde)
+    users=coach.serialize_workouts_users()
+    users= list(map(lambda u:len(u),users))
+    response_data["users"] = sum(users) #Esto genera el error (revisar mas tarde)
+    
     if reviews:
         response_data['rating'] = sum(reviews)/len(reviews)
     return jsonify(response_data)

@@ -77,7 +77,7 @@ export const CoachPublic = () => {
                   <div className="col-md-4 col-lg-4 features-container-items">
                     <h2 className="features-heading-text display-6">Users</h2>
                     <p className="features-text display-2">
-                      23
+                      {user?.users}
                     </p>
                   </div>
                 </div>
