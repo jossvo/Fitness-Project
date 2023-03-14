@@ -60,6 +60,40 @@ def get_coach_info():
     response_data["profile_picture"] = profile_pic_url
     return jsonify(response_data)
 
+@api_coach.route('/coachpublicinfo/<coach_id>')
+def get_coach_info_public(coach_id):
+    coach=Coach.query.get(coach_id)
+    if coach is None:
+        return jsonify({"msg":"Coach no encontrado"}), 404
+    
+    #users=Workout_User.query.filter(Workout_User.workout.coach_id==coach_id).all() 
+
+    #users=Workout_User.query.filter(Workout_User.workout.coach_id==coach_id).all()
+   
+    reviews=Coach_Review.query.filter(Coach_Review.coach_id==coach_id).all()
+    reviews = list(map(lambda c: c.serialize_review_rating() ,reviews))
+    
+    
+    workouts=Workout.query.filter(Workout.coach_id==coach_id).all()
+    response_data=coach.serialize_account_details()
+    # Se obtiene el bucket
+    bucket = storage.bucket(name='fit-central-7cf8b.appspot.com')
+    # Generar el recurso en el bucket
+    resource = bucket.blob(coach.profile_picture)
+    profile_pic_url=resource.generate_signed_url(version="v4",expiration=timedelta(seconds=7*86400), method="GET")
+    response_data["profile_picture"] = profile_pic_url
+    response_data["workouts"] = len(workouts)
+    users=coach.serialize_workouts_users()
+    users= list(map(lambda u:len(u),users))
+    response_data["users"] = sum(users) #Esto genera el error (revisar mas tarde)
+    
+    if reviews:
+        response_data['rating'] = sum(reviews)/len(reviews)
+    return jsonify(response_data)
+
+
+
+
 @api_coach.route('/coach/signup', methods=['POST'])
 def new_coach():
     msg = {}

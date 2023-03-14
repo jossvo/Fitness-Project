@@ -39,9 +39,8 @@ const Layout = () => {
             <Route element={<UserPublic />} path="/settings/billing" />
             <Route element={<ProfileSecurity />} path="/settings/security" />
             {/* Coach routes */}
-            <Route element={<CoachPublic />} path="/coach/:userid" />
+            <Route element={<CoachPublic />} path="/coach/:coach_id" />
             <Route element={<CoachInfo />} path="/coach/settings/profile" />
-            <Route element={<CoachPublic />} path="/coach/settings/billing" />
             <Route element={<CoachSecurity />} path="/coach/settings/security" />
             <Route element={<CreateProgram />} path="/coach/settings/new_program" />
             <Route element={<CreateProgram />} path="/coach/settings/edit_program/:program_id" />

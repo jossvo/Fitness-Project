@@ -1,0 +1,57 @@
+.profile-coach-section {
+  padding: 50px 0;
+}
+.coach-banner {
+  height: 200px;
+  width: 100vw;
+  background-image: url(https://images.pexels.com/photos/1552249/pexels-photo-1552249.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2);
+}
+.profile-pic_coach {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
+  border-radius: 50%;
+}
+.profile-pic_coach img {
+  width: 100%;
+  height: auto;
+}
+.profileName {
+  padding-bottom: 50px;
+  border-bottom: 1px solid gray;
+  width: 700px;
+}
+.coach-text-content {
+  width: 50%;
+  word-break: break-all;
+  margin: 0 0 1em 1em;
+}
+.profileSideBar {
+  height: 100vh;
+}
+.profile-titles {
+  margin: 75px 0;
+}
+.profile-coach_banner {
+  background-image: url("https://images.pexels.com/photos/685530/pexels-photo-685530.jpeg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 200px;
+  overflow-y: hidden;
+}
+.statistics-section {
+  gap: 24rem;
+  background-color: #ecf0f1;
+}
+.titles-font {
+ font-family: "Bebas Neue", sans-serif
+}
+.text-statistics{
+font-family: "Bebas Neue", sans-serif
+}
+/* .card-coach-profile {
+height: 420px;
+
+} */
