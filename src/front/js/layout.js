@@ -14,11 +14,12 @@ import { Workouts } from "./pages/workouts";
 
 import { CoachInfo } from "./coachComponents/coach_Info.jsx";
 import { CoachPublic } from "./coachComponents/coach_profile_info.jsx";
-import {CoachSecurity} from "./coachComponents/coach_security.jsx";
+import { CoachSecurity } from "./coachComponents/coach_security.jsx";
 import { CreateProgram } from "./coachComponents/coach_create_program.jsx";
-
+import { CoachesLibrary } from "./pages/coaches";
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
+import { components } from "react-select";
 
 //create your first component
 const Layout = () => {
@@ -41,13 +42,23 @@ const Layout = () => {
             {/* Coach routes */}
             <Route element={<CoachPublic />} path="/coach/:coach_id" />
             <Route element={<CoachInfo />} path="/coach/settings/profile" />
-            <Route element={<CoachSecurity />} path="/coach/settings/security" />
-            <Route element={<CreateProgram />} path="/coach/settings/new_program" />
-            <Route element={<CreateProgram />} path="/coach/settings/edit_program/:program_id" />
+            <Route
+              element={<CoachSecurity />}
+              path="/coach/settings/security"
+            />
+            <Route
+              element={<CreateProgram />}
+              path="/coach/settings/new_program"
+            />
+            <Route
+              element={<CreateProgram />}
+              path="/coach/settings/edit_program/:program_id"
+            />
 
             <Route element={<Demo />} path="/demo" />
             <Route element={<Single />} path="/single/:theid" />
             <Route element={<Workouts />} path="/programs" />
+            <Route element={<CoachesLibrary />} path="/coaches" />
             <Route element={<h1>Not found!</h1>} />
           </Routes>
           <Footer />

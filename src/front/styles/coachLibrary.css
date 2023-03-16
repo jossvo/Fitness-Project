@@ -1,0 +1,10 @@
+.card-coach {
+  width: 400px;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  justify-content: center;
+}
+
+.img-coach-card {
+  height: 100%;
+}
