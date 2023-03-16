@@ -18,8 +18,9 @@ export const CoachesLibrary = () => {
                         style={{ width: "180px", borderRadius: "10px" }}
                       />
                     </div>
-                    <div className="flex-grow-1 ms-3 p-3">
-                      <h5 className="mb-1 text-light">Coach Name</h5>
+                    <div className="flex-grow-1 ms-3 p-4">
+                      <h5 className="mb-1 text-white">Coach Name</h5>
+                      <p className="text-light">Username</p>
                       <div
                         className="d-flex justify-content-start rounded-3 p-2 mb-2"
                         style={{ backgroundColor: "#efefef" }}

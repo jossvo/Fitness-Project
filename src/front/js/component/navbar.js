@@ -7,21 +7,27 @@ import { SignInComponent } from "./signInComponent";
 import { RegistrationForm } from "./registrationForm";
 export const Navbar = () => {
   const { store, actions } = useContext(Context);
-  let arrNav = []
-  store.id? arrNav=[
-    ["Programs","/programs"],
-    ["Coaches","#"],
-    ["FAQS","#"],
-    ["Account",`/${store.type==="u"?"user":"coach"}/${store.id}`],
-    ["My Plans","#"]]
-  : arrNav=[["Programs","/programs"],["Coaches","#"],["FAQS","#"]]
+  let arrNav = [];
+  store.id
+    ? (arrNav = [
+        ["Programs", "/programs"],
+        ["Coaches", "/coaches"],
+        ["FAQS", "#"],
+        ["Account", `/${store.type === "u" ? "user" : "coach"}/${store.id}`],
+        ["My Plans", "#"],
+      ])
+    : (arrNav = [
+        ["Programs", "/programs"],
+        ["Coaches", "#"],
+        ["FAQS", "#"],
+      ]);
 
   return (
     <div>
       <nav className="navbar navbar-expand-lg ms-auto ">
         <div className="container-fluid mx-5  ">
           <Link to="/">
-            <span className="navbar-brand navbar-logo text-white" >
+            <span className="navbar-brand navbar-logo text-white">
               <i className="fa-solid fa-dumbbell "></i>
               Fit Central
             </span>
@@ -39,20 +45,19 @@ export const Navbar = () => {
           </button>
           <div className="collapse navbar-collapse " id="navbarNav">
             <ul className="navbar-nav ms-auto mx-5 d-flex align-items-center ">
-              {
-              arrNav.map((elem,index)=>{
-                return(
+              {arrNav.map((elem, index) => {
+                return (
                   <Link to={elem[1]} key={index}>
                     <span className="navbar-items">
-                      <i className=""></i>{elem[0]}
+                      <i className=""></i>
+                      {elem[0]}
                     </span>
                   </Link>
-                )
-              })
-              }
+                );
+              })}
 
-              {!store.id?<SignInComponent />:""}
-              {!store.id?<RegistrationForm />:""}
+              {!store.id ? <SignInComponent /> : ""}
+              {!store.id ? <RegistrationForm /> : ""}
             </ul>
           </div>
         </div>
