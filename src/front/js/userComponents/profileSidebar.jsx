@@ -26,7 +26,7 @@ export const ProfileSidebar = ({navTitle="User"}) => {
     let prefix = ""
     if(store.type==="u") publicLink = `/user/${store.id}`
     else{
-        publicLink = `/coach/${store.id}`
+        publicLink = `/coach/settings/profile_view`
         prefix = "/coach"
     }
 

@@ -16,7 +16,7 @@ export const CoachPublic = () => {
   //Function to populate form with data
   useEffect(() => {
     async function fetchData() {
-      getPublicProfile(coach_id);
+      getPublicProfile(localStorage.id);
     }
     fetchData()
   }, []);
@@ -31,7 +31,6 @@ export const CoachPublic = () => {
       document.getElementById("profilePic").src = user.profile_picture
       document.getElementById("publicViewUserFullName").innerText = capitalize(user.first_name) + " " + capitalize(user.last_name)
       document.getElementById("publicViewUserBio").innerText = capitalize(user.bio)
-      console.log(store.publicCoachInfo)
     }
   }
 
@@ -65,7 +64,7 @@ export const CoachPublic = () => {
 
                     <h2 className="features-heading-text display-6">Review Rating</h2>
                     <p className="features-text display-2">
-                      {user?.rating}
+                      {user?.rating?user.rating:"0"}
                     </p>
                   </div>
                   <div className="col-md-4 col-lg-4 features-container-items">
