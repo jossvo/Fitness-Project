@@ -100,3 +100,13 @@ def update_workout(workout_id):
     db.session.commit()
 
     return jsonify(workout.serialize_library())
+
+@api_workout.route('/my_workouts/<workout_id>')
+@jwt_required()
+def get_user_workout(workout_id):
+    user_id=get_jwt_identity()
+    workout = Workout_User.query.filter(Workout_User.workout_id==workout_id,Workout_User.user_id==user_id).first()
+    if workout is None:
+        return jsonify({"msg": "Unauthorized access"}), 403
+    
+    return workout.serialize_details(),200

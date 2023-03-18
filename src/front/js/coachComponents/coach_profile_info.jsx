@@ -10,8 +10,6 @@ import { useParams } from "react-router-dom";
 export const CoachPublic = () => {
   const { store, actions } = useContext(Context);
   const { getPublicProfile } = actions
-  let { coach_id } = useParams();
-
 
   //Function to populate form with data
   useEffect(() => {

@@ -113,6 +113,22 @@ const getState = ({ getStore, getActions, setStore }) => {
           setStore(newStore);
         }
       },
+	  getFullWorkout: async (workout_id) => {
+        let response = await fetch(apiUrl + `/my_workouts/${workout_id}`,{
+			headers: {
+				...getActions().getAutorizationHeader(),
+			  }
+		});
+        if (!response.ok)
+          console.error(`Error en la petición ${response.statusText}`);
+        else {
+		  let data = await response.json()
+		  let store = getStore()
+		  let newStore = {};
+          newStore["workoutInstructions"] = data;   
+		  setStore(newStore)
+        }
+      },
       getList: async (elements, name = elements) => {
         let response = await fetch(apiUrl + `/${elements}`, {
           method: "GET",
