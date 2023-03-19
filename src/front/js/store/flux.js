@@ -114,7 +114,6 @@ const getState = ({ getStore, getActions, setStore }) => {
       getPublicProfile: async (coach_id) => {
         const resp = await fetch(apiUrl + `/coachpublicinfo/${coach_id}`);
         if (!resp.ok) {
-    
             return false
         } else {
           let data = await resp.json();
