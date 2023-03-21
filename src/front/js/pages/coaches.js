@@ -42,6 +42,18 @@ export const CoachesLibrary = () => {
     setCoachInfo(filteredCoaches);
   };
 
+  const getInitialCoachData = async () => {
+  const coachIds = [5, 6, 7];
+  const data = await Promise.all(coachIds.map((id) => getCoachDetails(id)))
+    .then((data) => data.filter((coach) => coach))
+    .catch((error) => console.log(error));
+  setCoachInfo(data);
+};
+
+useEffect(() => {
+  getInitialCoachData();
+}, []);
+
   return (
     <>
       <div className="">
@@ -64,7 +76,12 @@ export const CoachesLibrary = () => {
                     />
                   </CDBSidebarMenuItem>
                   <CDBSidebarMenuItem>
-                    <button onClick={handleSearch}>Search</button>
+                    <button className="btn btn-warning mx-3" onClick={handleSearch}>
+                      Search
+                    </button>
+                    <button className="btn btn-light " onClick={getInitialCoachData}>
+                      Clear
+                    </button>
                   </CDBSidebarMenuItem>
                 </CDBSidebarMenu>
               </CDBSidebarContent>
