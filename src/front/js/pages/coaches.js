@@ -12,6 +12,7 @@ import {
 
 export const CoachesLibrary = () => {
   const [coachInfo, setCoachInfo] = useState([]);
+  const [searchName, setSearchName] = useState("");
 
   const getCoachDetails = async (coach_id) => {
     const apiUrl =
@@ -28,9 +29,18 @@ export const CoachesLibrary = () => {
   useEffect(() => {
     const coachIds = [5, 6, 7]; // Importante corregir esto tomando el dato de los ID disponibles
     Promise.all(coachIds.map((id) => getCoachDetails(id)))
-      .then((data) => setCoachInfo(data.filter((coach) => coach))) // Se filtran los objetos vacíos o falsos
+      .then((data) => setCoachInfo(data.filter((coach) => coach))) // Checkear esto
       .catch((error) => console.log(error));
   }, []);
+
+  const handleSearch = () => {
+    const filteredCoaches = coachInfo.filter(
+      (coach) =>
+        coach &&
+        coach.first_name.toLowerCase().includes(searchName.toLowerCase())
+    );
+    setCoachInfo(filteredCoaches);
+  };
 
   return (
     <>
@@ -47,7 +57,14 @@ export const CoachesLibrary = () => {
                     Filter By Name
                   </CDBSidebarMenuItem>
                   <CDBSidebarMenuItem>
-                    <input></input>
+                    <input
+                      type="text"
+                      value={searchName}
+                      onChange={(e) => setSearchName(e.target.value)}
+                    />
+                  </CDBSidebarMenuItem>
+                  <CDBSidebarMenuItem>
+                    <button onClick={handleSearch}>Search</button>
                   </CDBSidebarMenuItem>
                 </CDBSidebarMenu>
               </CDBSidebarContent>
@@ -64,7 +81,7 @@ export const CoachesLibrary = () => {
             <h1 className="text-center p-5"> Coach Library</h1>
             {coachInfo.map(
               (coach, index) =>
-                coach && ( // Condición para mostrar la card solo si el objeto existe
+                coach && ( //Corregir
                   <div
                     key={index}
                     className="col-2 col-sm-12 col-md-6 col-lg-6"
