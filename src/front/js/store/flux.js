@@ -123,7 +123,6 @@ const getState = ({ getStore, getActions, setStore }) => {
           console.error(`Error en la petición ${response.statusText}`);
         else {
 		  let data = await response.json()
-		  let store = getStore()
 		  let newStore = {};
           newStore["workoutInstructions"] = data;   
 		  setStore(newStore)

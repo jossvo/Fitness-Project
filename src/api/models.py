@@ -149,7 +149,7 @@ class Workout(db.Model):
             "difficulty" : self.difficulty , 
             "description" : self.description , 
             "isPublic" : self.is_public ,  
-            "wk_image" : workout_profile_pic
+            "wk_image" : ""#workout_profile_pic
         }
     def serialize_users(self):
         users=list(map(lambda u: u.serialize()
@@ -168,7 +168,7 @@ class Workout(db.Model):
             "difficulty" : self.difficulty , 
             "description" : self.description , 
             "isPublic" : self.is_public ,  
-            "wk_image" : workout_profile_pic
+            "wk_image" : ""#workout_profile_pic
         }
         exercises=list(map(lambda u: u.serialize_exercise_details()
         , self.exercises))
@@ -239,6 +239,8 @@ class Exercise_Assign(db.Model): #Exercise_Assigned_to_Workout
         bucket=storage.bucket(name="fit-central-7cf8b.appspot.com")
         resource=bucket.blob( self.exercise.video)
         exercise_video=resource.generate_signed_url(version="v4", expiration=timedelta(minutes=10), method="GET")
+        if self.status: status=True
+        else: status = False
         return {
             "id":self.id,
             "week":self.week,
@@ -246,16 +248,18 @@ class Exercise_Assign(db.Model): #Exercise_Assigned_to_Workout
             "order":self.order,
             "name": self.exercise.name,
             "exercise description": self.exercise.description,
-            "exercise video": exercise_video,
+            "exercise video": "",#exercise_video,
             "sets":self.sets,
             "reps":self.reps,
             "rest":self.rest_between_sets,
+            "completed": status,
             "additional info": self.description
         }
 
 class Exercise_Status(db.Model):
     id = db.Column(db.Integer(),primary_key=True)
     exercise_id = db.Column(db.Integer(),db.ForeignKey("exercise_assign.id",ondelete="cascade"))
+    exercise = db.relationship(Exercise_Assign,backref="status",lazy=True)
     user_id = db.Column(db.Integer(),db.ForeignKey("user.id",ondelete="cascade"))
     completed = db.Column(db.Boolean())
 
