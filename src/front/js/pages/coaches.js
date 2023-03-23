@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/coachLibrary.css";
 import {
@@ -13,37 +13,50 @@ import {
 
 export const CoachesLibrary = () => {
   const { store, actions } = useContext(Context);
-  const { getList} = actions
+  const { getList } = actions;
   const [coachInfo, setCoachInfo] = useState([]);
   const [searchName, setSearchName] = useState("");
+  const [originalCoachInfo, setOriginalCoachInfo] = useState([]);
 
   //Function to populate form with data
   useEffect(() => {
-      async function test(){
-          await getList("coaches","coachesDir")
-          console.log(store["coachesDir"])
-          setCoachInfo(store["coachesDir"])
-      }
-      test()
+    async function test() {
+      await getList("coaches", "coachesDir");
+      console.log(store["coachesDir"]);
+      setCoachInfo(store["coachesDir"]);
+      setOriginalCoachInfo(store["coachesDir"]);
+    }
+    test();
   }, []);
 
-  const handleSearch = () => {
-    const filteredCoaches = coachInfo.filter(
-      (coach) =>
-        coach &&
-        coach.first_name.toLowerCase().includes(searchName.toLowerCase()) ||
-        coach.last_name.toLowerCase().includes(searchName.toLowerCase())
-    );
-    setCoachInfo(filteredCoaches);
+const handleSearch = () => {
+  const filteredCoaches = coachInfo.filter(
+    (coach) =>
+      (coach &&
+        `${coach.first_name} ${coach.last_name}`
+          .toLowerCase()
+          .includes(searchName.toLowerCase()))
+  );
+  setCoachInfo(filteredCoaches);
+};
+
+const handleClear = () => {
+    setSearchName("");
+    setCoachInfo(originalCoachInfo);
   };
 
+const handleKeyDown = (event) => {
+  if (event.key === 'Enter') {
+    handleSearch();
+  }
+};
 
   return (
     <>
       <div className="">
         <div className="h-100 d-flex">
           <div>
-            <CDBSidebar >
+            <CDBSidebar>
               <CDBSidebarHeader prefix={<i className="fa fa-bars" />}>
                 Filter
               </CDBSidebarHeader>
@@ -57,6 +70,7 @@ export const CoachesLibrary = () => {
                       type="text"
                       value={searchName}
                       onChange={(e) => setSearchName(e.target.value)}
+                      onKeyDown={handleKeyDown}
                     />
                   </CDBSidebarMenuItem>
                   <CDBSidebarMenuItem>
@@ -66,11 +80,7 @@ export const CoachesLibrary = () => {
                     >
                       Search
                     </button>
-                    <button
-                      className="btn btn-light "
-                    >
-                      Clear
-                    </button>
+                    <button className="btn btn-light " onClick={handleClear}>Clear</button>
                   </CDBSidebarMenuItem>
                 </CDBSidebarMenu>
               </CDBSidebarContent>
@@ -118,7 +128,9 @@ export const CoachesLibrary = () => {
                               style={{ backgroundColor: "#efefef" }}
                             >
                               <div>
-                                <p className="small text-muted mb-1">Workouts</p>
+                                <p className="small text-muted mb-1">
+                                  Workouts
+                                </p>
                                 <p className="mb-0">{coach.workouts}</p>
                               </div>
                               <div className="px-3">
