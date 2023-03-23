@@ -12,14 +12,14 @@ export const Navbar = () => {
     ? (arrNav = [
         ["Programs", "/programs"],
         ["Coaches", "/coaches"],
-        ["FAQS", "#"],
+        ["FAQS", "/faqs"],
         ["Account", `/${store.type === "u" ? "user" : "coach"}/${store.id}`],
         ["My Plans", "#"],
       ])
     : (arrNav = [
         ["Programs", "/programs"],
-        ["Coaches", "#"],
-        ["FAQS", "#"],
+        ["Coaches", "/coaches"],
+        ["FAQS", "/faqs"],
       ]);
 
   return (

@@ -108,6 +108,24 @@ class Coach(db.Model):
             "profile_picture": self.profile_picture,
             "bio": self.bio
         }
+    def serialize_library(self):
+        rating=list(map(lambda w: w.rating, self.reviews))
+        if rating:rating = sum(rating)/len(rating)
+        else: rating="N/A"
+        workouts=len(self.workouts)
+        users=list(map(lambda w: w.serialize_users(), self.workouts))
+        users = len(users)
+        
+        return {
+            "first_name" : self.first_name.capitalize() , 
+            "last_name" : self.last_name.capitalize(), 
+            "username" : self.username.capitalize(), 
+            "email": self.email,
+            "rating":rating,
+            "workouts":workouts,
+            "users":users,
+            "profile_picture": self.profile_picture
+        }
 
     def serialize_workouts(self):
         workouts=list(map(lambda w: w.serialize_library(), self.workouts))
@@ -245,7 +263,7 @@ class Coach_Review(db.Model):
     __tablename__ = "coach_review"
     id = db.Column(db.Integer(),primary_key=True)
     coach_id = db.Column(db.Integer(),db.ForeignKey("coach.id",ondelete="cascade"))
-    coach = db.relationship(Coach)
+    coach = db.relationship(Coach, backref='reviews', lazy=False)
     user_id = db.Column(db.Integer(),db.ForeignKey("user.id",ondelete="cascade"))
     user = db.relationship(User)
     rating = db.Column(db.Integer())

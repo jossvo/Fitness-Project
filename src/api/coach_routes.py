@@ -38,9 +38,9 @@ def coach_login():
 
 @api_coach.route('/coaches', methods=['GET'])
 def coaches():
-    users = User.query.all()
+    coaches = Coach.query.all()
 
-    response_body = list(map(lambda p: p.serialize_account_details() ,users))
+    response_body = list(map(lambda p: p.serialize_library() ,coaches))
     return jsonify(response_body), 200
 
 @api_coach.route('/coachinfo')

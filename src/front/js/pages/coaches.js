@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useContext } from "react";
+import { Context } from "../store/appContext";
 import "../../styles/coachLibrary.css";
 import {
   CDBSidebar,
@@ -11,62 +12,45 @@ import {
 } from "cdbreact";
 
 export const CoachesLibrary = () => {
+  const { store, actions } = useContext(Context);
+  const { getList} = actions
   const [coachInfo, setCoachInfo] = useState([]);
   const [searchName, setSearchName] = useState("");
 
-  const getCoachDetails = async (coach_id) => {
-    const apiUrl =
-      "https://3001-jossvo-fitnessproyect-o0zi8gz6uvt.ws-us90.gitpod.io";
-    const resp = await fetch(apiUrl + `/coachpublicinfo/${coach_id}`);
-    if (!resp.ok) {
-      return false;
-    } else {
-      let data = await resp.json();
-      return data;
-    }
-  };
-
+  //Function to populate form with data
   useEffect(() => {
-    const coachIds = [5, 6, 7]; // Importante corregir esto tomando el dato de los ID disponibles
-    Promise.all(coachIds.map((id) => getCoachDetails(id)))
-      .then((data) => setCoachInfo(data.filter((coach) => coach))) // Checkear esto
-      .catch((error) => console.log(error));
+      async function test(){
+          await getList("coaches","coachesDir")
+          console.log(store["coachesDir"])
+          setCoachInfo(store["coachesDir"])
+      }
+      test()
   }, []);
 
   const handleSearch = () => {
     const filteredCoaches = coachInfo.filter(
       (coach) =>
         coach &&
-        coach.first_name.toLowerCase().includes(searchName.toLowerCase())
+        coach.first_name.toLowerCase().includes(searchName.toLowerCase()) ||
+        coach.last_name.toLowerCase().includes(searchName.toLowerCase())
     );
     setCoachInfo(filteredCoaches);
   };
 
-  const getInitialCoachData = async () => {
-  const coachIds = [5, 6, 7];
-  const data = await Promise.all(coachIds.map((id) => getCoachDetails(id)))
-    .then((data) => data.filter((coach) => coach))
-    .catch((error) => console.log(error));
-  setCoachInfo(data);
-};
-
-useEffect(() => {
-  getInitialCoachData();
-}, []);
 
   return (
     <>
       <div className="">
         <div className="h-100 d-flex">
           <div>
-            <CDBSidebar toggled="false">
+            <CDBSidebar >
               <CDBSidebarHeader prefix={<i className="fa fa-bars" />}>
                 Filter
               </CDBSidebarHeader>
               <CDBSidebarContent>
                 <CDBSidebarMenu>
                   <CDBSidebarMenuItem icon="search">
-                    Filter By Name
+                    Search By Name
                   </CDBSidebarMenuItem>
                   <CDBSidebarMenuItem>
                     <input
@@ -76,10 +60,15 @@ useEffect(() => {
                     />
                   </CDBSidebarMenuItem>
                   <CDBSidebarMenuItem>
-                    <button className="btn btn-warning mx-3" onClick={handleSearch}>
+                    <button
+                      className="btn btn-warning mx-3"
+                      onClick={handleSearch}
+                    >
                       Search
                     </button>
-                    <button className="btn btn-light " onClick={getInitialCoachData}>
+                    <button
+                      className="btn btn-light "
+                    >
                       Clear
                     </button>
                   </CDBSidebarMenuItem>
@@ -129,9 +118,7 @@ useEffect(() => {
                               style={{ backgroundColor: "#efefef" }}
                             >
                               <div>
-                                <p className="small text-muted mb-1">
-                                  Workouts
-                                </p>
+                                <p className="small text-muted mb-1">Workouts</p>
                                 <p className="mb-0">{coach.workouts}</p>
                               </div>
                               <div className="px-3">
