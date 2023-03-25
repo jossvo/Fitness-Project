@@ -80,8 +80,8 @@ export const CoachesLibrary = () => {
                     >
                       Search
                     </button>
-                    <button className="btn btn-light " onClick={handleClear}>
-                      Clear
+                    <button className="button-clear" onClick={handleClear}>
+                      <i class="fa-solid fa-eraser"></i>
                     </button>
                   </CDBSidebarMenuItem>
                 </CDBSidebarMenu>
@@ -112,7 +112,7 @@ export const CoachesLibrary = () => {
                               src={coach.profile_picture}
                               alt="Coach"
                               className="h-100 img-fluid img-coach-card"
-                              style={{ width: "180px", borderRadius: "10px" }}
+                              style={{ width: "180px", borderRadius: "10px"}}
                             />
                           </div>
                           <div className="flex-grow-1 ms-3 p-4">

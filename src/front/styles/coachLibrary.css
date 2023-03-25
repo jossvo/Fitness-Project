@@ -8,3 +8,8 @@
 .img-coach-card {
   height: 100%;
 }
+.button-clear {
+  background: none;
+  border: none;
+  color: white;
+}
