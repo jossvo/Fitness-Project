@@ -29,34 +29,34 @@ export const CoachesLibrary = () => {
     test();
   }, []);
 
-const handleSearch = () => {
-  const filteredCoaches = coachInfo.filter(
-    (coach) =>
-      (coach &&
+  const handleSearch = () => {
+    const filteredCoaches = coachInfo.filter(
+      (coach) =>
+        coach &&
         `${coach.first_name} ${coach.last_name}`
           .toLowerCase()
-          .includes(searchName.toLowerCase()))
-  );
-  setCoachInfo(filteredCoaches);
-};
+          .includes(searchName.toLowerCase())
+    );
+    setCoachInfo(filteredCoaches);
+  };
 
-const handleClear = () => {
+  const handleClear = () => {
     setSearchName("");
     setCoachInfo(originalCoachInfo);
   };
 
-const handleKeyDown = (event) => {
-  if (event.key === 'Enter') {
-    handleSearch();
-  }
-};
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      handleSearch();
+    }
+  };
 
   return (
     <>
       <div className="">
         <div className="h-100 d-flex">
           <div>
-            <CDBSidebar>
+            <CDBSidebar toggled="false">
               <CDBSidebarHeader prefix={<i className="fa fa-bars" />}>
                 Filter
               </CDBSidebarHeader>
@@ -80,7 +80,9 @@ const handleKeyDown = (event) => {
                     >
                       Search
                     </button>
-                    <button className="btn btn-light " onClick={handleClear}>Clear</button>
+                    <button className="btn btn-light " onClick={handleClear}>
+                      Clear
+                    </button>
                   </CDBSidebarMenuItem>
                 </CDBSidebarMenu>
               </CDBSidebarContent>
@@ -100,7 +102,7 @@ const handleKeyDown = (event) => {
                 coach && ( //Corregir
                   <div
                     key={index}
-                    className="col-2 col-sm-12 col-md-6 col-lg-6"
+                    className="col-sm-2 col-md-6 col-lg-6"
                   >
                     <div
                       className="card m-2 bg-dark"
