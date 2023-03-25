@@ -100,10 +100,7 @@ export const CoachesLibrary = () => {
             {coachInfo.map(
               (coach, index) =>
                 coach && ( //Corregir
-                  <div
-                    key={index}
-                    className="col-sm-2 col-md-6 col-lg-6"
-                  >
+                  <div key={index} className="col-sm-2 col-md-6 col-lg-6">
                     <div
                       className="card m-2 bg-dark"
                       style={{ borderRadius: "15px" }}
@@ -112,7 +109,7 @@ export const CoachesLibrary = () => {
                         <div className="d-flex text-black">
                           <div className="flex-shrink-0">
                             <img
-                              src="https://images.pexels.com/photos/4164844/pexels-photo-4164844.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                              src={coach.profile_picture}
                               alt="Coach"
                               className="h-100 img-fluid img-coach-card"
                               style={{ width: "180px", borderRadius: "10px" }}
