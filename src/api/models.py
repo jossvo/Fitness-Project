@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from firebase_admin import storage
 from datetime import timedelta
+import json
 
 db = SQLAlchemy()
 
@@ -239,8 +240,10 @@ class Exercise_Assign(db.Model): #Exercise_Assigned_to_Workout
         bucket=storage.bucket(name="fit-central-7cf8b.appspot.com")
         resource=bucket.blob( self.exercise.video)
         exercise_video=resource.generate_signed_url(version="v4", expiration=timedelta(minutes=10), method="GET")
-        if self.status: status=True
-        else: status = False
+        if self.status: 
+            status=True
+        else: 
+            status = False
         return {
             "id":self.id,
             "week":self.week,
@@ -253,15 +256,18 @@ class Exercise_Assign(db.Model): #Exercise_Assigned_to_Workout
             "reps":self.reps,
             "rest":self.rest_between_sets,
             "completed": status,
-            "additional info": self.description
+            "additional info": self.description,
         }
 
 class Exercise_Status(db.Model):
+    __tablename__ = "exercise_status"
     id = db.Column(db.Integer(),primary_key=True)
     exercise_id = db.Column(db.Integer(),db.ForeignKey("exercise_assign.id",ondelete="cascade"))
-    exercise = db.relationship(Exercise_Assign,backref="status",lazy=True)
+    exercise = db.relationship(Exercise_Assign,backref="status",lazy=False)
     user_id = db.Column(db.Integer(),db.ForeignKey("user.id",ondelete="cascade"))
     completed = db.Column(db.Boolean())
+    def serialize(self):
+        return {self.id}
 
 class Workout_User(db.Model): #User_Purchased_Workouts
     __tablename__ = "workout_user"
