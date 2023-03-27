@@ -267,7 +267,7 @@ class Exercise_Status(db.Model):
     user_id = db.Column(db.Integer(),db.ForeignKey("user.id",ondelete="cascade"))
     completed = db.Column(db.Boolean())
     def serialize(self):
-        return {self.id}
+        return {self.exercise_id}
 
 class Workout_User(db.Model): #User_Purchased_Workouts
     __tablename__ = "workout_user"

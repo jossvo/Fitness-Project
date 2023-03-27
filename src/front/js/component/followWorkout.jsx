@@ -7,7 +7,7 @@ import "../../styles/coachStyle.css";
 
 export const ExecuteWorkout = () => {
   const { store, actions } = useContext(Context);
-  const { getFullWorkout } = actions;
+  const { getFullWorkout, updateExerciseStatus, deleteExerciseStatus } = actions;
   let { program_id } = useParams();
 
   const [weekFilter, setWeekFilter] = useState(1);
@@ -48,7 +48,6 @@ export const ExecuteWorkout = () => {
           (e) => e.day === dayFilter && e.week === weekFilter
         )
       );
-      console.log(user.exercises);
     }
   }, [user]);
 
@@ -67,11 +66,21 @@ export const ExecuteWorkout = () => {
     }
   }, [weekFilter, dayFilter]);
 
+  useEffect(()=>{
+    setSetCounter(0)
+  },[weekFilter,dayFilter,selectedExercise,user])
+  useEffect(()=>{
+    setUser(store["workoutInstructions"])
+  },[store["workoutInstructions"]])
+
   useEffect(() => {
-    if (exerciseList)
-      setSelectedExercise(
+    if (exerciseList){
+      let exercise_idx=exerciseList.indexOf(exerciseList.find((e) => e.completed == false))
+      if(exercise_idx==-1)setSelectedExercise(0)
+      else setSelectedExercise(
         exerciseList.indexOf(exerciseList.find((e) => e.completed == false))
       );
+    }
   }, [exerciseList]);
 
   let timer;
@@ -88,6 +97,7 @@ export const ExecuteWorkout = () => {
           setSetCounter(setCounter+1)
           setStartTimer(false)
           clearInterval(timer);
+          if(setCounter+1===exerciseList[selectedExercise]["sets"])ifCompleted()
         }else if(secondCounter == 0 && minuteCounter > 0) {
           minuteCounter -= 1
           setMinutes(minuteCounter);
@@ -100,6 +110,15 @@ export const ExecuteWorkout = () => {
       }, 1000);
     }
   }, [startTimer]);
+
+  async function ifCompleted(){
+    let response = await updateExerciseStatus(exerciseList[selectedExercise]["id"])
+    if (response != 'ok'){alert('Something went wrong! Please select Finish exercise button.')}
+  }
+  async function restartExercise(){
+    let response = await deleteExerciseStatus(exerciseList[selectedExercise]["id"])
+    if (response != 'ok'){alert('Something went wrong! Please resend the request.')}
+  }
 
   return (
     <div
@@ -193,47 +212,59 @@ export const ExecuteWorkout = () => {
                   ) : (
                     ""
                   )}
-                  <h1
-                    className="d-flex justify-content-end"
-                    style={{ fontSize: "1.5rem" }}
-                  >
-                    Sets:
-                    <div className="ms-2">
-                      {[
-                        ...Array(exerciseList[selectedExercise]["sets"]).keys(),
-                      ].map((elem, idx) => {
-                        return (
-                          <i
-                            className="fa-solid fa-dumbbell me-2"
-                            key={idx}
-                            style={{
-                              fontSize: "1.2rem",
-                              color: `${idx < setCounter ? "black" : "lightgray"}`,
-                            }}
-                          ></i>
-                        );
-                      })}
+                  {exerciseList[selectedExercise]['completed']==false?(
+                    <div>
+                      <h1
+                        className="d-flex justify-content-end"
+                        style={{ fontSize: "1.5rem" }}
+                      >
+                        Sets:
+                        <div className="ms-2">
+                          {[
+                            ...Array(exerciseList[selectedExercise]["sets"]).keys(),
+                          ].map((elem, idx) => {
+                            return (
+                              <i
+                                className="fa-solid fa-dumbbell me-2"
+                                key={idx}
+                                style={{
+                                  fontSize: "1.2rem",
+                                  color: `${idx < setCounter ? "black" : "lightgray"}`,
+                                }}
+                              ></i>
+                            );
+                          })}
+                        </div>
+                      </h1>
+                      <h1 style={{ fontSize: "1.5rem" }}>Rest Time:</h1>
+                      <h1 style={{ textAlign: "center", fontSize: "3.5rem" }}>
+                        {minutes < 10 ? "0" + minutes : minutes}:
+                        {seconds < 10 ? "0" + seconds : seconds}
+                      </h1>
+                      <div className="d-flex justify-content-between">
+                        <button
+                          type="button"
+                          className="btn btn-primary"
+                          onClick={() => {
+                            !startTimer?setStartTimer(true):""
+                          }}
+                        >
+                          Start Timer
+                        </button>
+                        <button type="button" className="btn btn-danger" onClick={ifCompleted}>
+                          Finish exercise
+                        </button>
+                      </div>
                     </div>
-                  </h1>
-                  <h1 style={{ fontSize: "1.5rem" }}>Rest Time:</h1>
-                  <h1 style={{ textAlign: "center", fontSize: "3.5rem" }}>
-                    {minutes < 10 ? "0" + minutes : minutes}:
-                    {seconds < 10 ? "0" + seconds : seconds}
-                  </h1>
-                  <div className="d-flex justify-content-between">
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      onClick={() => {
-                        !startTimer?setStartTimer(true):""
-                      }}
-                    >
-                      Start Timer
-                    </button>
-                    <button type="button" className="btn btn-danger">
-                      Finish exercise
-                    </button>
-                  </div>
+                  ):(
+                    <div className="d-flex justify-content-end mt-3">
+                      <button type="button" className="btn btn-danger" onClick={()=>restartExercise()}>
+                        Restart exercise
+                      </button>
+                    </div>
+                  )
+                  }
+                  
                 </div>
               ) : (
                 ""
@@ -263,7 +294,7 @@ export const ExecuteWorkout = () => {
                     className="navbar-nav w-100 d-flex justify-content-end"
                     id="selectedWorkoutExecuteExerciseFilter"
                   >
-                    {[...Array(user?.days_per_week).keys()]
+                    {[].concat([...Array(user?.days_per_week).keys()],'')
                       .slice(1)
                       .map((elem, idx) => {
                         return (
@@ -282,7 +313,7 @@ export const ExecuteWorkout = () => {
                               href="#"
                               style={{ fontSize: ".95rem" }}
                             >
-                              Day {elem}
+                              Day {idx+1}
                             </a>
                           </li>
                         );
