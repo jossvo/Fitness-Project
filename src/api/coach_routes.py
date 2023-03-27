@@ -206,3 +206,12 @@ def update_coach_profile_pic():
     db.session.commit()
 
     return jsonify({"msg":"Profile picture updated"})
+
+@api_coach.route('/coach/my_programs')
+@jwt_required()
+def get_coach_programs():
+    coach_id=get_jwt_identity()
+    workouts = Workout.query.filter(Workout.coach_id==coach_id).all()
+
+    response_body = list(map(lambda w: w.serialize_library() ,workouts))
+    return jsonify(response_body), 200

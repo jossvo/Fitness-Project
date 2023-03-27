@@ -143,6 +143,7 @@ class Workout(db.Model):
         workout_profile_pic=resource.generate_signed_url(version="v4", expiration=timedelta(minutes=10), method="GET")
 
         return {
+            "id":self.id,
             "coach_name": self.coach.first_name.capitalize() + " "+ self.coach.last_name.capitalize(),
             "name": self.name,
             "weeks" : self.weeks , 
@@ -150,7 +151,7 @@ class Workout(db.Model):
             "difficulty" : self.difficulty , 
             "description" : self.description , 
             "isPublic" : self.is_public ,  
-            "wk_image" : ""#workout_profile_pic
+            "wk_image" : workout_profile_pic
         }
     def serialize_users(self):
         users=list(map(lambda u: u.serialize()
@@ -169,7 +170,7 @@ class Workout(db.Model):
             "difficulty" : self.difficulty , 
             "description" : self.description , 
             "isPublic" : self.is_public ,  
-            "wk_image" : ""#workout_profile_pic
+            "wk_image" : workout_profile_pic
         }
         exercises=list(map(lambda u: u.serialize_exercise_details()
         , self.exercises))
@@ -277,8 +278,28 @@ class Workout_User(db.Model): #User_Purchased_Workouts
     user_id = db.Column(db.Integer(),db.ForeignKey("user.id",ondelete="cascade"))
     user = db.relationship(User)
 
+    def serialize(self):
+        return self.user_id
+
     def serialize_details(self):
         return self.workout.serialize_workout_to_execute()
+
+    def serialize_library(self):
+        bucket=storage.bucket(name="fit-central-7cf8b.appspot.com")
+        resource=bucket.blob(self.workout.wk_image)
+        workout_profile_pic=resource.generate_signed_url(version="v4", expiration=timedelta(minutes=10), method="GET")
+
+        return {
+            "id":self.workout.id,
+            "coach_name": self.workout.coach.first_name.capitalize() + " "+ self.workout.coach.last_name.capitalize(),
+            "name": self.workout.name,
+            "weeks" : self.workout.weeks , 
+            "days_per_week" : self.workout.days_per_week , 
+            "difficulty" : self.workout.difficulty , 
+            "description" : self.workout.description , 
+            "isPublic" : self.workout.is_public ,  
+            "wk_image" : workout_profile_pic
+        }
     
 
 
@@ -311,4 +332,3 @@ class Token_Blocked_List(db.Model):
     __tablename__ = "token_blocked_list"
     id=db.Column(db.Integer, primary_key=True)
     token_id=db.Column(db.String(200), unique=True)
-    
