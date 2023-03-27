@@ -4,7 +4,6 @@ import {useNavigate} from "react-router-dom"
 import { ProfileSidebar } from "../userComponents/profileSidebar.jsx";
 import "../../styles/userStyle.css";
 
-
 import moment from 'moment'
 
 export const CoachInfo = () => {
@@ -17,7 +16,8 @@ export const CoachInfo = () => {
   //Function to populate form with data
   useEffect(() => {
     async function fetchData(){
-      actions.getProfile();
+      let resp = await actions.getProfile();
+      if (resp=="unauthorized")useNavigate('/')
     }
     fetchData()
     setAllowPopulation(true)

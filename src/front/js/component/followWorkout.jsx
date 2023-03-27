@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../store/appContext";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { capitalize } from "../userComponents/profileInfo.jsx";
 import Select from "react-select";
 import "../../styles/coachStyle.css";
@@ -9,6 +9,7 @@ export const ExecuteWorkout = () => {
   const { store, actions } = useContext(Context);
   const { getFullWorkout, updateExerciseStatus, deleteExerciseStatus } = actions;
   let { program_id } = useParams();
+  const navigate = useNavigate()
 
   const [weekFilter, setWeekFilter] = useState(1);
   const [dayFilter, setDayFilter] = useState(1);
@@ -28,8 +29,9 @@ export const ExecuteWorkout = () => {
   useEffect(() => {
     if (program_id) {
       async function fetchData() {
-        await getFullWorkout(program_id);
-        setUser(store["workoutInstructions"]);
+        let resp = await getFullWorkout(program_id);
+        if(resp == undefined) navigate('/')
+        else setUser(store["workoutInstructions"]);
       }
       fetchData();
     }

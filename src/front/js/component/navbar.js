@@ -82,7 +82,7 @@ export const Navbar = () => {
                 ""
               )}
               {!store.id ? <SignInComponent /> : ""}
-              {!store.id ? <RegistrationForm /> : ""}
+              {!store.id ? <RegistrationForm/> : ""}
             </ul>
           </div>
         </div>

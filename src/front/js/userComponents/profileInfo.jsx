@@ -31,7 +31,8 @@ export const ProfileInfo = () => {
   //Function to populate form with data
   useEffect(() => {
     async function fetchData(){
-      actions.getProfile();
+      let resp = await actions.getProfile();
+      if (resp=="unauthorized")useNavigate('/')
     }
     fetchData()
     setAllowPopulation(true)

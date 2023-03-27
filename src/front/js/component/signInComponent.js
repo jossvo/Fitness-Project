@@ -163,10 +163,6 @@ export const SignInComponent = () => {
               >
                 Close
               </button>
-
-              <button type="button" className="btn btn-warning btn-modal">
-                Create Account
-              </button>
             </div>
           </div>
         </div>

@@ -32,9 +32,9 @@ export const ProgramTemplate = () => {
 
   let workout = ""
   useEffect(() => {
-    console.log(program_id)
     async function fetchData(){
-      getDetails('workouts',program_id);
+      let resp = await getDetails('workouts',program_id);
+      if (resp=='unauthorized')navigate('/')
       getList('exercise_library')
       getList('user_library')
     }

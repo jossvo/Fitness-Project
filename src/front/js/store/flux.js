@@ -95,6 +95,8 @@ const getState = ({ getStore, getActions, setStore }) => {
               case "Token has expired":
                 getActions().updateTokens();
                 break;
+              case 'Unauthorized access':
+                return'unauthorized'
               default:
                 throw new Error(errorObj.msg);
             }
@@ -121,7 +123,7 @@ const getState = ({ getStore, getActions, setStore }) => {
       getDetails: async (element, id) => {
         let response = await fetch(apiUrl + `/${element}/${id}`);
         if (!response.ok)
-          console.error(`Error en la petición ${response.statusText}`);
+          return "unauthorized"
         else {
           let data = await response.json();
           let newStore = {};
@@ -135,24 +137,24 @@ const getState = ({ getStore, getActions, setStore }) => {
             ...getActions().getAutorizationHeader(),
           },
         });
-        if (!response.ok) {
+        if (!response.ok)
           response.text().then((text) => {
             let errorObj = JSON.parse(text);
             switch (errorObj.msg) {
               case "Token has expired":
                 getActions().updateTokens();
                 break;
+              case 'Unauthorized access':
+                return'unauthorized'
               default:
-                console.log(errorObj.msg);
-                throw Error(errorObj.msg);
+                throw new Error(errorObj.msg);
             }
           });
-        } else {
+        else {
           let data = await response.json();
           let newStore = {};
-          newStore["workoutInstructions"] = data;
+          newStore['workoutInstructions'] = data;
           setStore(newStore);
-          return "ok";
         }
       },
       getList: async (elements, name = elements) => {
@@ -169,6 +171,8 @@ const getState = ({ getStore, getActions, setStore }) => {
               case "Token has expired":
                 getActions().updateTokens();
                 break;
+              case 'Unauthorized access':
+                return'unauthorized'
               default:
                 throw new Error(errorObj.msg);
             }
