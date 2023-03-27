@@ -74,3 +74,8 @@
     visibility: visible;
     right: 0rem;
   }
+
+/* Execute Workout Section Styles */
+#selectedWorkoutExecuteExerciseFilter li.active{
+  border-bottom: 2px solid #50b4ff !important;
+}

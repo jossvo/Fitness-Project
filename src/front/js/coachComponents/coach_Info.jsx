@@ -9,7 +9,7 @@ import moment from 'moment'
 
 export const CoachInfo = () => {
   const { store, actions } = useContext(Context);
-  const { updateAccountDetails , updateImage, setProfileImage} = actions
+  const { updateAccountDetails , updateImage} = actions
   const [allowPopulation, setAllowPopulation] = useState(false)
   const [usernameMessage, setUsernameMessage]=useState("")
   const [emailMessage, setEmailMessage]=useState("")

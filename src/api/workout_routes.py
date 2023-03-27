@@ -23,6 +23,13 @@ def get_workouts():
     response_body = list(map(lambda w: w.serialize_library() ,workouts))
     return jsonify(response_body), 200
 
+@api_workout.route('/exercise_status')
+def get_exercises_status():
+    exercise = Exercise_Status.query.all()
+
+    response_body = list(map(lambda w: w.serialize() ,exercise))
+    return jsonify(response_body), 200
+
 @api_workout.route('/workouts/<workout_id>')
 def get_single_workout(workout_id):
     workout = Workout.query.get(workout_id)
@@ -100,3 +107,45 @@ def update_workout(workout_id):
     db.session.commit()
 
     return jsonify(workout.serialize_library())
+
+@api_workout.route('/my_workouts/<workout_id>')
+@jwt_required()
+def get_user_workout(workout_id):
+    user_id=get_jwt_identity()
+    workout = Workout_User.query.filter(Workout_User.workout_id==workout_id,Workout_User.user_id==user_id).first()
+    if workout is None:
+        return jsonify({"msg": "Unauthorized access"}), 403
+    
+    return workout.serialize_details(),200
+
+@api_workout.route('/exercise_status/<exercise_id>',methods=['PATCH'])
+@jwt_required()
+def set_exercise_status(exercise_id):
+    user_id=get_jwt_identity()
+    exercise = Exercise_Status.query.filter(Exercise_Status.exercise_id==exercise_id,Exercise_Status.user_id==user_id).first()
+    exercise_ref = Exercise_Assign.query.filter(Exercise_Assign.id==exercise_id).first()
+    workout = Workout_User.query.filter(Workout_User.workout_id==exercise_ref.workout_id).first()
+
+    if exercise is None:
+        exercise=Exercise_Status()
+        exercise.exercise_id=exercise_id
+        exercise.user_id=user_id
+    
+    exercise.completed=True
+    
+    db.session.add(exercise)
+    db.session.commit()
+
+    return workout.serialize_details(),200
+@api_workout.route('/exercise_status/<exercise_id>',methods=['DELETE'])
+@jwt_required()
+def delete_exercise_status(exercise_id):
+    user_id=get_jwt_identity()
+    exercise = Exercise_Status.query.filter(Exercise_Status.exercise_id==exercise_id,Exercise_Status.user_id==user_id).first()
+    exercise_ref = Exercise_Assign.query.filter(Exercise_Assign.id==exercise_id).first()
+
+    db.session.delete(exercise)
+    db.session.commit()
+    workout = Workout_User.query.filter(Workout_User.workout_id==exercise_ref.workout_id).first()
+
+    return workout.serialize_details(),200

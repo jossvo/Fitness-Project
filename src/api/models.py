@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from firebase_admin import storage
 from datetime import timedelta
+import json
 
 db = SQLAlchemy()
 
@@ -137,11 +138,8 @@ class Workout(db.Model):
     # reviews - done by table Workout_Review
 
     def serialize_library(self):
-        # Se obtiene el bucket
         bucket=storage.bucket(name="fit-central-7cf8b.appspot.com")
-        # Generar el recurso en el bucket
         resource=bucket.blob(self.wk_image)
-        # Genera la url firmada
         workout_profile_pic=resource.generate_signed_url(version="v4", expiration=timedelta(minutes=10), method="GET")
 
         return {
@@ -152,12 +150,31 @@ class Workout(db.Model):
             "difficulty" : self.difficulty , 
             "description" : self.description , 
             "isPublic" : self.is_public ,  
-            "wk_image" : workout_profile_pic
+            "wk_image" : ""#workout_profile_pic
         }
     def serialize_users(self):
         users=list(map(lambda u: u.serialize()
         , self.users))
         return users
+    
+    def serialize_workout_to_execute(self):
+        bucket=storage.bucket(name="fit-central-7cf8b.appspot.com")
+        resource=bucket.blob(self.wk_image)
+        workout_profile_pic=resource.generate_signed_url(version="v4", expiration=timedelta(minutes=10), method="GET")
+        workout={
+            "coach_name": self.coach.first_name.capitalize() + " "+ self.coach.last_name.capitalize(),
+            "name": self.name,
+            "weeks" : self.weeks , 
+            "days_per_week" : self.days_per_week , 
+            "difficulty" : self.difficulty , 
+            "description" : self.description , 
+            "isPublic" : self.is_public ,  
+            "wk_image" : ""#workout_profile_pic
+        }
+        exercises=list(map(lambda u: u.serialize_exercise_details()
+        , self.exercises))
+        workout["exercises"]=exercises
+        return workout
 
     
 class Category(db.Model):
@@ -196,7 +213,7 @@ class Exercise_Assign(db.Model): #Exercise_Assigned_to_Workout
     __tablename__ = "exercise_assign"
     id = db.Column(db.Integer(),primary_key=True)
     workout_id = db.Column(db.Integer(),db.ForeignKey("workout.id",ondelete="cascade"))
-    workout = db.relationship(Workout,backref="workout",lazy=True)
+    workout = db.relationship(Workout,backref="exercises",lazy=True)
     week = db.Column(db.Integer())
     day = db.Column(db.Integer())
     order = db.Column(db.Integer())
@@ -218,12 +235,39 @@ class Exercise_Assign(db.Model): #Exercise_Assigned_to_Workout
             "reps":self.reps,
             "rest":self.rest_between_sets
         }
-    
+
+    def serialize_exercise_details(self):
+        bucket=storage.bucket(name="fit-central-7cf8b.appspot.com")
+        resource=bucket.blob( self.exercise.video)
+        exercise_video=resource.generate_signed_url(version="v4", expiration=timedelta(minutes=10), method="GET")
+        if self.status: 
+            status=True
+        else: 
+            status = False
+        return {
+            "id":self.id,
+            "week":self.week,
+            "day":self.day,
+            "order":self.order,
+            "name": self.exercise.name,
+            "exercise description": self.exercise.description,
+            "exercise video": "",#exercise_video,
+            "sets":self.sets,
+            "reps":self.reps,
+            "rest":self.rest_between_sets,
+            "completed": status,
+            "additional info": self.description,
+        }
+
 class Exercise_Status(db.Model):
+    __tablename__ = "exercise_status"
     id = db.Column(db.Integer(),primary_key=True)
     exercise_id = db.Column(db.Integer(),db.ForeignKey("exercise_assign.id",ondelete="cascade"))
+    exercise = db.relationship(Exercise_Assign,backref="status",lazy=False)
     user_id = db.Column(db.Integer(),db.ForeignKey("user.id",ondelete="cascade"))
     completed = db.Column(db.Boolean())
+    def serialize(self):
+        return {self.exercise_id}
 
 class Workout_User(db.Model): #User_Purchased_Workouts
     __tablename__ = "workout_user"
@@ -233,10 +277,8 @@ class Workout_User(db.Model): #User_Purchased_Workouts
     user_id = db.Column(db.Integer(),db.ForeignKey("user.id",ondelete="cascade"))
     user = db.relationship(User)
 
-    def serialize(self):
-        return {
-            "user_id":self.user_id
-        }
+    def serialize_details(self):
+        return self.workout.serialize_workout_to_execute()
     
 
 

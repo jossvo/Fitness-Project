@@ -3,59 +3,60 @@ import { func } from "prop-types";
 const apiUrl = process.env.BACKEND_URL;
 
 const getState = ({ getStore, getActions, setStore }) => {
-	return {
-		store: {},
-		actions: {
-			setIdentity: ()=>{
-				let accessToken = localStorage.getItem("accessToken")
-				let refreshToken = localStorage.getItem("refreshToken")
-				let id = localStorage.getItem("id")
-				let type = localStorage.getItem("type")
-				setStore({
-					accessToken:accessToken,
-					refreshToken:refreshToken,
-					id:id,
-					type:type
-				})
-			},
-			// login functions
-			login: async (email,password,type)=>{
-				let urlRoute = ""
-				type==="user"? urlRoute="/user/login"
-				:urlRoute="/coach/login"
+  return {
+    store: {},
+    actions: {
+      setIdentity: () => {
+        let accessToken = localStorage.getItem("accessToken");
+        let refreshToken = localStorage.getItem("refreshToken");
+        let id = localStorage.getItem("id");
+        let type = localStorage.getItem("type");
+        setStore({
+          accessToken: accessToken,
+          refreshToken: refreshToken,
+          id: id,
+          type: type,
+        });
+      },
+      // login functions
+      login: async (email, password, type) => {
+        let urlRoute = "";
+        type === "user"
+          ? (urlRoute = "/user/login")
+          : (urlRoute = "/coach/login");
 
-				const resp = await fetch(apiUrl+urlRoute, {
-					method:'POST',
-					headers:{
-						"Content-Type":"application/json"
-					},
-					body:JSON.stringify({email:email,password:password})
-				})
-				if(!resp.ok){
-					return resp.json()
-				}
-				const data = await resp.json()
-				setStore({
-					accessToken:data.access_token,
-					refreshToken: data.refresh_token,
-					id:data.id,
-					type:data.type
-				})
-				localStorage.setItem("accessToken",data.access_token)
-				localStorage.setItem("refreshToken",data.refresh_token)
-				localStorage.setItem("id",data.id)
-				localStorage.setItem("type",data.type)
-				return "ok"
-			},
-			getAutorizationHeader:()=>{
-				let store = getStore()
-				let authorizationHeader=localStorage.getItem("accessToken")
-				return {"Authorization":"Bearer " + authorizationHeader}
-			},
-			loadTokens:()=>{
-				let accessToken = localStorage.getItem("accessToken")
-				let refreshToken = localStorage.getItem("refreshToken")
-				setStore({accessToken,refreshToken})
+        const resp = await fetch(apiUrl + urlRoute, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: email, password: password }),
+        });
+        if (!resp.ok) {
+          return resp.json();
+        }
+        const data = await resp.json();
+        setStore({
+          accessToken: data.access_token,
+          refreshToken: data.refresh_token,
+          id: data.id,
+          type: data.type,
+        });
+        localStorage.setItem("accessToken", data.access_token);
+        localStorage.setItem("refreshToken", data.refresh_token);
+        localStorage.setItem("id", data.id);
+        localStorage.setItem("type", data.type);
+        return "ok";
+      },
+      getAutorizationHeader: () => {
+        let store = getStore();
+        let authorizationHeader = localStorage.getItem("accessToken");
+        return { Authorization: "Bearer " + authorizationHeader };
+      },
+      loadTokens: () => {
+        let accessToken = localStorage.getItem("accessToken");
+        let refreshToken = localStorage.getItem("refreshToken");
+        setStore({ accessToken, refreshToken });
       },
       // functions to get information
       getProfile: async () => {
@@ -93,8 +94,7 @@ const getState = ({ getStore, getActions, setStore }) => {
       getPublicProfile: async (coach_id) => {
         const resp = await fetch(apiUrl + `/coachpublicinfo/${coach_id}`);
         if (!resp.ok) {
-    
-            return false
+          return false;
         } else {
           let data = await resp.json();
           let newStore = {};
@@ -111,6 +111,32 @@ const getState = ({ getStore, getActions, setStore }) => {
           let newStore = {};
           newStore[element + "Detail"] = data;
           setStore(newStore);
+        }
+      },
+      getFullWorkout: async (workout_id) => {
+        let response = await fetch(apiUrl + `/my_workouts/${workout_id}`, {
+          headers: {
+            ...getActions().getAutorizationHeader(),
+          },
+        });
+        if (!response.ok) {
+          response.text().then((text) => {
+            let errorObj = JSON.parse(text);
+            switch (errorObj.msg) {
+              case "Token has expired":
+                getActions().updateTokens();
+                break;
+              default:
+                console.log(errorObj.msg);
+                throw Error(errorObj.msg);
+            }
+          });
+        } else {
+          let data = await response.json();
+          let newStore = {};
+          newStore["workoutInstructions"] = data;
+          setStore(newStore);
+          return "ok";
         }
       },
       getList: async (elements, name = elements) => {
@@ -239,145 +265,201 @@ const getState = ({ getStore, getActions, setStore }) => {
           ? (urlRoute = "/updateprofile")
           : (urlRoute = "/updatecoachprofile");
 
-				let response = await fetch(apiUrl + urlRoute,{
-					method: 'PATCH',
-					headers: {
-						...getActions().getAutorizationHeader()
-					},
-					body: postData,
-				});
-				if (!response.ok){
-					return response.json()
-				}
-				return "ok"
+        let response = await fetch(apiUrl + urlRoute, {
+          method: "PATCH",
+          headers: {
+            ...getActions().getAutorizationHeader(),
+          },
+          body: postData,
+        });
+        if (!response.ok) {
+          return response.json();
+        }
+        return "ok";
+      },
+      updateImage: async (postData) => {
+        let urlRoute = "";
+        let store = getStore();
+        store.type === "u"
+          ? (urlRoute = "/setprofilepic")
+          : (urlRoute = "/setcoachprofilepic");
+        let response = await fetch(apiUrl + urlRoute, {
+          method: "PATCH",
+          headers: {
+            ...getActions().getAutorizationHeader(),
+          },
+          body: postData,
+        });
+        if (!response.ok) {
+          console.error(response.statusText);
+          return false;
+        }
+        return true;
+      },
+      updateWorkout: async (formData, workout_id) => {
+        let response = await fetch(apiUrl + `/workouts/${workout_id}`, {
+          method: "PATCH",
+          headers: {
+            ...getActions().getAutorizationHeader(),
+          },
+          body: formData,
+        });
+        if (!response.ok) {
+          response.text().then((text) => {
+            let errorObj = JSON.parse(text);
+            switch (errorObj.msg) {
+              case "Token has expired":
+                getActions().updateTokens();
+                break;
+              default:
+                console.log(errorObj.msg);
+                throw new Error(errorObj.msg);
+            }
+          });
+          return false;
+        }
+        return "ok";
+      },
+      updateExercise: async (formData, itemType, exercise_id) => {
+        let response = await fetch(apiUrl + `/${itemType}/${exercise_id}`, {
+          method: "PATCH",
+          headers: {
+            ...getActions().getAutorizationHeader(),
+          },
+          body: formData,
+        });
+        if (!response.ok) {
+          response.text().then((text) => {
+            let errorObj = JSON.parse(text);
+            switch (errorObj.msg) {
+              case "Token has expired":
+                getActions().updateTokens();
+                break;
+              default:
+                console.log(errorObj.msg);
+                throw new Error(errorObj.msg);
+            }
+          });
+          return false;
+        }
+        let data = await response.json();
+        let newStore = {};
+        newStore["workoutsDetail"] = data;
+        setStore(newStore);
+        return "ok";
+      },
+      updateExerciseOrder: async (formData) => {
+        let response = await fetch(apiUrl + `/assign_exercise_order`, {
+          method: "PATCH",
+          headers: {
+            ...getActions().getAutorizationHeader(),
+          },
+          body: formData,
+        });
+        if (!response.ok) {
+          response.text().then((text) => {
+            let errorObj = JSON.parse(text);
+            switch (errorObj.msg) {
+              case "Token has expired":
+                getActions().updateTokens();
+                break;
+              default:
+                console.log(errorObj.msg);
+                throw new Error(errorObj.msg);
+            }
+          });
+          return false;
+        }
+        let data = await response.json();
+        let newStore = {};
+        newStore["exerciseAssigned"] = data;
+        setStore(newStore);
+        return "ok";
+      },
+	  updateExerciseStatus:async (exercise_id) => {
+		let response = await fetch(apiUrl + `/exercise_status/${exercise_id}`, {
+			method: "PATCH",
+			headers: {
+			  ...getActions().getAutorizationHeader(),
 			},
-			updateImage: async (postData)=>{
-				let urlRoute = ""
-				let store = getStore()
-				store.type==="u"? urlRoute="/setprofilepic"
-				:urlRoute="/setcoachprofilepic"
-				let response = await fetch(apiUrl +urlRoute,{
-					method: 'PATCH',
-					headers: {
-						...getActions().getAutorizationHeader()
-					},
-					body: postData,
-				});
-				if (!response.ok){
-					console.error(response.statusText)
-					return false
-				}
-				return true
-			},
-			updateWorkout: async (formData,workout_id)=>{
-				let response = await fetch(apiUrl +`/workouts/${workout_id}`,{
-					method: 'PATCH',
-					headers: {
-						...getActions().getAutorizationHeader()
-					},
-					body: formData,
-				});
-				if (!response.ok){
-					response.text().then(text => {
-						let errorObj = JSON.parse(text)
-						switch(errorObj.msg){
-							case "Token has expired":
-								getActions().updateTokens()
-								break;
-							default:
-								console.log(errorObj.msg)
-								throw new Error(errorObj.msg)
-						}
-					})
-					return false
-				}
-				return "ok"
-			},
-			updateExercise: async (formData,itemType, exercise_id)=>{
-				let response = await fetch(apiUrl +`/${itemType}/${exercise_id}`,{
-					method: 'PATCH',
-					headers: {
-						...getActions().getAutorizationHeader()
-					},
-					body: formData,
-				});
-				if (!response.ok){
-					response.text().then(text => {
-						let errorObj = JSON.parse(text)
-						switch(errorObj.msg){
-							case "Token has expired":
-								getActions().updateTokens()
-								break;
-							default:
-								console.log(errorObj.msg)
-								throw new Error(errorObj.msg)
-						}
-					})
-					return false
-				}
-				let data = await response.json();
-				let newStore = {};
-				newStore['workoutsDetail'] = data;
-				setStore(newStore);
-				return "ok"
-			},
-			updateExerciseOrder: async (formData)=>{
-				let response = await fetch(apiUrl +`/assign_exercise_order`,{
-					method: 'PATCH',
-					headers: {
-						...getActions().getAutorizationHeader()
-					},
-					body: formData,
-				});
-				if (!response.ok){
-					response.text().then(text => {
-						let errorObj = JSON.parse(text)
-						switch(errorObj.msg){
-							case "Token has expired":
-								getActions().updateTokens()
-								break;
-							default:
-								console.log(errorObj.msg)
-								throw new Error(errorObj.msg)
-						}
-					})
-					return false
-				}
-				let data = await response.json();
-				let newStore = {};
-				newStore['exerciseAssigned'] = data;
-				setStore(newStore);
-				return "ok"
-			},
-			deleteExerciseAssigned: async (exercise_id)=>{
-				let response = await fetch(apiUrl +`/assign_exercise/${exercise_id}`,{
-					method: 'DELETE',
-					headers: {
-						...getActions().getAutorizationHeader()
-					}
-				});
-				if (!response.ok){
-					response.text().then(text => {
-						let errorObj = JSON.parse(text)
-						switch(errorObj.msg){
-							case "Token has expired":
-								getActions().updateTokens()
-								break;
-							default:
-								console.log(errorObj.msg)
-								throw new Error(errorObj.msg)
-						}
-					})
-					return false
-				}
-				let data = await response.json();
-				let newStore = {};
-				newStore['exerciseAssigned'] = data;
-				setStore(newStore);
-				return "ok"
+		  });
+		if (!response.ok) {
+		response.text().then((text) => {
+			let errorObj = JSON.parse(text);
+			switch (errorObj.msg) {
+			case "Token has expired":
+				getActions().updateTokens();
+				break;
+			default:
+				console.log(errorObj.msg);
+				throw new Error(errorObj.msg);
 			}
+		});
+		return false;
 		}
-	};
+		let data = await response.json();
+		let newStore = {};
+		newStore["workoutInstructions"] = data;
+		setStore(newStore);
+		return "ok";
+	  },
+	//   Delete items
+      deleteExerciseAssigned: async (exercise_id) => {
+        let response = await fetch(apiUrl + `/assign_exercise/${exercise_id}`, {
+          method: "DELETE",
+          headers: {
+            ...getActions().getAutorizationHeader(),
+          },
+        });
+        if (!response.ok) {
+          response.text().then((text) => {
+            let errorObj = JSON.parse(text);
+            switch (errorObj.msg) {
+              case "Token has expired":
+                getActions().updateTokens();
+                break;
+              default:
+                console.log(errorObj.msg);
+                throw new Error(errorObj.msg);
+            }
+          });
+          return false;
+        }
+        let data = await response.json();
+        let newStore = {};
+        newStore["exerciseAssigned"] = data;
+        setStore(newStore);
+        return "ok";
+      },
+	  deleteExerciseStatus:async(exercise_id)=>{
+		let response = await fetch(apiUrl + `/exercise_status/${exercise_id}`, {
+			method: "DELETE",
+			headers: {
+			  ...getActions().getAutorizationHeader(),
+			},
+		  });
+		  if (!response.ok) {
+			response.text().then((text) => {
+			  let errorObj = JSON.parse(text);
+			  switch (errorObj.msg) {
+				case "Token has expired":
+				  getActions().updateTokens();
+				  break;
+				default:
+				  console.log(errorObj.msg);
+				  throw new Error(errorObj.msg);
+			  }
+			});
+			return false;
+		  }
+		  let data = await response.json();
+		  let newStore = {};
+		  newStore["workoutInstructions"] = data;
+		  setStore(newStore);
+		  return "ok";
+	  }
+    },
+  };
 };
 
 export default getState;

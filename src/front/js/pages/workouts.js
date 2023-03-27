@@ -82,7 +82,7 @@ export const Workouts = () => {
         <div>
           {/* Aca empieza el Sidebar */}
           <CDBSidebar
-            toggled="false"
+            toggled={false}
             textColor="#333"
             backgroundColor="#f0f0f0"
             className="workout-sidebar-title sidebar-height "

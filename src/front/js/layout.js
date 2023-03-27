@@ -3,14 +3,13 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ScrollToTop from "./component/scrollToTop";
 
 import { Home } from "./pages/home";
-import { Demo } from "./pages/demo";
-import { Single } from "./pages/single";
 import injectContext from "./store/appContext";
 
 import { UserPublic } from "./userComponents/userPublic.jsx";
 import { ProfileInfo } from "./userComponents/profileInfo.jsx";
 import { ProfileSecurity } from "./userComponents/profileSecurity.jsx";
 import { Workouts } from "./pages/workouts";
+import { ExecuteWorkout } from "./component/followWorkout.jsx";
 
 import { CoachInfo } from "./coachComponents/coach_Info.jsx";
 import { CoachPublic } from "./coachComponents/coach_profile_info.jsx";
@@ -39,15 +38,14 @@ const Layout = () => {
             <Route element={<UserPublic />} path="/settings/billing" />
             <Route element={<ProfileSecurity />} path="/settings/security" />
             {/* Coach routes */}
-            <Route element={<CoachPublic />} path="/coach/:coach_id" />
+            <Route element={<CoachPublic />} path="/coach/settings/profile_view" />
             <Route element={<CoachInfo />} path="/coach/settings/profile" />
             <Route element={<CoachSecurity />} path="/coach/settings/security" />
             <Route element={<CreateProgram />} path="/coach/settings/new_program" />
             <Route element={<CreateProgram />} path="/coach/settings/edit_program/:program_id" />
 
-            <Route element={<Demo />} path="/demo" />
-            <Route element={<Single />} path="/single/:theid" />
             <Route element={<Workouts />} path="/programs" />
+            <Route element={<ExecuteWorkout />} path="/my_programs/:program_id" />
             <Route element={<h1>Not found!</h1>} />
           </Routes>
           <Footer />
