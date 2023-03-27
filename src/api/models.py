@@ -307,3 +307,8 @@ class Coach_Review(db.Model):
 
     def serialize_review_rating(self):
         return self.rating
+class Token_Blocked_List(db.Model):
+    __tablename__ = "token_blocked_list"
+    id=db.Column(db.Integer, primary_key=True)
+    token_id=db.Column(db.String(200), unique=True)
+    

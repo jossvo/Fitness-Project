@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Coach, Workout, Exercise_Assign, Workout_User,Workout_Review,Coach_Review, Category, Workout_Categories, Exercise_Library, Exercise_Status
+from api.models import db, User, Coach, Workout, Exercise_Assign, Workout_User,Workout_Review,Coach_Review, Category, Workout_Categories, Exercise_Library, Exercise_Status, Token_Blocked_List
 from api.utils import generate_sitemap, APIException
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, create_refresh_token, get_jwt, JWTManager 
 from flask_bcrypt import Bcrypt
@@ -251,3 +251,13 @@ def reset_password():
     # token blocked =
     # db.session.add(token)
     db.session.commit()
+
+@api_user.route('/logout', methods=['POST'])
+@jwt_required()
+def user_logout():
+    jti=get_jwt()['jti']
+    token_blocked=Token_Blocked_List(token_id=jti)
+    db.session.add(token_blocked)
+    db.session.commit()
+    
+    return jsonify({"msg":"User logged out"})

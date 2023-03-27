@@ -18,6 +18,22 @@ const getState = ({ getStore, getActions, setStore }) => {
           type: type,
         });
       },
+      // Logout
+      logout: async (type) => {
+        let urlRoute = "";
+        type === "user"
+          ? (urlRoute = "/user/logout")
+          : (urlRoute = "/coach/logout");
+
+        const resp = await fetch(apiUrl + urlRoute, {
+          method: "POST",
+          headers: {
+            ...getActions().getAutorizationHeader(),
+          },
+        });
+        localStorage.clear();
+        return "ok";
+      },
       // login functions
       login: async (email, password, type) => {
         let urlRoute = "";

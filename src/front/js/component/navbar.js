@@ -7,6 +7,7 @@ import { SignInComponent } from "./signInComponent";
 import { RegistrationForm } from "./registrationForm";
 export const Navbar = () => {
   const { store, actions } = useContext(Context);
+  const {logout}=actions
   let arrNav = []
   store.id? arrNav=[
     ["Programs","/programs"],
@@ -15,6 +16,13 @@ export const Navbar = () => {
     ["Account",`${store.type==="u"?`/user/+${store.id}`:"/coach/settings/profile_view"}`],
     ["My Plans","#"]]
   : arrNav=[["Programs","/programs"],["Coaches","#"],["FAQS","#"]]
+
+  async function logoutFunction(){
+    let type ='user'
+    if(store.type!='u')type='coach'
+    let resp = await logout('user')
+    window.location.reload();
+  }
 
   return (
     <div>
@@ -50,7 +58,9 @@ export const Navbar = () => {
                 )
               })
               }
-
+              {store.id?(
+                <button type="button" class="btn btn-danger navbar-items ms-5" onClick={logoutFunction}>Logout</button>
+              ):""}
               {!store.id?<SignInComponent />:""}
               {!store.id?<RegistrationForm />:""}
             </ul>
