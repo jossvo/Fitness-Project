@@ -259,5 +259,14 @@ def user_logout():
     token_blocked=Token_Blocked_List(token_id=jti)
     db.session.add(token_blocked)
     db.session.commit()
-    
+
     return jsonify({"msg":"User logged out"})
+
+@api_user.route('/user/my_programs')
+@jwt_required()
+def get_user_programs():
+    user_id=get_jwt_identity()
+    workouts = Workout_User.query.filter(Workout_User.user_id==user_id).all()
+
+    response_body = list(map(lambda w: w.serialize_library() ,workouts))
+    return jsonify(response_body), 200

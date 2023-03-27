@@ -16,6 +16,8 @@ import { CoachPublic } from "./coachComponents/coach_profile_info.jsx";
 import {CoachSecurity} from "./coachComponents/coach_security.jsx";
 import { CreateProgram } from "./coachComponents/coach_create_program.jsx";
 
+import { MyPlans } from "./pages/myPlans.jsx";
+
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
 
@@ -45,6 +47,7 @@ const Layout = () => {
             <Route element={<CreateProgram />} path="/coach/settings/edit_program/:program_id" />
 
             <Route element={<Workouts />} path="/programs" />
+            <Route element={<MyPlans />} path="/my_programs" />
             <Route element={<ExecuteWorkout />} path="/my_programs/:program_id" />
             <Route element={<h1>Not found!</h1>} />
           </Routes>
