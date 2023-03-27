@@ -10,16 +10,19 @@ import { ProfileInfo } from "./userComponents/profileInfo.jsx";
 import { ProfileSecurity } from "./userComponents/profileSecurity.jsx";
 import { Workouts } from "./pages/workouts";
 import { ExecuteWorkout } from "./component/followWorkout.jsx";
+import { Faqs } from "./pages/faqs";
 
 import { CoachInfo } from "./coachComponents/coach_Info.jsx";
 import { CoachPublic } from "./coachComponents/coach_profile_info.jsx";
-import {CoachSecurity} from "./coachComponents/coach_security.jsx";
+import { CoachSecurity } from "./coachComponents/coach_security.jsx";
 import { CreateProgram } from "./coachComponents/coach_create_program.jsx";
 
 import { MyPlans } from "./pages/myPlans.jsx";
 
+import { CoachesLibrary } from "./pages/coaches";
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
+import { components } from "react-select";
 
 //create your first component
 const Layout = () => {
@@ -42,13 +45,24 @@ const Layout = () => {
             {/* Coach routes */}
             <Route element={<CoachPublic />} path="/coach/settings/profile_view" />
             <Route element={<CoachInfo />} path="/coach/settings/profile" />
-            <Route element={<CoachSecurity />} path="/coach/settings/security" />
-            <Route element={<CreateProgram />} path="/coach/settings/new_program" />
-            <Route element={<CreateProgram />} path="/coach/settings/edit_program/:program_id" />
+            <Route
+              element={<CoachSecurity />}
+              path="/coach/settings/security"
+            />
+            <Route
+              element={<CreateProgram />}
+              path="/coach/settings/new_program"
+            />
+            <Route
+              element={<CreateProgram />}
+              path="/coach/settings/edit_program/:program_id"
+            />
 
             <Route element={<Workouts />} path="/programs" />
             <Route element={<MyPlans />} path="/my_programs" />
             <Route element={<ExecuteWorkout />} path="/my_programs/:program_id" />
+            <Route element={<CoachesLibrary />} path="/coaches" />
+            <Route element={<Faqs />} path="/faqs" />
             <Route element={<h1>Not found!</h1>} />
           </Routes>
           <Footer />
