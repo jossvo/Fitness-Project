@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../store/appContext";
+import { Link } from "react-router-dom";
 import "../../styles/coachLibrary.css";
 import {
   CDBSidebar,
@@ -99,7 +100,7 @@ export const CoachesLibrary = () => {
             <h1 className="text-center p-5"> Coach Library</h1>
             {coachInfo.map(
               (coach, index) =>
-                coach && ( //Corregir
+                coach && (
                   <div key={index} className="col-sm-2 col-md-6 col-lg-6">
                     <div
                       className="card m-2 bg-dark"
@@ -112,7 +113,7 @@ export const CoachesLibrary = () => {
                               src={coach.profile_picture}
                               alt="Coach"
                               className="h-100 img-fluid img-coach-card"
-                              style={{ width: "180px", borderRadius: "10px"}}
+                              style={{ width: "180px", borderRadius: "10px" }}
                             />
                           </div>
                           <div className="flex-grow-1 ms-3 p-4">
@@ -146,7 +147,12 @@ export const CoachesLibrary = () => {
                                 type="button"
                                 className="btn btn-warning flex-grow-1"
                               >
-                                View Profile
+                                <Link
+                                  to={`/coach/${coach.id}`}
+                                  className="btn btn-warning"
+                                >
+                                  View Coach Details
+                                </Link>
                               </button>
                             </div>
                           </div>
