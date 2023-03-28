@@ -54,8 +54,8 @@ export const CoachesLibrary = () => {
 
   return (
     <>
-      <div className="">
-        <div className="h-100 d-flex">
+      <div className=""  >
+        <div className="h-100 d-flex" style={{minHeight:"100vh"}}>
           <div>
             <CDBSidebar toggled="false">
               <CDBSidebarHeader prefix={<i className="fa fa-bars" />}>
