@@ -223,7 +223,7 @@ export const Workouts = () => {
           {/* Aca Finaliza el Sidebar */}
         </div>
         <div className="d-flex-column w-100 justify-content-center">
-          <h1 className="page-title text-center my-4 page-title-workoutLib w-100">
+          <h1 className="page-title text-center my-4 page-title-coachLib w-100">
             Workout Library
           </h1>
 
