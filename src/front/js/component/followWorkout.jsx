@@ -30,8 +30,8 @@ export const ExecuteWorkout = () => {
     if (program_id) {
       async function fetchData() {
         let resp = await getFullWorkout(program_id);
-        if(resp == undefined) navigate('/')
-        else setUser(store["workoutInstructions"]);
+        // if(resp == undefined) navigate('/')
+        // else setUser(store["workoutInstructions"]);
       }
       fetchData();
     }

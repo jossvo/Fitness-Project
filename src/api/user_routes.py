@@ -270,3 +270,12 @@ def get_user_programs():
 
     response_body = list(map(lambda w: w.serialize_library() ,workouts))
     return jsonify(response_body), 200
+
+@api_user.route('/user/my_programs_id')
+@jwt_required()
+def get_user_programs_id():
+    user_id=get_jwt_identity()
+    workouts = Workout_User.query.filter(Workout_User.user_id==user_id).all()
+
+    response_body = list(map(lambda w: w.serialize_id() ,workouts))
+    return jsonify(response_body), 200

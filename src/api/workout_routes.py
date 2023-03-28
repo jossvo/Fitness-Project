@@ -137,6 +137,7 @@ def set_exercise_status(exercise_id):
     db.session.commit()
 
     return workout.serialize_details(),200
+
 @api_workout.route('/exercise_status/<exercise_id>',methods=['DELETE'])
 @jwt_required()
 def delete_exercise_status(exercise_id):
@@ -149,3 +150,20 @@ def delete_exercise_status(exercise_id):
     workout = Workout_User.query.filter(Workout_User.workout_id==exercise_ref.workout_id).first()
 
     return workout.serialize_details(),200
+
+@api_workout.route('/assign_workout/<workout_id>',methods=['POST'])
+@jwt_required()
+def assign_workout_user(workout_id):
+    user_id=get_jwt_identity()
+    workout_user = Workout_User()
+
+    workout_user.user_id=user_id
+    workout_user.workout_id=workout_id
+
+    db.session.add(workout_user)
+    db.session.commit()
+
+    workouts = Workout_User.query.filter(Workout_User.user_id==user_id).all()
+    response_body = list(map(lambda w: w.serialize_id() ,workouts))
+    
+    return jsonify(response_body), 200

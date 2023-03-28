@@ -14,23 +14,23 @@ import {
 export const Workouts = () => {
   { }
   const { store, actions } = useContext(Context);
+  const { setWorkoutUser } = actions
   const [searchName, setSearchName] = useState("");
   const [selectedDifficulty, setSelectedDifficulty] = useState("");
   const [selectedWeeks, setSelectedWeeks] = useState("");
-  const [workoutsArr,setworkoutsArr] = useState([])
 
-  const workoutArray = store.workouts
+  let type='user'
+  if(localStorage.type!='u')type = 'coach'
 
   useEffect(() => {
     async function fetchData() {
       actions.getList("workouts");
+      if(type==='user'){
+        actions.getList(`${type}/my_programs_id`,'myProgramsID')
+      }
     }
     fetchData();
   }, []);
-
-  useEffect(() => {
-    setworkoutsArr(store.workouts)
-  }, [store.workouts]);
 
   const inputSearch = (event) => {
     setSearchName(event.target.value);
@@ -71,10 +71,11 @@ export const Workouts = () => {
   const inputWeeks = (event) => {
     setSelectedWeeks(event.target.value);
   };
-  useEffect(() => {
-    
-  }, [selectedWeeks]);
-  
+
+  async function reactWorkoutButton(wk_id){
+    let resp = await setWorkoutUser(wk_id)
+    if(resp != "ok")alert('Something went wrong, please try again.')
+  }
 
   return (
     <>
@@ -271,14 +272,15 @@ export const Workouts = () => {
                       </li>
                     </ul>
                   </div>
-                  <div className="btn-container-workouts my-3">
+                  {type==='user' && store["myProgramsID"]?<div className="btn-container-workouts my-3">
                     <Link
-                      to="#"
-                      className="btn btn-warning btn-workout-library"
+                      to={store["myProgramsID"].includes(element.id)?`/my_programs/${element.id}`:""}
+                      className={`btn ${store["myProgramsID"].includes(element.id)?"btn-primary":"btn-warning"} btn-workout-library`}
+                      onClick={()=>store["myProgramsID"].includes(element.id)?"":reactWorkoutButton(element.id)}
                     >
-                      Buy
+                      {store["myProgramsID"].includes(element.id)?"Open":"Buy"}
                     </Link>
-                  </div>
+                  </div>:""}
                 </div>
               ))}
             </div>
