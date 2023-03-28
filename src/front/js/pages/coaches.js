@@ -57,7 +57,7 @@ export const CoachesLibrary = () => {
       <div className=""  >
         <div className="h-100 d-flex" style={{minHeight:"100vh"}}>
           <div>
-            <CDBSidebar toggled="false">
+            <CDBSidebar toggled="false" style={{ backgroundColor: "#333" }}>
               <CDBSidebarHeader prefix={<i className="fa fa-bars" />}>
                 Filter
               </CDBSidebarHeader>
@@ -82,7 +82,7 @@ export const CoachesLibrary = () => {
                       Search
                     </button>
                     <button className="button-clear" onClick={handleClear}>
-                      <i class="fa-solid fa-eraser"></i>
+                      <i className="fa-solid fa-eraser"></i>
                     </button>
                   </CDBSidebarMenuItem>
                 </CDBSidebarMenu>
@@ -96,8 +96,12 @@ export const CoachesLibrary = () => {
               </CDBSidebarFooter>
             </CDBSidebar>
           </div>
+
           <div className="row d-flex align-items-center h-100">
-            <h1 className="text-center p-5"> Coach Library</h1>
+            <h1 className="p-5 text-center page-title-coachLib w-100">
+              {" "}
+              Coach Library
+            </h1>
             {coachInfo.map(
               (coach, index) =>
                 coach && (

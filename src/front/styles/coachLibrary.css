@@ -12,5 +12,9 @@
   background: none;
   border: none;
   color: white;
+}
 
+.page-title-coachLib {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 60px;
 }
