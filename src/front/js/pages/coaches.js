@@ -55,8 +55,11 @@ export const CoachesLibrary = () => {
   return (
     <>
       <div className="">
+
         <div className="h-100 d-flex">
+
           <div>
+
             <CDBSidebar toggled="false" style={{backgroundColor: "#333"}}>
               <CDBSidebarHeader prefix={<i className="fa fa-bars" />}>
                 Filter
@@ -96,8 +99,9 @@ export const CoachesLibrary = () => {
               </CDBSidebarFooter>
             </CDBSidebar>
           </div>
+          <h1 className="p-5 text-center page-title-coachLib w-100"> Coach Library</h1> 
           <div className="row d-flex align-items-center h-100">
-            <h1 className="p-5 text-center page-title-coachLib w-100"> Coach Library</h1>
+            
             {coachInfo.map(
               (coach, index) =>
                 coach && (
