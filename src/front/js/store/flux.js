@@ -249,6 +249,34 @@ const getState = ({ getStore, getActions, setStore }) => {
           return data.id;
         }
       },
+      setWorkoutUser: async (wk_id)=>{
+        const response = await fetch(apiUrl + "/assign_workout/" + wk_id, {
+          method: "POST",
+          headers: {
+            ...getActions().getAutorizationHeader(),
+          },
+        });
+        if (!response.ok) {
+          response.text().then((text) => {
+            let errorObj = JSON.parse(text);
+            switch (errorObj.msg) {
+              case "Token has expired":
+                getActions().updateTokens();
+                break;
+              default:
+                console.log(errorObj.msg);
+                throw new Error(errorObj.msg);
+            }
+          });
+          return "error";
+        } else {
+          let data = await response.json();
+          let newStore = {};
+          newStore["myProgramsID"] = data;
+          setStore(newStore);
+          return "ok";
+        }
+      },
       // functions to update information
       updateTokens: async () => {
         const response = await fetch(apiUrl + "/refresh", {

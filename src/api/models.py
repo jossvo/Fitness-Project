@@ -319,6 +319,9 @@ class Workout_User(db.Model): #User_Purchased_Workouts
             "wk_image" : workout_profile_pic
         }
     
+    def serialize_id(self):
+        return self.workout.id
+    
 
 
 class Workout_Review(db.Model):
