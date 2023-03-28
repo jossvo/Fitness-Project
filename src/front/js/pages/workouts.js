@@ -232,22 +232,22 @@ export const Workouts = () => {
             <div className="row ">
               {getWorkouts().map((element, index) => (
                 <div
-                  className="col-sm-12 col-md-6 col-lg-4 col-xl-3 my-3"
+                  className="col-sm-12 col-md-6 col-lg-4 col-xl-3 my-3 d-flex align-items-stretch "
                   key={element.id || index}
                 >
                   <div className="card">
                     <h5 className="card-title-section text-center title-container">
                       {element.name}
                     </h5>
-                    <ul className="list-group list-group-flush list-group-workouts">
+                    <ul className="list-group list-group-flush list-group-workouts ">
                       <li>
                         <img
-                          className="workout-library-img"
+                          className="card-img-top"
                           src={element.wk_image}
                           alt="Workout Image"
                         />
                       </li>
-                      <li className="list-group-item workout-item workout-description bg-light ">
+                      <li className="list-group-item workout-item bg-light card-text ">
                         {element.description}
                       </li>
                       <li className="list-group-item workout-item">
@@ -271,16 +271,16 @@ export const Workouts = () => {
                         {element.coach_name}
                       </li>
                     </ul>
+                    {type==='user' && store["myProgramsID"]?<div className="my-3 h-100 d-flex align-items-end">
+                        <Link
+                          to={store["myProgramsID"].includes(element.id)?`/my_programs/${element.id}`:""}
+                          className={`btn ${store["myProgramsID"].includes(element.id)?"btn-primary":"btn-warning"} btn-workout-library`}
+                          onClick={()=>store["myProgramsID"].includes(element.id)?"":reactWorkoutButton(element.id)}
+                        >
+                          {store["myProgramsID"].includes(element.id)?"Open":"Buy"}
+                        </Link>
+                      </div>:""}
                   </div>
-                  {type==='user' && store["myProgramsID"]?<div className="btn-container-workouts my-3">
-                    <Link
-                      to={store["myProgramsID"].includes(element.id)?`/my_programs/${element.id}`:""}
-                      className={`btn ${store["myProgramsID"].includes(element.id)?"btn-primary":"btn-warning"} btn-workout-library`}
-                      onClick={()=>store["myProgramsID"].includes(element.id)?"":reactWorkoutButton(element.id)}
-                    >
-                      {store["myProgramsID"].includes(element.id)?"Open":"Buy"}
-                    </Link>
-                  </div>:""}
                 </div>
               ))}
             </div>
